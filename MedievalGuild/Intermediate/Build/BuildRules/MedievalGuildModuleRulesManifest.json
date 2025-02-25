@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\20001130\\UnrealEngine_MedievalGuild\\MedievalGuild\\Source\\MedievalGuild\\MedievalGuild.Build.cs",
+		"D:\\20001130\\UnrealEngine_MedievalGuild\\MedievalGuild\\Source\\MedievalGuild.Target.cs",
+		"D:\\20001130\\UnrealEngine_MedievalGuild\\MedievalGuild\\Source\\MedievalGuildEditor.Target.cs"
+	],
+	"EngineVersion": "5.5.3"
+}

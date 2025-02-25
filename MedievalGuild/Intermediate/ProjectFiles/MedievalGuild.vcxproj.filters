@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\MedievalGuild.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\MedievalGuild.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\MedievalGuildEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\MedievalGuild">
+      <UniqueIdentifier>{A5796D8A-2810-3C2D-AE40-9F3963F9A5E4}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\MedievalGuild\MedievalGuild.Build.cs">
+      <Filter>Source\MedievalGuild</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\MedievalGuild\MedievalGuild.cpp">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\MedievalGuild.h">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacter.cpp">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacter.h">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacterController.cpp">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacterController.h">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

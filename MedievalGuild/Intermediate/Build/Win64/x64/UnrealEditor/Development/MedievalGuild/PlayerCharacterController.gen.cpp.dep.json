@@ -1,0 +1,15 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "d:\\20001130\\unrealengine_medievalguild\\medievalguild\\intermediate\\build\\win64\\unrealeditor\\inc\\medievalguild\\uht\\playercharactercontroller.gen.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\20001130\\unrealengine_medievalguild\\medievalguild\\intermediate\\build\\win64\\x64\\medievalguildeditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "d:\\20001130\\unrealengine_medievalguild\\medievalguild\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\medievalguild\\definitions.medievalguild.h",
+            "d:\\20001130\\unrealengine_medievalguild\\medievalguild\\source\\medievalguild\\playercharactercontroller.h",
+            "d:\\20001130\\unrealengine_medievalguild\\medievalguild\\intermediate\\build\\win64\\unrealeditor\\inc\\medievalguild\\uht\\playercharactercontroller.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}
