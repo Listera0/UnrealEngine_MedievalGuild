@@ -13,6 +13,13 @@
 
 #include "PlayerCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum class MoveState : uint8 {
+	Idle = 0 UMETA(DisplayName = "Idle"),
+	Run UMETA(DisplayName = "Run"),
+	Stealth UMETA(DisplayName = "Stealth")
+};
+
 UCLASS()
 class MEDIEVALGUILD_API APlayerCharacter : public ACharacter
 {
@@ -33,18 +40,44 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void InputMove(const FInputActionValue& Value);
+public:
+	void InputMove(const FVector& Direction, float Scale);
+	void InputRunning(bool IsRun);
+	void InputStealthToggle();
+	void InputSpeedControl();
+	void InputAttack();
+
+	UFUNCTION()
+	void OnSectionJumpReady(class USectionControlNotify* SectionControl);
+
+	UFUNCTION()
+	void OnSectionJumpEnd(class USectionControlNotify* SectionControl);
 
 protected:
-	UPROPERTY(EditAnywhere)
-	UInputMappingContext* DefaultMappingContext = nullptr;
-
-	UPROPERTY(EditAnywhere)
-	UInputAction* MoveAction = nullptr;
-
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArm = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* PlayerCamera = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
+	MoveState PlayerMoveState;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
+	float NormalMoveSpeed = 600.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
+	float RunningMoveSpeed = 900.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
+	float StealthMoveSpeed = 300.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
+	UAnimMontage* AttackMontage = nullptr;
+
+private:
+	bool bStealthToggle = false;
+
+	class USectionControlNotify* SectionNotify = nullptr;
+	bool bEnableControlNotify = false;
 };

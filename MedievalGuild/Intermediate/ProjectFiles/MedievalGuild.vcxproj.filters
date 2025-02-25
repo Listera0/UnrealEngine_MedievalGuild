@@ -39,6 +39,12 @@
     <ClCompile Include="..\..\Source\MedievalGuild\MedievalGuild.h">
       <Filter>Source\MedievalGuild</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerAnimInstance.cpp">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\PlayerAnimInstance.h">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacter.cpp">
       <Filter>Source\MedievalGuild</Filter>
     </ClCompile>
@@ -49,6 +55,12 @@
       <Filter>Source\MedievalGuild</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MedievalGuild\PlayerCharacterController.h">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\SectionControlNotify.cpp">
+      <Filter>Source\MedievalGuild</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MedievalGuild\SectionControlNotify.h">
       <Filter>Source\MedievalGuild</Filter>
     </ClCompile>
   </ItemGroup>

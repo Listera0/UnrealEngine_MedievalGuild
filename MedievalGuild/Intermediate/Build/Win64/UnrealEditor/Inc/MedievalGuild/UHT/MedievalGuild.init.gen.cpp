@@ -17,13 +17,13 @@ void EmptyLinkFunctionForGeneratedCodeMedievalGuild_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x95A46FCF,
-				0xB02D67DE,
+				0x15500746,
+				0x767C3916,
 				METADATA_PARAMS(0, nullptr)
 			};
 			UECodeGen_Private::ConstructUPackage(Z_Registration_Info_UPackage__Script_MedievalGuild.OuterSingleton, PackageParams);
 		}
 		return Z_Registration_Info_UPackage__Script_MedievalGuild.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_MedievalGuild(Z_Construct_UPackage__Script_MedievalGuild, TEXT("/Script/MedievalGuild"), Z_Registration_Info_UPackage__Script_MedievalGuild, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x95A46FCF, 0xB02D67DE));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_MedievalGuild(Z_Construct_UPackage__Script_MedievalGuild, TEXT("/Script/MedievalGuild"), Z_Registration_Info_UPackage__Script_MedievalGuild, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x15500746, 0x767C3916));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

@@ -42,13 +42,38 @@ struct Z_Construct_UClass_APlayerCharacterController_Statics
 		{ "Category", "InputComponent" },
 		{ "ModuleRelativePath", "PlayerCharacterController.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MoveCamera_MetaData[] = {
+		{ "Category", "InputComponent" },
+		{ "ModuleRelativePath", "PlayerCharacterController.h" },
+	};
 	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MoveAction_MetaData[] = {
 		{ "Category", "InputComponent" },
 		{ "ModuleRelativePath", "PlayerCharacterController.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_RunAction_MetaData[] = {
+		{ "Category", "InputComponent" },
+		{ "ModuleRelativePath", "PlayerCharacterController.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StealthAction_MetaData[] = {
+		{ "Category", "InputComponent" },
+		{ "ModuleRelativePath", "PlayerCharacterController.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_AttackAction_MetaData[] = {
+		{ "Category", "InputComponent" },
+		{ "ModuleRelativePath", "PlayerCharacterController.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_CameraSensitive_MetaData[] = {
+		{ "Category", "InputOption" },
+		{ "ModuleRelativePath", "PlayerCharacterController.h" },
+	};
 #endif // WITH_METADATA
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_InputMappingContext;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_MoveCamera;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_MoveAction;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_RunAction;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_StealthAction;
+	static const UECodeGen_Private::FObjectPropertyParams NewProp_AttackAction;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_CameraSensitive;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -57,10 +82,20 @@ struct Z_Construct_UClass_APlayerCharacterController_Statics
 	static const UECodeGen_Private::FClassParams ClassParams;
 };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_InputMappingContext = { "InputMappingContext", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, InputMappingContext), Z_Construct_UClass_UInputMappingContext_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_InputMappingContext_MetaData), NewProp_InputMappingContext_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_MoveCamera = { "MoveCamera", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, MoveCamera), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MoveCamera_MetaData), NewProp_MoveCamera_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_MoveAction = { "MoveAction", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, MoveAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MoveAction_MetaData), NewProp_MoveAction_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_RunAction = { "RunAction", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, RunAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RunAction_MetaData), NewProp_RunAction_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_StealthAction = { "StealthAction", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, StealthAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StealthAction_MetaData), NewProp_StealthAction_MetaData) };
+const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_AttackAction = { "AttackAction", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, AttackAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_AttackAction_MetaData), NewProp_AttackAction_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_CameraSensitive = { "CameraSensitive", nullptr, (EPropertyFlags)0x0020080000010015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(APlayerCharacterController, CameraSensitive), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_CameraSensitive_MetaData), NewProp_CameraSensitive_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_APlayerCharacterController_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_InputMappingContext,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_MoveCamera,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_MoveAction,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_RunAction,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_StealthAction,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_AttackAction,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_APlayerCharacterController_Statics::NewProp_CameraSensitive,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_APlayerCharacterController_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_APlayerCharacterController_Statics::DependentSingletons[])() = {
@@ -103,10 +138,10 @@ APlayerCharacterController::~APlayerCharacterController() {}
 struct Z_CompiledInDeferFile_FID_MedievalGuild_Source_MedievalGuild_PlayerCharacterController_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_APlayerCharacterController, APlayerCharacterController::StaticClass, TEXT("APlayerCharacterController"), &Z_Registration_Info_UClass_APlayerCharacterController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APlayerCharacterController), 4111147764U) },
+		{ Z_Construct_UClass_APlayerCharacterController, APlayerCharacterController::StaticClass, TEXT("APlayerCharacterController"), &Z_Registration_Info_UClass_APlayerCharacterController, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(APlayerCharacterController), 540870356U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MedievalGuild_Source_MedievalGuild_PlayerCharacterController_h_2728415722(TEXT("/Script/MedievalGuild"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_MedievalGuild_Source_MedievalGuild_PlayerCharacterController_h_1236587613(TEXT("/Script/MedievalGuild"),
 	Z_CompiledInDeferFile_FID_MedievalGuild_Source_MedievalGuild_PlayerCharacterController_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_MedievalGuild_Source_MedievalGuild_PlayerCharacterController_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

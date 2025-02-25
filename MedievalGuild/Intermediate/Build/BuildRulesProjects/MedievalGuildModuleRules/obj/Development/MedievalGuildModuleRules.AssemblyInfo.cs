@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MedievalGuildModuleRules")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Development")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2492902277d884f42f29cedd6e15cdd17b5544d9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+759297626da515c3aae93e9879ae3545eb1abb22")]
 [assembly: System.Reflection.AssemblyProductAttribute("MedievalGuildModuleRules")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MedievalGuildModuleRules")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
 
 #include "PlayerCharacterController.generated.h"
@@ -27,14 +28,34 @@ protected:
 	virtual void OnUnPossess() override;
 
 	void InputMove(const FInputActionValue& Value);
+	void InputCameraMove(const FInputActionValue& Value);
+	void InputPressRunKey(const FInputActionValue& Value);
+	void InputRealeaseRunKey(const FInputActionValue& Value);
+	void InputStealthToggle(const FInputActionValue& Value);
+	void InputAttackAction(const FInputActionValue& Value);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* MoveCamera = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* MoveAction = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* RunAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* StealthAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* AttackAction = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputOption")
+	float CameraSensitive = 0.5f;
+
 private:
-	class PlayerCharacter* PlayerCharacter = nullptr;
+	class APlayerCharacter* PlayerCharacter = nullptr;
 };
