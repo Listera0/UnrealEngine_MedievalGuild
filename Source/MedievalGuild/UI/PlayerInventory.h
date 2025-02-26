@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/UniformGridPanel.h"
+#include "Components/UniformGridSlot.h"
 #include "Components/Button.h"
-#include "Components/GridSlot.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -23,8 +25,13 @@ protected:
 
 protected:
 	void MakeInventory(int col, int row);
+	void MakeItemToSlot(int col, int row);
+	void SlotInitSetting(UButton* button);
 
-	float InventorySlotSize = 5.0f;
+	float InventorySlotSize = 100.0f;
+
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* InventorySlot;
 
 	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* SlotGridPanel;
