@@ -17,14 +17,12 @@ AItem_Base::AItem_Base()
 void AItem_Base::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AItem_Base::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AItem_Base::ItemFunc()

@@ -29,13 +29,16 @@ public:
 
 
 public: //getter 세팅
-	inline EItemType GetItemType() const { return eItemType; };
-	inline float GetPrice() const { return price; };
-	inline FName GetName()const { return name; };
-	inline FName GetDescription() const { return description;};
+	inline EItemType GetItemType() const { return eItemType; }
+	inline float GetPrice() const { return price; }
+	inline FName GetName()const { return name; }
+	inline FName GetDescription() const { return description;}
 	inline int GetIndex() const { return index; }
+	inline int GetCount() const { return count; }
+	inline int GetHeight() const { return height; }
+	inline int GetWeight() const { return weight; }
 
-
+	inline bool Sell(int Count) { if (count >= Count) { count -= Count; return true; }  return false;}
 protected: //컴포넌트 세팅
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	UStaticMeshComponent* mesh = nullptr;
@@ -56,4 +59,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int index;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
+	int count;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
+	int height;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
+	int weight;
 };
