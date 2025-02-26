@@ -3,7 +3,7 @@
 
 #include "PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "SectionControlNotify.h"
+#include "../Framework/SectionControlNotify.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

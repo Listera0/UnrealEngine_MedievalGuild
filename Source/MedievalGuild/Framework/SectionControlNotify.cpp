@@ -2,7 +2,7 @@
 
 
 #include "SectionControlNotify.h"
-#include "PlayerCharacter.h"
+#include "../Character/PlayerCharacter.h"
 
 void USectionControlNotify::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration, const FAnimNotifyEventReference& EventReference)
 {

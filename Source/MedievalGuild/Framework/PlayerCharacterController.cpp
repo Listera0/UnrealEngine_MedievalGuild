@@ -4,7 +4,7 @@
 #include "PlayerCharacterController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "PlayerCharacter.h"
+#include "../Character/PlayerCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 

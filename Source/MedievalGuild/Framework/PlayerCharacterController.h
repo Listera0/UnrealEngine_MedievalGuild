@@ -6,7 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
-#include "PlayerInventory.h"
+#include "../UI/PlayerInventory.h"
 
 #include "PlayerCharacterController.generated.h"
 
