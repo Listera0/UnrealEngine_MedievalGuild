@@ -36,6 +36,7 @@ protected:
 	void InputRealeaseRunKey(const FInputActionValue& Value);
 	void InputStealthToggle(const FInputActionValue& Value);
 	void InputAttackAction(const FInputActionValue& Value);
+	void InputInventoryToggle(const FInputActionValue& Value);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
@@ -59,9 +60,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* AttackAction = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* InventoryToggle = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputOption")
 	float CameraSensitive = 0.5f;
 
 private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
+
+	UPlayerInventory* InventoryUI = nullptr;
 };

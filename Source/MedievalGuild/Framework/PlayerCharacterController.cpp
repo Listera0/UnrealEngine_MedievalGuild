@@ -52,6 +52,9 @@ void APlayerCharacterController::SetupInputComponent()
 
 		if (AttackAction)
 			input->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttackAction);
+
+		if(InventoryToggle)
+			input->BindAction(InventoryToggle, ETriggerEvent::Started, this, &APlayerCharacterController::InputInventoryToggle);
 	}
 }
 
@@ -60,10 +63,6 @@ void APlayerCharacterController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	PlayerCharacter = Cast<APlayerCharacter>(InPawn);
-
-	
-
-
 }
 
 void APlayerCharacterController::OnUnPossess()
@@ -74,8 +73,9 @@ void APlayerCharacterController::OnUnPossess()
 void APlayerCharacterController::InitViewport()
 {
 	if (InventoryViewport) {
-		UPlayerInventory* playerInventory = CreateWidget<UPlayerInventory>(this, InventoryViewport);
-		playerInventory->AddToViewport();
+		InventoryUI = CreateWidget<UPlayerInventory>(this, InventoryViewport);
+		InventoryUI->AddToViewport();
+		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -124,4 +124,12 @@ void APlayerCharacterController::InputStealthToggle(const FInputActionValue& Val
 void APlayerCharacterController::InputAttackAction(const FInputActionValue& Value)
 {
 	PlayerCharacter->InputAttack();
+}
+
+void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
+{
+	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden)
+		InventoryUI->SetVisibility(ESlateVisibility::Visible);
+	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible)
+		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 }
