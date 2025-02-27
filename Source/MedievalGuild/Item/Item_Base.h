@@ -39,6 +39,8 @@ public: //getter 세팅
 	inline int GetWeight() const { return weight; }
 
 	inline bool Sell(int Count) { if (count >= Count) { count -= Count; return true; }  return false;}
+	inline void SetCount(int Count) { count = Count; }
+
 protected: //컴포넌트 세팅
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	UStaticMeshComponent* mesh = nullptr;
@@ -61,11 +63,11 @@ protected:
 	int index;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-	int count;
+	int count = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-	int height;
+	int height = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-	int weight;
+	int weight = 1;
 };

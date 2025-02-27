@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Merchant.h
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 
 #include "../Item/Item_Base.h"
 
@@ -12,23 +13,31 @@
 UCLASS()
 class MEDIEVALGUILD_API AMerchant : public AActor
 {
-	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AMerchant();
+    GENERATED_BODY()
+
+public:
+    AMerchant();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+    virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+public:
+    virtual void Tick(float DeltaTime) override;
 
-	virtual AItem_Base* SellItem(AItem_Base* Item, int Count);
+    AItem_Base* SellItem(int index, int Count);
+
+    UFUNCTION()
+    void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+protected:
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    USkeletalMeshComponent* Mesh = nullptr;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
+    TArray<TSubclassOf<AItem_Base>> Item_List;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+    UCapsuleComponent* Collision = nullptr;
 
 private:
-	TArray<AItem_Base*> Item_List;
-
 };
