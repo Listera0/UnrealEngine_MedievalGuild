@@ -40,4 +40,5 @@ protected:
     UCapsuleComponent* Collision = nullptr;
 
 private:
+    TArray<AItem_Base*> ItemInstances;
 };

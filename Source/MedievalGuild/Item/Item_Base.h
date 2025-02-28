@@ -38,7 +38,7 @@ public: //getter 세팅
 	inline int GetHeight() const { return height; }
 	inline int GetWeight() const { return weight; }
 
-	inline bool Sell(int Count) { if (count >= Count) { count -= Count; return true; }  return false;}
+	inline bool Sell(int Count) { if (count - Count >= 0) { count -= Count; return true; }  return false;}
 	inline void SetCount(int Count) { count = Count; }
 
 protected: //컴포넌트 세팅
