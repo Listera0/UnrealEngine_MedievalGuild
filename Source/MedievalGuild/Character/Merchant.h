@@ -5,7 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 
-#include "../Item/Item__Object_Base.h"  // UItem__Object_Base 추가
+#include "../Item/Item_Base.h"
 
 #include "Merchant.generated.h"
 
@@ -23,7 +23,7 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UItem__Object_Base* SellItem(int index, int Count);
+	AItem_Base* SellItem(int index, int Count);
 
 	UFUNCTION()
 	void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -33,11 +33,11 @@ protected:
 	USkeletalMeshComponent* Mesh = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
-	TArray<TSubclassOf<UItem__Object_Base>> Item_List;
+	TArray<TSubclassOf<AItem_Base>> Item_List;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
 	UCapsuleComponent* Collision = nullptr;
 
 private:
-	TArray<UItem__Object_Base*> ItemInstances;
+	TArray<AItem_Base*> ItemInstances;
 };
