@@ -4,9 +4,8 @@
 
 AMerchant::AMerchant()
 {
-    PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = false;
 
-    
 
     Collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
     Collision->SetupAttachment(RootComponent);
@@ -29,47 +28,48 @@ void AMerchant::Tick(float DeltaTime)
 
 AItem_Base* AMerchant::SellItem(int index, int Count)
 {
-    for (int i = 0; i < Item_List.Num(); ++i)
+    if (ItemInstances.Num() != Item_List.Num())
     {
-        TSubclassOf<AItem_Base> ItemClass = Item_List[i];
+        ItemInstances.Empty();
+        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ItemInstances size does not match Item_List size. Re-spawning items."));
 
-        AItem_Base* FoundItem = GetWorld()->SpawnActor<AItem_Base>(ItemClass);
+        for (TSubclassOf<AItem_Base> ItemClass : Item_List)
+        {
+            AItem_Base* NewItem = GetWorld()->SpawnActor<AItem_Base>(ItemClass);
+            if (NewItem)
+            {
+                NewItem->SetActorHiddenInGame(true);
+                ItemInstances.Add(NewItem);
+                GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Spawned new item of class: %s"), *ItemClass->GetName()));
+            }
+        }
+    }
 
+    for (AItem_Base* FoundItem : ItemInstances)
+    {
         if (FoundItem && FoundItem->GetIndex() == index)
         {
+
             if (FoundItem->Sell(Count))
             {
-                AItem_Base* NewItem = GetWorld()->SpawnActor<AItem_Base>(ItemClass);
-
-                if (NewItem)
-                {
-                    NewItem->SetCount(Count);
-                    if (GEngine)
-                    {
-                        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("sell!"));
-                    }
-                    return NewItem;
-                }
+                GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Item sold successfully. Remaining count: %d"), FoundItem->GetCount()));
+                return FoundItem;
             }
             else
             {
-                if (GEngine)
-                {
-                    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Not enough items to sell!"));
-                }
-
+                GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Not enough items to sell!"));
                 return nullptr;
             }
         }
     }
 
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Item not found in merchant's list!"));
-    }
+    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Item not found in merchant's inventory!"));
 
     return nullptr;
 }
+
+
+
 
 void AMerchant::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

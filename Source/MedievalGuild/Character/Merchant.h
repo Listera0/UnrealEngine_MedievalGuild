@@ -1,4 +1,3 @@
-// Merchant.h
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,31 +12,32 @@
 UCLASS()
 class MEDIEVALGUILD_API AMerchant : public AActor
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    AMerchant();
+	AMerchant();
 
 protected:
-    virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 
 public:
-    virtual void Tick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 
-    AItem_Base* SellItem(int index, int Count);
+	AItem_Base* SellItem(int index, int Count);
 
-    UFUNCTION()
-    void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
-    USkeletalMeshComponent* Mesh = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+	USkeletalMeshComponent* Mesh = nullptr;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
-    TArray<TSubclassOf<AItem_Base>> Item_List;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
+	TArray<TSubclassOf<AItem_Base>> Item_List;
 
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
-    UCapsuleComponent* Collision = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+	UCapsuleComponent* Collision = nullptr;
 
 private:
+	TArray<AItem_Base*> ItemInstances;
 };

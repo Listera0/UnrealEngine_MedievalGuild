@@ -1,70 +1,66 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "EItemType.h"
+#include "UObject/NoExportTypes.h"
+#include "EItemType.h"  // Assuming EItemType is an enumeration for item types
 
-#include "Item_Base.generated.h"
+#include "Item__Object_Base.generated.h"
 
-UCLASS()
-class MEDIEVALGUILD_API AItem_Base : public AActor
+/**
+ *  A base class to define item data.
+ */
+UCLASS(Blueprintable)
+class MEDIEVALGUILD_API UItem__Object_Base : public UObject
 {
 	GENERATED_BODY()
-	
-public:	
-	// Sets default values for this actor's properties
-	AItem_Base();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+public:
+	// Constructor to initialize default values
+	UItem__Object_Base();
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	// Function to handle item-specific functionality (override this in subclasses if needed)
 	virtual void ItemFunc();
 
-
-public: //getter 세팅
+	// Getter methods
 	inline EItemType GetItemType() const { return eItemType; }
 	inline float GetPrice() const { return price; }
-	inline FName GetName()const { return name; }
-	inline FName GetDescription() const { return description;}
+	inline FName GetName() const { return name; }
+	inline FName GetDescription() const { return description; }
 	inline int GetIndex() const { return index; }
 	inline int GetCount() const { return count; }
 	inline int GetHeight() const { return height; }
 	inline int GetWeight() const { return weight; }
 
-	inline bool Sell(int Count) { if (count - Count >= 0) { count -= Count; return true; }  return false;}
+	// Function to sell an item, reducing its count
+	inline bool Sell(int Count) { if (count - Count >= 0) { count -= Count; return true; } return false; }
 	inline void SetCount(int Count) { count = Count; }
 
-protected: //컴포넌트 세팅
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-	UStaticMeshComponent* mesh = nullptr;
-
-
 protected:
+	// The type of item (Weapon, Armor, etc.)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	EItemType eItemType;
 
+	// The price of the item
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	float price;
 
+	// The name of the item
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	FName name;
 
+	// The description of the item
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	FName description;
 
+	// Unique identifier for the item
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int index;
 
+	// The count of how many items exist
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int count = 0;
 
+	// Height and weight values for the item (if applicable)
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
 	int height = 1;
 
