@@ -34,23 +34,26 @@ class MEDIEVALGUILD_API UPlayerInventory : public UUserWidget
 
 public:
 	UPlayerInventory(const FObjectInitializer& ObjectInitializer);
-	
+
 protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
-
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> ItemMoveSlotClass;
 
-protected:
+public:
 	void MakeInventory(int col, int row);
 	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
-	void MoveItemToSlot(int fromCol, int fromRow, int toCol, int toRow);
+	void MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
 	void SlotInitSetting(UButton* button);
 
+protected:
 	UWidget* GetInventorySlot(int col, int row);
+	UItemSlot* GetInventorySlot2(int col, int row);
 
 	float InventorySlotSize = 100.0f;
 
@@ -59,4 +62,8 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* SlotGridPanel;
+
+	TArray<UItemSlot*> ItemSlots;
+
+	FVector2D InventorySize;
 };

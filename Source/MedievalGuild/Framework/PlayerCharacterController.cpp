@@ -128,8 +128,17 @@ void APlayerCharacterController::InputAttackAction(const FInputActionValue& Valu
 
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
 {
-	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden)
+	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden) {
 		InventoryUI->SetVisibility(ESlateVisibility::Visible);
-	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible)
+				
+		int32 screenX; int32 screenY;
+		GetViewportSize(screenX, screenY);
+
+		bShowMouseCursor = true;
+		SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
+	}
+	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible) {
+		bShowMouseCursor = false;
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }

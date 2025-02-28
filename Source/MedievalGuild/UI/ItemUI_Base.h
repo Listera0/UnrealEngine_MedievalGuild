@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "ItemDragDropOperation.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 
 #include "ItemUI_Base.generated.h"
@@ -18,9 +17,14 @@ class MEDIEVALGUILD_API UItemUI_Base : public UUserWidget
 	
 protected:
 	virtual void NativeConstruct() override;
+
 public:
+	void SetItemCount(int count);
 	void SetItemCountText();
 	void SetItemBind(TArray<UItemUI_Base*> items);
+	void SetDuplicateInit(UItemUI_Base* target);
+	void SetItemIndex(int x, int y);
+	void SetItemSize(int x, int y);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -34,4 +38,6 @@ public:
 	bool bStackable = false;
 
 	TArray<UItemUI_Base*> BindItems;
+	int ItemIndexX; int ItemIndexY;
+	int ItemSizeX; int ItemSizeY;
 };
