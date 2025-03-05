@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
 #include "../UI/PlayerInventory.h"
+#include "../UI/Container_Base.h"
 
 #include "PlayerCharacterController.generated.h"
 
@@ -40,7 +41,7 @@ protected:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
+	TSubclassOf<UContainer_Base> InventoryViewport = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
@@ -69,5 +70,5 @@ protected:
 private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
-	UPlayerInventory* InventoryUI = nullptr;
+	UContainer_Base* InventoryUI = nullptr;
 };

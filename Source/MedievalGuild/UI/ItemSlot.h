@@ -31,15 +31,20 @@ public:
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)override;
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)override;
+
+	inline bool HasItem() { return ItemSlot->GetChildrenCount() > 0 ? true : false; }
+	inline UItemUI_Base* GetSlotItem() { return Cast<UItemUI_Base>(ItemSlot->GetChildAt(0)); }
 	
 protected:
-	float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
+	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
 
 public:
-	class UPlayerInventory* InventoryPanel;
+	class UContainer_Base* ContainerPanel;
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
+
+	//UItemMoveSlot* dragSlot = nullptr;
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
@@ -48,7 +53,7 @@ public:
 	UButton* ItemSlot;
 
 	float SlotSize;
-	int SlotIndex;
 
+	int SlotIndex;
 	FVector2D SlotColRow;
 };

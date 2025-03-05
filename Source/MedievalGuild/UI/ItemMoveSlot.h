@@ -19,7 +19,7 @@ class MEDIEVALGUILD_API UItemMoveSlot : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void InitSetting(float slotSizeX, float slotSizeY);
+	void InitSetting(FVector2D slotSize);
 
 public:
 	UPROPERTY(meta = (BindWidget))

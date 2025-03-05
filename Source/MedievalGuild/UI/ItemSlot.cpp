@@ -2,7 +2,7 @@
 
 
 #include "ItemSlot.h"
-#include "PlayerInventory.h"
+#include "Container_Base.h"
 
 void UItemSlot::NativeConstruct()
 {
@@ -43,32 +43,47 @@ void UItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointer
 		movingItems.Append(movingItems[0]->BindItems);
 
 		// 드래그한 그 아이템정보 저장 및 슬롯 크기 변경
-		int itemIndexX = movingItems[0]->ItemIndexX; int itemIndexY = movingItems[0]->ItemIndexY;
-		int itemSizeX = movingItems[0]->ItemSizeX; int itemSizeY = movingItems[0]->ItemSizeY;
-		dragSlot->InitSetting(SlotSize * movingItems[0]->ItemSizeX, SlotSize * movingItems[0]->ItemSizeY);
+		FVector2D itemIndex = movingItems[0]->ItemIndex;
+		FVector2D itemSize = movingItems[0]->ItemSize;
+		dragSlot->InitSetting(SlotSize * movingItems[0]->ItemSize);
 
 		// 가져온 모든 아이템들 복제본 만들어 슬롯에 넣기
 		for (int i = 0; i < movingItems.Num(); i++) {
 			UItemUI_Base* draggingItem = CreateWidget<UItemUI_Base>(GetWorld(), ItemBaseClass);
 			movingItems[i]->SetDuplicateInit(draggingItem);
-			movingItems[i]->SetRenderOpacity(0.0f);
+			movingItems[i]->SetVisibility(ESlateVisibility::Collapsed);
 
-			UUniformGridSlot* gridSlot = dragSlot->MovingSlot->AddChildToUniformGrid(draggingItem, draggingItem->ItemIndexX, draggingItem->ItemIndexY);
+			UUniformGridSlot* gridSlot = dragSlot->MovingSlot->AddChildToUniformGrid(draggingItem, draggingItem->ItemIndex.X, draggingItem->ItemIndex.Y);
 			gridSlot->SetHorizontalAlignment(HAlign_Fill);
 			gridSlot->SetVerticalAlignment(VAlign_Fill);
 		}
+		//dragSlot->MovingSlot->SetRenderTransform(FWidgetTransform((-itemIndex * SlotSize), FVector2D(1.0f), FVector2D(), 0.0f));
+
+		FVector2D CustomOffset = FVector2D(GetOffSetValue(itemIndex.X, itemSize.X), GetOffSetValue(itemIndex.Y, itemSize.Y));
+		FVector2D CustomOffset2 = ((itemSize - itemIndex) * -SlotSize * 0.5f);
+		FVector2D CustomOffset3 = (itemIndex - ((itemSize - 1) * 0.5f)) * -SlotSize;
+
+		UCanvasPanelSlot* canvasSlot = Cast<UCanvasPanelSlot>(dragSlot->MovingSlot->Slot);
+		//canvasSlot->SetPosition(itemIndex * -SlotSize);
+		canvasSlot->SetPosition(CustomOffset3);
 
 		Operation->PrevSlotIndex = SlotIndex;
 		Operation->bMoveSuccessed = false;
 		Operation->SetOrigianlWidgets(movingItems);
 		Operation->DefaultDragVisual = dragSlot;
-		FVector2D LocalMousePosition = InGeometry.AbsoluteToLocal(InMouseEvent.GetScreenSpacePosition());
-		FVector2D CustomOffset = FVector2D(GetOffSetValue(itemIndexX,itemSizeX), GetOffSetValue(itemIndexY, itemSizeY));
+		//Operation->Offset = CustomOffset;
 
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, FString::Printf(TEXT("%f, %f"), CustomOffset.X, CustomOffset.Y));
-		Operation->Offset = CustomOffset;
+		// 원인 : 생성되고 크기 조절할 때 처음 위치가 고정되어서 그런것
+		// 제한사항 1 : DragDropOperation을 사용할시 강제로 offset이 적용됨(offset 제어 불가) 중앙으로 이동됨
+		// 제한사항 2 : 위젯 자체의 위치를 옮기고 싶어도 크기를 조정하면 anchor가 이동됨
 
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Mouse Dragged"));
+		// (index - ((size-1) * 0.5f)) * -slot
+		// size = 1 -> 0
+		// size = 2 -> 50 index = 0
+		// size = 2 -> -50 index = 1
+		// -(index - ((size - 1) * 0.5f) * 2 * 0.5f * SlotSize
+		// index - 
+		// size = 3 -> -100
 	}
 }
 
@@ -79,7 +94,7 @@ void UItemSlot::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDr
 
 	if (Operation) {
 		for (int i = 0; i < Operation->OriginalWidgets.Num(); i++) {
-			Operation->OriginalWidgets[i]->SetRenderOpacity(1.0f);
+			Operation->OriginalWidgets[i]->SetVisibility(ESlateVisibility::Visible);
 		}
 
 		if (!Operation->bMoveSuccessed) {
@@ -97,7 +112,7 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Get Item"));
 		if (Operation->PrevSlotIndex != SlotIndex) {
 			Operation->bMoveSuccessed = true;
-			InventoryPanel->MoveItemToSlot(Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
+			ContainerPanel->MoveItemToSlot(Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 		}
 	}
 

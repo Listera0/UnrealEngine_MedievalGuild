@@ -23,8 +23,9 @@ public:
 	void SetItemCountText();
 	void SetItemBind(TArray<UItemUI_Base*> items);
 	void SetDuplicateInit(UItemUI_Base* target);
-	void SetItemIndex(int x, int y);
-	void SetItemSize(int x, int y);
+	inline void SetItemIndex(FVector2D index) { ItemIndex = index; }
+	inline void SetItemSize(FVector2D size) { ItemSize = size; }
+	UItemUI_Base* GetOwnerItem();
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -38,6 +39,7 @@ public:
 	bool bStackable = false;
 
 	TArray<UItemUI_Base*> BindItems;
-	int ItemIndexX; int ItemIndexY;
-	int ItemSizeX; int ItemSizeY;
+
+	FVector2D ItemIndex;
+	FVector2D ItemSize;
 };

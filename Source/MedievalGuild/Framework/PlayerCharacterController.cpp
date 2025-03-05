@@ -73,7 +73,7 @@ void APlayerCharacterController::OnUnPossess()
 void APlayerCharacterController::InitViewport()
 {
 	if (InventoryViewport) {
-		InventoryUI = CreateWidget<UPlayerInventory>(this, InventoryViewport);
+		InventoryUI = CreateWidget<UContainer_Base>(this, InventoryViewport);
 		InventoryUI->AddToViewport();
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 	}

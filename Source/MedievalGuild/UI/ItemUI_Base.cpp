@@ -37,16 +37,17 @@ void UItemUI_Base::SetDuplicateInit(UItemUI_Base* target)
 	target->ItemCount = ItemCount;
 	target->SetItemBind(BindItems);
 	target->SetItemCountText();
-	target->SetItemSize(ItemSizeX, ItemSizeY);
-	target->SetItemIndex(ItemIndexX, ItemIndexY);
+	target->SetItemIndex(ItemIndex);
+	target->SetItemSize(ItemSize);
 }
 
-void UItemUI_Base::SetItemIndex(int x, int y)
+UItemUI_Base* UItemUI_Base::GetOwnerItem()
 {
-	ItemIndexX = x; ItemIndexY = y;
-}
+	for (int i = 0; i < BindItems.Num(); i++) {
+		if ((int)(BindItems[i]->ItemIndex.X) == 0 && (int)(BindItems[i]->ItemIndex.Y) == 0) {
+			return BindItems[i];
+		}
+	}
 
-void UItemUI_Base::SetItemSize(int x, int y)
-{
-	ItemSizeX = x; ItemSizeY = y;
+	return this;
 }
