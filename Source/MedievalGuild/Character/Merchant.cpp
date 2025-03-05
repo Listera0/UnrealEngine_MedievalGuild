@@ -1,6 +1,7 @@
 // Merchant.cpp
 #include "Merchant.h"
 #include "Components/CapsuleComponent.h"
+#include "../Item/ItemDataManager.h"
 
 AMerchant::AMerchant()
 {
@@ -19,6 +20,32 @@ AMerchant::AMerchant()
 void AMerchant::BeginPlay()
 {
     Super::BeginPlay();
+
+    UItemDataManager* ItemDataManager = UItemDataManager::GetInstance();
+
+
+    UItemData* NewItem = NewObject<UItemData>();
+    NewItem->name = TEXT("Shield");
+    NewItem->description = TEXT("A protective shield.");
+    NewItem->price = 75.0f;
+    NewItem->index = 2;
+    NewItem->count = 1;
+    NewItem->height = 3;
+    NewItem->weight = 6;
+    NewItem->eItemType = EItemType::Clothes;
+
+    ItemDataManager->AddItemData(NewItem);
+
+    FString FilePath = FPaths::ProjectSavedDir() / TEXT("itemData.json");
+    ItemDataManager->SaveAllItemDataToJson(FilePath);
+    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ItemData Save"));
+
+    ItemDataManager->LoadAllItemDataFromJson(FilePath);
+    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ItemData Load"));
+    for (UItemData* LoadedItem : ItemDataManager->GetItemDataList())
+    {
+        UE_LOG(LogTemp, Log, TEXT("Loaded Item: %s"), *LoadedItem->name);
+    }
 }
 
 void AMerchant::Tick(float DeltaTime)
@@ -49,11 +76,23 @@ AItem_Base* AMerchant::SellItem(int index, int Count)
     {
         if (FoundItem && FoundItem->GetIndex() == index)
         {
-
             if (FoundItem->Sell(Count))
             {
                 GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Item sold successfully. Remaining count: %d"), FoundItem->GetCount()));
-                return FoundItem;
+
+                AItem_Base* NewItem = GetWorld()->SpawnActor<AItem_Base>(FoundItem->GetClass());
+                if (NewItem)
+                {
+                    NewItem->SetCount(Count);
+                    NewItem->SetActorHiddenInGame(true);
+                    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Create Item. Item count: %d"), NewItem->GetCount()));
+                    return NewItem;
+                }
+                else
+                {
+                    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Failed to spawn new item."));
+                    return nullptr;
+                }
             }
             else
             {
@@ -64,7 +103,6 @@ AItem_Base* AMerchant::SellItem(int index, int Count)
     }
 
     GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("Item not found in merchant's inventory!"));
-
     return nullptr;
 }
 
