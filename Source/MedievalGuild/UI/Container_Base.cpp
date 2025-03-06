@@ -6,39 +6,54 @@
 
 UContainer_Base::UContainer_Base(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> ItemSlotFinder(TEXT("/Game/Blueprint/UI/WB_ItemSlot"));
-	if (ItemSlotFinder.Succeeded()) ItemSlotClass = ItemSlotFinder.Class;
+	//static ConstructorHelpers::FClassFinder<UUserWidget> ItemSlotFinder(TEXT("/Game/Blueprint/UI/WB_ItemSlot"));
+	//if (ItemSlotFinder.Succeeded()) ItemSlotClass = ItemSlotFinder.Class;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> ItemBaseFinder(TEXT("/Game/Blueprint/UI/WB_ItemUI_Base"));
-	if (ItemBaseFinder.Succeeded()) ItemBaseClass = ItemBaseFinder.Class;
+	//static ConstructorHelpers::FClassFinder<UUserWidget> ItemBaseFinder(TEXT("/Game/Blueprint/UI/WB_ItemUI_Base"));
+	//if (ItemBaseFinder.Succeeded()) ItemBaseClass = ItemBaseFinder.Class;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> ItemMoveSlotFinder(TEXT("/Game/Blueprint/UI/WB_ItemMoveSlot"));
-	if (ItemMoveSlotFinder.Succeeded()) ItemMoveSlotClass = ItemMoveSlotFinder.Class;
+	//static ConstructorHelpers::FClassFinder<UUserWidget> ItemMoveSlotFinder(TEXT("/Game/Blueprint/UI/WB_ItemMoveSlot"));
+	//if (ItemMoveSlotFinder.Succeeded()) ItemMoveSlotClass = ItemMoveSlotFinder.Class;
 }
 
 void UContainer_Base::NativeConstruct()
 {
-	if (!ItemSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemSlotFinder"));
-	if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemBaseFinder"));
-	if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemMoveSlotFinder"));
+	//if (!ItemSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemSlotFinder"));
+	//if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemBaseFinder"));
+	//if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemMoveSlotFinder"));
 
-	MakeContainer(3, 4);
+	//MakeContainer(6, 4);
 
-	MakeItemToSlot(0, 0, 1, 1, 1);
-	MakeItemToSlot(0, 1, 2, 1, 2);
-	MakeItemToSlot(2, 2, 2);
+	//MakeItemToSlot(2, 1, 1);
+	//MakeItemToSlot(1, 2, 1);
+	//MakeItemToSlot(1, 1, 1);
+	//MakeItemToSlot(2, 2, 1);
+}
+
+void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass)
+{
+	ItemSlotClass = itemSlotClass;
+	ItemBaseClass = itemBaseClass;
+	ItemMoveSlotClass = itemMoveSlotClass;
+
+	MakeContainer(6, 4);
+
+	MakeItemToSlot(2, 1, 1);
+	MakeItemToSlot(1, 2, 1);
+	MakeItemToSlot(1, 1, 1);
+	MakeItemToSlot(2, 2, 1);
 }
 
 void UContainer_Base::MakeContainer(int col, int row)
 {
-	UCanvasPanelSlot* inventorySlot = Cast<UCanvasPanelSlot>(ContainerSlot->Slot);
-	inventorySlot->SetSize(FVector2D(ContainerSlotSize * col, ContainerSlotSize * row));
+	UCanvasPanelSlot* TargetSlot = Cast<UCanvasPanelSlot>(ContainerSlot->Slot);
+	TargetSlot->SetSize(FVector2D(ContainerSlotSize * col, ContainerSlotSize * row));
 
 	ContainerSize = FVector2D(col, row);
-	ItemSlots.Empty();
+	ContainerItemSlots.Empty();
 	int slotIndex = 0;
-	for (int i = 0; i < col; i++) {
-		for (int j = 0; j < row; j++) {
+	for (int j = 0; j < row; j++) {
+		for (int i = 0; i < col; i++) {
 			UItemSlot* newItemSlot = CreateWidget<UItemSlot>(GetWorld(), ItemSlotClass);
 			SlotInitSetting(newItemSlot->ItemSlot);
 			newItemSlot->ContainerPanel = this;
@@ -48,11 +63,11 @@ void UContainer_Base::MakeContainer(int col, int row)
 			newItemSlot->SlotSize = ContainerSlotSize;
 			newItemSlot->SlotColRow = FVector2D(i, j);
 
-			UUniformGridSlot* gridSlot = SlotGridPanel->AddChildToUniformGrid(newItemSlot, j, i);
+			UUniformGridSlot* gridSlot = ContainerSlotGrid->AddChildToUniformGrid(newItemSlot, j, i);
 			gridSlot->SetHorizontalAlignment(HAlign_Fill);
 			gridSlot->SetVerticalAlignment(VAlign_Fill);
 
-			ItemSlots.Add(newItemSlot);
+			ContainerItemSlots.Add(newItemSlot);
 		}
 	}
 }
@@ -95,20 +110,24 @@ void UContainer_Base::MakeItemToSlot(int sizeX, int sizeY, int count)
 	// 빈 위치 찾기
 	int col = 0; int row = 0;
 	bool bFindSlot = false;
-	for (int i = 0; i < ItemSlots.Num(); i++) {
-		if (ItemSlots[i]->HasItem()) continue;
+	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
+		if (ContainerItemSlots[i]->HasItem()) continue;
 
-		FVector2D slotColRow = ItemSlots[i]->SlotColRow;
+		FVector2D slotColRow = ContainerItemSlots[i]->SlotColRow;
 		bFindSlot = true;
+
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%.1f")));
 
 		for (int j = 0; j < sizeX; j++) {
 			for (int k = 0; k < sizeY; k++) {
-				if (!IsInContainer(FVector2D(slotColRow.X + j, slotColRow.Y + k))) {
+				FVector2D TargetColRow = FVector2D(slotColRow.X + j, slotColRow.Y + k);
+
+				if (!IsInContainer(TargetColRow)) {
 					bFindSlot = false;
 					break;
 				}
 
-				if (GetContainerSlot(slotColRow.X + j, slotColRow.Y + k)->HasItem()) {
+				if (GetContainerSlot(TargetColRow)->HasItem()) {
 					bFindSlot = false;
 					break;
 				}
@@ -138,7 +157,7 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 	// 범위 만들기 (items 의 슬롯에 offset을 빼기)
 	for (int i = 0; i < items.Num(); i++) {
 		// 실제 인벤토리의 좌표
-		itemToArea.Add(ItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
+		itemToArea.Add(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
 
 		// 인벤토리의 칸을 넘어감
 		if (!IsInContainer(itemToArea[i])) return;
@@ -176,7 +195,7 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 	else { // 안에 아이템이 없으면
 		for (int i = 0; i < items.Num(); i++) {
 			FVector2D Index = items[i]->ItemIndex;
-			UItemSlot* toSlot = GetContainerSlot(ItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
+			UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
 			toSlot->ItemSlot->RemoveChildAt(0);
 			UButtonSlot* buttonSlot = Cast<UButtonSlot>(toSlot->ItemSlot->AddChild(items[i]));
 			buttonSlot->SetPadding(FMargin(0.0f));
@@ -208,9 +227,9 @@ void UContainer_Base::SlotInitSetting(UButton* button)
 
 UItemSlot* UContainer_Base::GetContainerSlot(int col, int row)
 {
-	for (int i = 0; i < ItemSlots.Num(); i++) {
-		if ((int)(ItemSlots[i]->SlotColRow.X) == col && (int)(ItemSlots[i]->SlotColRow.Y) == row) {
-			return ItemSlots[i];
+	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
+		if ((int)(ContainerItemSlots[i]->SlotColRow.X) == col && (int)(ContainerItemSlots[i]->SlotColRow.Y) == row) {
+			return ContainerItemSlots[i];
 		}
 	}
 	return nullptr;
@@ -220,9 +239,9 @@ UItemSlot* UContainer_Base::GetContainerSlot(FVector2D index)
 {
 	int col = index.X; int row = index.Y;
 
-	for (int i = 0; i < ItemSlots.Num(); i++) {
-		if ((int)(ItemSlots[i]->SlotColRow.X) == col && (int)(ItemSlots[i]->SlotColRow.Y) == row) {
-			return ItemSlots[i];
+	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
+		if ((int)(ContainerItemSlots[i]->SlotColRow.X) == col && (int)(ContainerItemSlots[i]->SlotColRow.Y) == row) {
+			return ContainerItemSlots[i];
 		}
 	}
 

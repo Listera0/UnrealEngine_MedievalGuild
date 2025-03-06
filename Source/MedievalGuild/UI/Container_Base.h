@@ -20,6 +20,7 @@
 
 #include "ItemUI_Base.h"
 #include "ItemSlot.h"
+#include "ContainerEnum.h"
 
 #include "Container_Base.generated.h"
 
@@ -45,6 +46,7 @@ protected:
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
 
 public:
+	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass);
 	void MakeContainer(int col, int row);
 	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
 	void MakeItemToSlot(int sizeX, int sizeY, int count);
@@ -62,8 +64,8 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* ContainerSlot;
 	UPROPERTY(meta = (BindWidget))
-	UUniformGridPanel* SlotGridPanel;
+	UUniformGridPanel* ContainerSlotGrid;
 
-	TArray<UItemSlot*> ItemSlots;
+	TArray<UItemSlot*> ContainerItemSlots;
 	FVector2D ContainerSize;
 };

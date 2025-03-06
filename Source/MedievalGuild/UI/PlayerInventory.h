@@ -5,22 +5,12 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 
-#include "ItemUI_Base.h"
-#include "ItemSlot.h"
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Components/HorizontalBox.h"
+#include "Components/HorizontalBoxSlot.h"
 
-#include "Components/CanvasPanel.h"
-#include "Components/CanvasPanelSlot.h"
-#include "Components/UniformGridPanel.h"
-#include "Components/UniformGridSlot.h"
-#include "Components/Button.h"
-#include "Components/ButtonSlot.h"
-#include "Components/Image.h"
-
-#include "Styling/SlateTypes.h"
-#include "Styling/CoreStyle.h"
-#include "Styling/SlateBrush.h"
+#include "ContainerWidget.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -31,7 +21,7 @@ UCLASS()
 class MEDIEVALGUILD_API UPlayerInventory : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPlayerInventory(const FObjectInitializer& ObjectInitializer);
 
@@ -44,29 +34,17 @@ protected:
 	TSubclassOf<UUserWidget> ItemBaseClass;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> EquipmentWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> InventoryWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> ContainerWidget;
 
 public:
-	void MakeInventory(int col, int row);
-	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
-	void MakeItemToSlot(int sizeX, int sizeY, int count);
-	void MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
-	void SlotInitSetting(UButton* button);
+	void PlayerInventoryInitSetting();
 
-protected:
-	UItemSlot* GetInventorySlot(int col, int row);
-	UItemSlot* GetInventorySlot(FVector2D index);
-
-	inline bool IsInContainer(FVector2D index) { return (index.X < InventorySize.X && index.Y < InventorySize.Y && index.X >= 0 && index.Y >= 0); };
-
-	float InventorySlotSize = 100.0f;
-
+public:
 	UPROPERTY(meta = (BindWidget))
-	UCanvasPanel* InventorySlot;
-
-	UPROPERTY(meta = (BindWidget))
-	UUniformGridPanel* SlotGridPanel;
-
-	TArray<UItemSlot*> ItemSlots;
-
-	FVector2D InventorySize;
+	UHorizontalBox* InventorySlot;
 };
