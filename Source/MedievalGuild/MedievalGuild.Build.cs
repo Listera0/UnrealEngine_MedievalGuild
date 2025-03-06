@@ -8,7 +8,8 @@ public class MedievalGuild : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Slate", "SlateCore" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Slate", "SlateCore" ,"Json",               // Add Json module
+                "JsonUtilities"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
