@@ -16,6 +16,9 @@ UPlayerInventory::UPlayerInventory(const FObjectInitializer& ObjectInitializer) 
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> ContainerFinder(TEXT("/Game/Blueprint/UI/WB_ContainerWidget"));
 	if (ContainerFinder.Succeeded()) ContainerWidget = ContainerFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> InventoryFinder(TEXT("/Game/Blueprint/UI/WB_PlayerContainerWidget"));
+	if (InventoryFinder.Succeeded()) InventoryWidget = InventoryFinder.Class;
 }
 
 void UPlayerInventory::NativeConstruct()
@@ -24,24 +27,28 @@ void UPlayerInventory::NativeConstruct()
 	if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemBaseFinder"));
 	if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemMoveSlotFinder"));
 	if (!ContainerWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ContainerFinder"));
+	if (!InventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load InventoryFinder"));
 
 	PlayerInventoryInitSetting();
 }
 
 void UPlayerInventory::PlayerInventoryInitSetting()
 {
+	// InventorySlot
+	UPlayerContainerWidget* Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), InventoryWidget);
+	Widget_Inventory->ContainerInitSetting(ItemSlotClass, ItemBaseClass, ItemMoveSlotClass);
+
+	UHorizontalBoxSlot* Slot_Inventory = InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
+	Slot_Inventory->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	Slot_Inventory->SetHorizontalAlignment(HAlign_Fill);
+	Slot_Inventory->SetVerticalAlignment(VAlign_Fill);
 
 	// ContainerSlot
 	UContainerWidget* Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), ContainerWidget);
 	Widget_Container->ContainerInitSetting(ItemSlotClass, ItemBaseClass, ItemMoveSlotClass);
 
-	UHorizontalBoxSlot* Slot_Inventory = InventorySlot->AddChildToHorizontalBox(Widget_Container);
-	Slot_Inventory->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	Slot_Inventory->SetHorizontalAlignment(HAlign_Fill);
-	Slot_Inventory->SetVerticalAlignment(VAlign_Fill);
-	// 각 파트 위젯을 가져와서 배치
-	// initsetting 하기
-
-
-
+	UHorizontalBoxSlot* Slot_Container = InventorySlot->AddChildToHorizontalBox(Widget_Container);
+	Slot_Container->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	Slot_Container->SetHorizontalAlignment(HAlign_Fill);
+	Slot_Container->SetVerticalAlignment(VAlign_Fill);
 }

@@ -11,6 +11,7 @@
 #include "Components/HorizontalBoxSlot.h"
 
 #include "ContainerWidget.h"
+#include "PlayerContainerWidget.h"
 
 #include "PlayerInventory.generated.h"
 

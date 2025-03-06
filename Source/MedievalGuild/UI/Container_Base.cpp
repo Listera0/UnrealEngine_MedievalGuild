@@ -18,6 +18,10 @@ UContainer_Base::UContainer_Base(const FObjectInitializer& ObjectInitializer) : 
 
 void UContainer_Base::NativeConstruct()
 {
+	Super::NativeConstruct();
+
+	SetIsFocusable(false);
+
 	//if (!ItemSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemSlotFinder"));
 	//if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemBaseFinder"));
 	//if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Blue, TEXT("Fail Load ItemMoveSlotFinder"));
@@ -223,6 +227,7 @@ void UContainer_Base::SlotInitSetting(UButton* button)
 	buttonStyle.PressedPadding = 0.0f;
 
 	button->SetStyle(buttonStyle);
+	button->IsFocusable = false;
 }
 
 UItemSlot* UContainer_Base::GetContainerSlot(int col, int row)

@@ -8,6 +8,7 @@ void UItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	SetIsFocusable(false);
 }
 
 FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
