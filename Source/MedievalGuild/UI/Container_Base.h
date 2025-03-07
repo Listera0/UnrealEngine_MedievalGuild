@@ -46,7 +46,8 @@ protected:
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
 
 public:
-	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass);
+	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
+								float col, float row);
 	void MakeContainer(int col, int row);
 	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
 	void MakeItemToSlot(int sizeX, int sizeY, int count);

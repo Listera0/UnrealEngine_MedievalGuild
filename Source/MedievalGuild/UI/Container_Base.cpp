@@ -34,18 +34,14 @@ void UContainer_Base::NativeConstruct()
 	//MakeItemToSlot(2, 2, 1);
 }
 
-void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass)
+void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
+												float col, float row)
 {
 	ItemSlotClass = itemSlotClass;
 	ItemBaseClass = itemBaseClass;
 	ItemMoveSlotClass = itemMoveSlotClass;
 
-	MakeContainer(6, 4);
-
-	MakeItemToSlot(2, 1, 1);
-	MakeItemToSlot(1, 2, 1);
-	MakeItemToSlot(1, 1, 1);
-	MakeItemToSlot(2, 2, 1);
+	MakeContainer(col, row);
 }
 
 void UContainer_Base::MakeContainer(int col, int row)

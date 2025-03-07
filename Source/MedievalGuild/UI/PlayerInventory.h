@@ -10,8 +10,9 @@
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 
-#include "ContainerWidget.h"
+#include "EquipmentWidget.h"
 #include "PlayerContainerWidget.h"
+#include "ContainerWidget.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -41,6 +42,8 @@ protected:
 	TSubclassOf<UUserWidget> InventoryWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ContainerWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> GearWidget;
 
 public:
 	void PlayerInventoryInitSetting();
