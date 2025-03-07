@@ -10,29 +10,28 @@
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 
-#include "EquipmentWidget.h"
-#include "PlayerContainerWidget.h"
-#include "ContainerWidget.h"
 #include "../Framework/GameManager.h"
+#include "ContainerWidget.h"
+#include "BuyWidget.h"
 
-#include "PlayerInventory.generated.h"
+#include "Trade.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MEDIEVALGUILD_API UPlayerInventory : public UUserWidget
+class MEDIEVALGUILD_API UTrade : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
-	UPlayerInventory(const FObjectInitializer& ObjectInitializer);
+	UTrade(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void NativeConstruct() override;
 
 public:
-	void PlayerInventoryInitSetting();
+	void TradePanelInitSetting();
 
 protected:
 	AGameManager* GameManager = nullptr;
@@ -40,5 +39,5 @@ protected:
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	UHorizontalBox* InventorySlot;
+	UHorizontalBox* TradeSlot;
 };

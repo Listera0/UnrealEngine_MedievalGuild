@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "../UI/Container_Base.h"
 #include "../UI/PlayerInventory.h"
+#include "../UI/Trade.h"
 
 #include "PlayerCharacterController.generated.h"
 
@@ -43,6 +44,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UTrade> TradeViewport = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
 
@@ -71,4 +75,5 @@ private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
 	UPlayerInventory* InventoryUI = nullptr;
+	UTrade* TradeUI = nullptr;
 };

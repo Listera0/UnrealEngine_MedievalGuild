@@ -77,6 +77,12 @@ void APlayerCharacterController::InitViewport()
 		InventoryUI->AddToViewport();
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	if (TradeViewport) {
+		TradeUI = CreateWidget<UTrade>(this, TradeViewport);
+		TradeUI->AddToViewport();
+		TradeUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
