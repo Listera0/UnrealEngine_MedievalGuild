@@ -11,6 +11,6 @@ enum class EItemType : uint8
 	Gold UMETA(DisplayName = "Gold"),
 	Silver UMETA(DisplayName = "Silver"),
 	Ruby UMETA(DisplayName = "Ruby"),
-	Clothes UMETA(DisplayName = "Clothes"),
+	Armor UMETA(DisplayName = "Armor"),
 	Weapon UMETA(DisplayName = "Weapon"),
 };
