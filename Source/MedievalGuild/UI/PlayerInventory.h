@@ -41,4 +41,8 @@ protected:
 public:
 	UPROPERTY(meta = (BindWidget))
 	UHorizontalBox* InventorySlot;
+
+	UEquipmentWidget* Widget_Equipment;
+	UPlayerContainerWidget* Widget_Inventory;
+	UContainerWidget* Widget_Container;
 };

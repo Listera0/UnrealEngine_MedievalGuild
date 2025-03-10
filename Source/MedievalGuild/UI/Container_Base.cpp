@@ -107,43 +107,11 @@ void UContainer_Base::MakeItemToSlot(int col, int row, int sizeX, int sizeY, int
 
 void UContainer_Base::MakeItemToSlot(int sizeX, int sizeY, int count)
 {
-	// 빈 위치 찾기
-	int col = 0; int row = 0;
-	bool bFindSlot = false;
-	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
-		if (ContainerItemSlots[i]->HasItem()) continue;
+	FVector2D EmptySlot = FindEmptySlot(sizeX, sizeY);
 
-		FVector2D slotColRow = ContainerItemSlots[i]->SlotColRow;
-		bFindSlot = true;
-
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%.1f")));
-
-		for (int j = 0; j < sizeX; j++) {
-			for (int k = 0; k < sizeY; k++) {
-				FVector2D TargetColRow = FVector2D(slotColRow.X + j, slotColRow.Y + k);
-
-				if (!IsInContainer(TargetColRow)) {
-					bFindSlot = false;
-					break;
-				}
-
-				if (GetContainerSlot(TargetColRow)->HasItem()) {
-					bFindSlot = false;
-					break;
-				}
-			}
-			if (!bFindSlot) break;
-		}
-
-		if (bFindSlot) {
-			col = slotColRow.X; row = slotColRow.Y;
-			break;
-		}
-	}
-
-	if (bFindSlot) {
+	if ((int)(EmptySlot.X) != -1) {
 		// 찾은 위치에 아이템 생성
-		MakeItemToSlot(col, row, sizeX, sizeY, count);
+		MakeItemToSlot(EmptySlot.X, EmptySlot.Y, sizeX, sizeY, count);
 	}
 }
 
@@ -203,6 +171,46 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 			buttonSlot->SetVerticalAlignment(VAlign_Fill);
 		}
 	}
+}
+
+FVector2D UContainer_Base::FindEmptySlot(int sizeX, int sizeY)
+{
+	// 빈 위치 찾기
+	int col = 0; int row = 0;
+	bool bFindSlot = false;
+	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
+		if (ContainerItemSlots[i]->HasItem()) continue;
+
+		FVector2D slotColRow = ContainerItemSlots[i]->SlotColRow;
+		bFindSlot = true;
+
+		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%.1f")));
+
+		for (int j = 0; j < sizeX; j++) {
+			for (int k = 0; k < sizeY; k++) {
+				FVector2D TargetColRow = FVector2D(slotColRow.X + j, slotColRow.Y + k);
+
+				if (!IsInContainer(TargetColRow)) {
+					bFindSlot = false;
+					break;
+				}
+
+				if (GetContainerSlot(TargetColRow)->HasItem()) {
+					bFindSlot = false;
+					break;
+				}
+			}
+			if (!bFindSlot) break;
+		}
+
+		if (bFindSlot) {
+			col = slotColRow.X; row = slotColRow.Y;
+			return FVector2D(col, row);
+			break;
+		}
+	}
+
+	return FVector2D(-1, -1);
 }
 
 void UContainer_Base::SlotInitSetting(UButton* button)

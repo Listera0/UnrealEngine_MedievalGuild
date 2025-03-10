@@ -12,6 +12,8 @@
 APlayerCharacterController::APlayerCharacterController()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.TickInterval = 0.5f;
+
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -27,6 +29,23 @@ void APlayerCharacterController::BeginPlay()
 	}
 
 	InitViewport();
+	InitPlayerData();
+}
+
+void APlayerCharacterController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	lineTraceCheckTag(FName("Interactable"));
+
+	if (bIsInteract) {
+		// 화면에 대상 이름 표시
+		ScreenUI->SetVisibility(ESlateVisibility::Visible);
+		ScreenUI->SetInteractText(true, "Open");
+	}
+	else {
+		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -55,6 +74,9 @@ void APlayerCharacterController::SetupInputComponent()
 
 		if(InventoryToggle)
 			input->BindAction(InventoryToggle, ETriggerEvent::Started, this, &APlayerCharacterController::InputInventoryToggle);
+
+		if (InteractAction)
+			input->BindAction(InteractAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputInteractAction);
 	}
 }
 
@@ -83,6 +105,18 @@ void APlayerCharacterController::InitViewport()
 		TradeUI->AddToViewport();
 		TradeUI->SetVisibility(ESlateVisibility::Hidden);
 	}
+
+	if (ScreenViewport) {
+		ScreenUI = CreateWidget<UScreenUI>(this, ScreenViewport);
+		ScreenUI->AddToViewport();
+		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void APlayerCharacterController::InitPlayerData()
+{
+	PlayerData = GetPlayerState<APlayerData>();
+	PlayerData->PlayerInventoryUI = InventoryUI;
 }
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
@@ -147,4 +181,34 @@ void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& V
 		bShowMouseCursor = false;
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+void APlayerCharacterController::InputInteractAction(const FInputActionValue& Value)
+{
+	if (bIsInteract) {
+		if (hitResult.GetActor()->ActorHasTag(FName("Coin"))) {
+			InventoryUI->Widget_Inventory->MakeItemToSlot(1, 1, 1);
+		}
+	}
+}
+
+FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
+{
+	bIsInteract = false;
+
+	FVector start = GetCharacter()->GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
+	FRotator cameraRotation = GetControlRotation();
+	FVector end = start + cameraRotation.Vector() * 150.0f;
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility);
+
+	//FColor LineColor = bHit ? FColor::Red : FColor::Green;
+	//DrawDebugLine(GetWorld(), start, end, LineColor, false, 2.0f, 0, 2.0f);
+
+	if (bHit && hitResult.GetActor()->ActorHasTag(tag)) {
+		bIsInteract = true;
+		return hitResult;
+	}
+		
+	return FHitResult();
 }

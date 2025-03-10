@@ -21,7 +21,7 @@ void UPlayerInventory::NativeConstruct()
 void UPlayerInventory::PlayerInventoryInitSetting()
 {
 	// EquipmentWidget
-	UEquipmentWidget* Widget_Equipment = CreateWidget<UEquipmentWidget>(GetWorld(), Blueprints->EquipmentWidget);
+	Widget_Equipment = CreateWidget<UEquipmentWidget>(GetWorld(), Blueprints->EquipmentWidget);
 	Widget_Equipment->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->GearWidget);
 
 	UHorizontalBoxSlot* Slot_Equipment = InventorySlot->AddChildToHorizontalBox(Widget_Equipment);
@@ -30,7 +30,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	Slot_Equipment->SetVerticalAlignment(VAlign_Fill);
 
 	// InventorySlot
-	UPlayerContainerWidget* Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), Blueprints->InventoryWidget);
+	Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), Blueprints->InventoryWidget);
 	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 6);
 
 	UHorizontalBoxSlot* Slot_Inventory = InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
@@ -39,7 +39,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	Slot_Inventory->SetVerticalAlignment(VAlign_Fill);
 
 	// ContainerSlot
-	UContainerWidget* Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
 	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 4);
 	Widget_Container->MakeItemToSlot(2, 2, 0);
 	Widget_Container->MakeItemToSlot(3, 1, 1);

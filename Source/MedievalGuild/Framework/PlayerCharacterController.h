@@ -9,6 +9,8 @@
 #include "../UI/Container_Base.h"
 #include "../UI/PlayerInventory.h"
 #include "../UI/Trade.h"
+#include "../UI/ScreenUI.h"
+#include "../Character/PlayerData.h"
 
 #include "PlayerCharacterController.generated.h"
 
@@ -25,12 +27,14 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
 	void InitViewport();
+	void InitPlayerData();
 
 	void InputMove(const FInputActionValue& Value);
 	void InputCameraMove(const FInputActionValue& Value);
@@ -39,13 +43,19 @@ protected:
 	void InputStealthToggle(const FInputActionValue& Value);
 	void InputAttackAction(const FInputActionValue& Value);
 	void InputInventoryToggle(const FInputActionValue& Value);
+	void InputInteractAction(const FInputActionValue& Value);
+
+	FHitResult lineTraceCheckTag(FName tag);
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UTrade> TradeViewport = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UScreenUI> ScreenViewport = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
@@ -68,6 +78,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* InventoryToggle = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* InteractAction = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputOption")
 	float CameraSensitive = 0.5f;
 
@@ -76,4 +89,9 @@ private:
 
 	UPlayerInventory* InventoryUI = nullptr;
 	UTrade* TradeUI = nullptr;
+	UScreenUI* ScreenUI = nullptr;
+	APlayerData* PlayerData = nullptr;
+
+	bool bIsInteract;
+	FHitResult hitResult;
 };

@@ -52,6 +52,7 @@ public:
 	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
 	void MakeItemToSlot(int sizeX, int sizeY, int count);
 	void MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
+	FVector2D FindEmptySlot(int sizeX, int sizeY);
 	void SlotInitSetting(UButton* button);
 
 protected:
