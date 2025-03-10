@@ -15,17 +15,30 @@ UItemDataManager::UItemDataManager()
     NewItem->width = 1;
     NewItem->height = 3;
     NewItem->weight = 6;
-    NewItem->eItemType = EItemType::Armor;
-
+    NewItem->eItemType = EItemType::Helmet;
+    NewItem->maxStack = 0;
+    NewItem->bStackable = false;
     this->AddItemData(NewItem);
 
-    this->SaveAllItemDataToJson(FilePath);
-    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ItemData Save"));
+    UItemData* NewItem1 = NewObject<UItemData>();
+    NewItem1->name = TEXT("A");
+    NewItem1->description = TEXT("A");
+    NewItem1->price = 50;
+    NewItem1->index = 7;
+    NewItem1->width = 2;
+    NewItem1->height = 2;
+    NewItem1->weight = 10;
+    NewItem1->eItemType = EItemType::Weapon;
+    NewItem1->maxStack = 99;
+    NewItem1->bStackable = true;
+    this->AddItemData(NewItem1);
     */
 
+
     FString FilePath = TEXT("TestitemData.json");
+    this->SaveAllItemDataToJson(FilePath);
     this->LoadAllItemDataFromJson(FilePath);
-    GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, TEXT("ItemData Load"));
+
 }
 
 UItemDataManager* UItemDataManager::GetInstance()
@@ -48,6 +61,7 @@ void UItemDataManager::AddItemData(UItemData* ItemData)
             if (ListItemData->index == ItemData->index)
             {
                 IsValid = true;
+                GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("AddItem Index is Valid!!"));
                 break;
             }
         }
@@ -65,7 +79,6 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
 
     for (UItemData* ItemData : ItemDataList)
     {
-
         TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
 
         JsonObject->SetStringField(TEXT("ItemName"), ItemData->name);
@@ -75,7 +88,17 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
         JsonObject->SetNumberField(TEXT("ItemWidth"), ItemData->width);
         JsonObject->SetNumberField(TEXT("ItemHeight"), ItemData->height);
         JsonObject->SetNumberField(TEXT("ItemWeight"), ItemData->weight);
+        JsonObject->SetNumberField(TEXT("ItemMaxStack"), ItemData->maxStack);
+        JsonObject->SetBoolField(TEXT("ItemStackable"), ItemData->bStackable);
         JsonObject->SetNumberField(TEXT("ItemType"), (int32)ItemData->eItemType);
+
+        /*
+        if (UItemData_Weapon* WeaponData = Cast<UItemData_Weapon>(ItemData))
+        {
+            JsonObject->SetNumberField(TEXT("WeaponDamage"), WeaponData->Damage);
+            JsonObject->SetNumberField(TEXT("WeaponDurability"), WeaponData->Durability);
+        }
+        */
 
         JsonArray.Add(MakeShareable(new FJsonValueObject(JsonObject)));
     }
@@ -90,6 +113,7 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
         FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath);
     }
 }
+
 
 void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
 {
@@ -106,8 +130,20 @@ void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
                 if (JsonValue->Type == EJson::Object)
                 {
                     TSharedPtr<FJsonObject> JsonObject = JsonValue->AsObject();
-                    UItemData* LoadedItemData = NewObject<UItemData>();
+                    UItemData* LoadedItemData = nullptr;
 
+
+                    EItemType ItemType = (EItemType)JsonObject->GetNumberField(TEXT("ItemType"));
+                    switch (ItemType)
+                    {
+                    case EItemType::Weapon:
+                        ;
+                    default:
+                        LoadedItemData = NewObject<UItemData>();
+                        break;
+                    }
+
+                    // 공통 데이터 로드
                     LoadedItemData->name = JsonObject->GetStringField(TEXT("ItemName"));
                     LoadedItemData->description = JsonObject->GetStringField(TEXT("ItemDescription"));
                     LoadedItemData->index = JsonObject->GetNumberField(TEXT("ItemIndex"));
@@ -115,7 +151,18 @@ void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
                     LoadedItemData->width = JsonObject->GetNumberField(TEXT("ItemWidth"));
                     LoadedItemData->height = JsonObject->GetNumberField(TEXT("ItemHeight"));
                     LoadedItemData->weight = JsonObject->GetNumberField(TEXT("ItemWeight"));
-                    LoadedItemData->eItemType = (EItemType)JsonObject->GetNumberField(TEXT("ItemType"));
+                    LoadedItemData->maxStack = JsonObject->GetNumberField(TEXT("ItemMaxStack"));
+                    LoadedItemData->bStackable = JsonObject->GetBoolField(TEXT("ItemStackable"));
+                    LoadedItemData->eItemType = ItemType;
+
+                    /*
+                    // 무기 데이터 로드
+                    if (UItemData_Weapon* WeaponData = Cast<UItemData_Weapon>(LoadedItemData))
+                    {
+                        WeaponData->Damage = JsonObject->GetNumberField(TEXT("WeaponDamage"));
+                        WeaponData->Durability = JsonObject->GetNumberField(TEXT("WeaponDurability"));
+                    }
+                    */
 
                     ItemDataList.Add(LoadedItemData);
                 }

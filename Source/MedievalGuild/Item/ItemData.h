@@ -42,4 +42,10 @@ public:
 	// 아이템 무게
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
 	int weight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	bool bStackable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Data")
+	int maxStack;
 };

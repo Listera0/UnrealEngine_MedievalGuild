@@ -7,10 +7,11 @@
 UENUM(BlueprintType)
 enum class EItemType : uint8
 { 
-	Money UMETA(DisplayName = "Money"),
-	Gold UMETA(DisplayName = "Gold"),
-	Silver UMETA(DisplayName = "Silver"),
-	Ruby UMETA(DisplayName = "Ruby"),
-	Armor UMETA(DisplayName = "Armor"),
-	Weapon UMETA(DisplayName = "Weapon"),
+	Helmet,
+	Cloth,
+	Shoes,
+	Bag,
+	Weapon,
+	Consumeable,
+	None
 };
