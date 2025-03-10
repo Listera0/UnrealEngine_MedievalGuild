@@ -6,7 +6,7 @@ UItemDataManager* UItemDataManager::Instance = nullptr;
 
 UItemDataManager::UItemDataManager()
 {
-    /*
+
     UItemData* NewItem = NewObject<UItemData>();
     NewItem->name = TEXT("B");
     NewItem->description = TEXT("B");
@@ -24,7 +24,7 @@ UItemDataManager::UItemDataManager()
     NewItem1->name = TEXT("A");
     NewItem1->description = TEXT("A");
     NewItem1->price = 50;
-    NewItem1->index = 7;
+    NewItem1->index = 1;
     NewItem1->width = 2;
     NewItem1->height = 2;
     NewItem1->weight = 10;
@@ -32,7 +32,7 @@ UItemDataManager::UItemDataManager()
     NewItem1->maxStack = 99;
     NewItem1->bStackable = true;
     this->AddItemData(NewItem1);
-    */
+
 
 
     FString FilePath = TEXT("TestitemData.json");
@@ -108,7 +108,7 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
 
     if (FJsonSerializer::Serialize(JsonArray, Writer))
     {
-        FString CurrentFilePath = FPaths::ProjectSavedDir() + TEXT("Item/Data/") + FilePath;
+        FString CurrentFilePath = FPaths::ProjectContentDir() + TEXT("Data/Item/Data/") + FilePath;
 
         FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath);
     }
@@ -168,5 +168,41 @@ void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
                 }
             }
         }
+    }
+}
+
+UStaticMesh* UItemDataManager::GetMeshForItem(const UItemData* item)
+{
+    FString MeshReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
+    FString MeshPath = FString::Printf(TEXT("/Game/Data/Item/Mesh/%s"), *MeshReference);
+
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *MeshPath);
+
+    if (Mesh)
+    {
+        return Mesh;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load mesh: %s"), *MeshPath);
+        return nullptr;
+    }
+}
+
+UMaterialInterface* UItemDataManager::GetMaterialForItem(const UItemData* item)
+{
+    FString MaterialReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
+    FString MaterialPath = FString::Printf(TEXT("/Game/Data/Item/Material/%s"), *MaterialReference);
+
+    UMaterialInterface* Material = LoadObject<UMaterialInterface>(nullptr, *MaterialPath);
+
+    if (Material)
+    {
+        return Material;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load material: %s"), *MaterialPath);
+        return nullptr;
     }
 }

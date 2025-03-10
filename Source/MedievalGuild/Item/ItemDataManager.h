@@ -31,6 +31,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	TArray<UItemData*> GetItemDataList() const { return ItemDataList; }
 
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	UStaticMesh* GetMeshForItem(const UItemData* item);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	UMaterialInterface* GetMaterialForItem(const UItemData* item);
+
 private:
 	static UItemDataManager* Instance;
 

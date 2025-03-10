@@ -1,0 +1,26 @@
+[
+	{
+		"ItemName": "B",
+		"ItemDescription": "B",
+		"ItemIndex": 4,
+		"ItemPrice": 75,
+		"ItemWidth": 1,
+		"ItemHeight": 3,
+		"ItemWeight": 6,
+		"ItemMaxStack": 0,
+		"ItemStackable": false,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "A",
+		"ItemDescription": "A",
+		"ItemIndex": 1,
+		"ItemPrice": 50,
+		"ItemWidth": 2,
+		"ItemHeight": 2,
+		"ItemWeight": 10,
+		"ItemMaxStack": 99,
+		"ItemStackable": true,
+		"ItemType": 4
+	}
+]

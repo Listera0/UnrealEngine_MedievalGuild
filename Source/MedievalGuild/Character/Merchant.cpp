@@ -22,6 +22,7 @@ void AMerchant::BeginPlay()
     Super::BeginPlay();
 
     UItemDataManager* ItemDataManager = UItemDataManager::GetInstance();
+    ItemDatas = ItemDataManager->GetItemDataList();
 }
 
 void AMerchant::Tick(float DeltaTime)
@@ -39,12 +40,7 @@ UItemData* AMerchant::SellItem(int index, int Count)
             if (true)
             {
                 GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("Item sold successfully. Remaining count: %d"), Count));
-
-
-
-                UItemData* SoldItem = NewObject<UItemData>();
-
-                return SoldItem;
+                return FoundItem;
             }
             else
             {
