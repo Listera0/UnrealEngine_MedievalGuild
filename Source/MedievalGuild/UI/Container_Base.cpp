@@ -2,6 +2,7 @@
 
 
 #include "Container_Base.h"
+#include "../Framework/PlayerCharacterController.h"
 
 
 UContainer_Base::UContainer_Base(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -72,6 +73,22 @@ void UContainer_Base::MakeContainer(int col, int row)
 	}
 }
 
+void UContainer_Base::ResetContainer()
+{
+	for (UItemSlot* slots : ContainerItemSlots) {
+		if (slots->HasItem()) {
+			slots->ItemSlot->RemoveChildAt(0);
+		}
+	}
+}
+
+void UContainer_Base::ShowContainer(TArray<FInventoryData> data)
+{
+	for (int i = 0; i < data.Num(); i++) {
+		MakeItemToSlot(data[i].SlotIndex, data[i].ItemData, data[i].ItemCount);
+	}
+}
+
 void UContainer_Base::MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count)
 {
 	TArray<UItemUI_Base*> makingItems;
@@ -109,13 +126,32 @@ void UContainer_Base::MakeItemToSlot(int sizeX, int sizeY, int count)
 {
 	FVector2D EmptySlot = FindEmptySlot(sizeX, sizeY);
 
-	if ((int)(EmptySlot.X) != -1) {
+	if (EmptySlot != FVector2D(-1.0f)) {
 		// 찾은 위치에 아이템 생성
 		MakeItemToSlot(EmptySlot.X, EmptySlot.Y, sizeX, sizeY, count);
 	}
 }
 
-void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_Base*> items)
+void UContainer_Base::MakeItemToSlot(FVector2D index, UItemData* item, int count)
+{
+	MakeItemToSlot(index.X, index.Y, item->width, item->height, count);
+	//GetContainerSlot(index);
+}
+
+FVector2D UContainer_Base::MakeItemToSlot(UItemData* item, int count)
+{
+	FVector2D EmptySlot = FindEmptySlot(item->width, item->height);
+
+	if (EmptySlot != FVector2D(-1.0f)) {
+		// 찾은 위치에 아이템 생성
+		MakeItemToSlot(EmptySlot.X, EmptySlot.Y, item->width, item->height, count);
+	}
+
+	return EmptySlot;
+}
+
+// to index 쪽에서 실행
+void UContainer_Base::MoveItemToSlot(FName group, int fromIndex, int toIndex, TArray<UItemUI_Base*> items)
 {
 	TArray<FVector2D> itemToArea;
 	TArray<FVector2D> itemToIndex;
@@ -135,7 +171,6 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 		if (targetSlot->HasItem()) {
 			if (targetSlot->GetSlotItem()->GetOwnerItem() != items[i]->GetOwnerItem()) {
 				itemToIndex.Add(itemToArea[i]);
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("Has Item")));
 			}
 		}
 	}
@@ -161,8 +196,16 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 
 	}
 	else { // 안에 아이템이 없으면
+		// 컨테이너의 소속에 맞추어 설정
+		if (group == FName("Container")) {
+			//AInteractObject_Base;
+			//Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->PlayerData;
+		}
+	
+		//Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->
+			//PlayerData->MoveItemIndex(ContainerItemSlots[fromIndex]->SlotColRow, ContainerItemSlots[toIndex]->SlotColRow);
+
 		for (int i = 0; i < items.Num(); i++) {
-			FVector2D Index = items[i]->ItemIndex;
 			UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
 			toSlot->ItemSlot->RemoveChildAt(0);
 			UButtonSlot* buttonSlot = Cast<UButtonSlot>(toSlot->ItemSlot->AddChild(items[i]));
@@ -171,6 +214,11 @@ void UContainer_Base::MoveItemToSlot(int fromIndex, int toIndex, TArray<UItemUI_
 			buttonSlot->SetVerticalAlignment(VAlign_Fill);
 		}
 	}
+}
+
+void UContainer_Base::SetItemInfo(FVector2D index, int count)
+{
+	GetContainerSlot(index)->GetSlotItem()->GetCountItem()->SetItemCount(count);
 }
 
 FVector2D UContainer_Base::FindEmptySlot(int sizeX, int sizeY)

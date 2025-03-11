@@ -8,30 +8,17 @@ UItemDataManager::UItemDataManager()
 {
 
     UItemData* NewItem = NewObject<UItemData>();
-    NewItem->name = TEXT("B");
-    NewItem->description = TEXT("B");
-    NewItem->price = 75.0f;
-    NewItem->index = 4;
+    NewItem->name = TEXT("Coin");
+    NewItem->description = TEXT("Coin");
+    NewItem->price = 1.0f;
+    NewItem->index = 0;
     NewItem->width = 1;
-    NewItem->height = 3;
-    NewItem->weight = 6;
-    NewItem->eItemType = EItemType::Helmet;
-    NewItem->maxStack = 0;
-    NewItem->bStackable = false;
+    NewItem->height = 1;
+    NewItem->weight = 0.1f;
+    NewItem->eItemType = EItemType::None;
+    NewItem->maxStack = 50;
+    NewItem->bStackable = true;
     this->AddItemData(NewItem);
-
-    UItemData* NewItem1 = NewObject<UItemData>();
-    NewItem1->name = TEXT("A");
-    NewItem1->description = TEXT("A");
-    NewItem1->price = 50;
-    NewItem1->index = 1;
-    NewItem1->width = 2;
-    NewItem1->height = 2;
-    NewItem1->weight = 10;
-    NewItem1->eItemType = EItemType::Weapon;
-    NewItem1->maxStack = 99;
-    NewItem1->bStackable = true;
-    this->AddItemData(NewItem1);
 
 
 

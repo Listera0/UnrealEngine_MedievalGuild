@@ -27,8 +27,10 @@ public:
 	UPROPERTY()
 	TArray<UItemUI_Base*> OriginalWidgets;
 
+	FName PrevContainerGroup;
 	UObject* PrevSlotOwner;
 	int PrevSlotIndex;
 
 	bool bMoveSuccessed;
+
 };

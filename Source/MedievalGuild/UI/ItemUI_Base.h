@@ -26,6 +26,7 @@ public:
 	inline void SetItemIndex(FVector2D index) { ItemIndex = index; }
 	inline void SetItemSize(FVector2D size) { ItemSize = size; }
 	UItemUI_Base* GetOwnerItem();
+	UItemUI_Base* GetCountItem();
 
 public:
 	UPROPERTY(meta = (BindWidget))

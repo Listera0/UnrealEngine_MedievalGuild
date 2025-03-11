@@ -7,23 +7,10 @@
 
 #include "../Item/ItemData.h"
 #include "../UI/PlayerInventory.h"
+#include "../Object/InventoryData.h"
 
 #include "PlayerData.generated.h"
 
-USTRUCT(BlueprintType)
-struct FInventoryData
-{
-	GENERATED_BODY()
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int SlotIndex;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UItemData* ItemData;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int ItemCount;
-
-	FInventoryData() : SlotIndex(0), ItemData(nullptr), ItemCount(0) {};
-	FInventoryData(int slotIndex, UItemData* itemData, int itemCount) : SlotIndex(slotIndex), ItemData(itemData), ItemCount(itemCount) {};
-};
 
 UCLASS()
 class MEDIEVALGUILD_API APlayerData : public APlayerState
@@ -32,13 +19,16 @@ class MEDIEVALGUILD_API APlayerData : public APlayerState
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-	void AddItemToInventory(int slot, UItemData* item, int count);
+	void AddItemToInventory(FVector2D slot, UItemData* item, int count);
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
 	void RemoveItemFromInventory(int slot, UItemData* item, int count);
 
+	void MoveItemIndex(FVector2D from, FVector2D to);
+
 protected:
-	FInventoryData* FindSlotItem(int slot);
+	FInventoryData* FindSlotItem(FVector2D slot);
+	FVector2D FindItemSlot(UItemData* item);
 	void MakePlayerInventoryUI();
 	void ChangePlayerInventoryUI();
 	void ShowPlayerInventory();

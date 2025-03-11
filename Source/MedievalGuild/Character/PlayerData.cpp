@@ -3,19 +3,55 @@
 
 #include "PlayerData.h"
 
-void APlayerData::AddItemToInventory(int slot, UItemData* item, int count)
+void APlayerData::AddItemToInventory(FVector2D slot, UItemData* item, int count)
 {
-    // 해당 슬롯에 아이템이 이미 있는지 확인
-    FInventoryData* existingItem = FindSlotItem(slot);
-
-    if (existingItem) // 이미 있으면 수량만 추가
-    {
-        existingItem->ItemCount += count;
+    // 슬롯을 지정하지 않았을 때
+    if (slot == FVector2D(-1.0f)) {
+        // 같은 아이템이 존재하지 않을 때
+        FVector2D itemSlotIndex = FindItemSlot(item);
+        if (itemSlotIndex == FVector2D(-1.0f)) {
+            FVector2D findSlot = PlayerInventoryUI->Widget_Inventory->FindEmptySlot(item->width, item->height);
+            if (findSlot != FVector2D(-1.0f)) {
+                // 최대 스택보다 클 때
+                if (count > item->maxStack) {
+                    FInventoryData newItem(findSlot, item, item->maxStack);
+                    PlayerInventory.Add(newItem);
+                    PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(findSlot, item, item->maxStack);
+                    AddItemToInventory(FVector2D(-1.0f), item, count - item->maxStack);
+                }
+                else {
+                    FInventoryData newItem(findSlot, item, count);
+                    PlayerInventory.Add(newItem);
+                    PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(findSlot, item, count);
+                }
+            }
+        }
+        else {
+            FInventoryData* findItem = FindSlotItem(itemSlotIndex);
+            int beforeCount = findItem->ItemCount;
+            int maxCount = findItem->ItemData->maxStack;
+            if (beforeCount + count > maxCount) {
+                findItem->ItemCount = maxCount;
+                PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
+                AddItemToInventory(FVector2D(-1.0f), item, (count - (maxCount - beforeCount)));
+            }
+            else {
+                findItem->ItemCount += count;
+                PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
+            }
+        }
     }
-    else // 없으면 새로 아이템 추가
-    {
-        FInventoryData newItem(slot, item, count); // FInventoryData 객체 생성
-        PlayerInventory.Add(newItem);  // TArray에 추가
+    else {
+        FInventoryData* findItem = FindSlotItem(slot);
+        if (findItem) {
+            findItem->ItemCount += count;
+            PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
+        }
+        else {
+            FInventoryData newItem(slot, item, count);
+            PlayerInventory.Add(newItem);
+            PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(slot, item, count);
+        }
     }
 }
 
@@ -23,7 +59,7 @@ void APlayerData::RemoveItemFromInventory(int slot, UItemData* item, int count)
 {
 }
 
-FInventoryData* APlayerData::FindSlotItem(int slot)
+FInventoryData* APlayerData::FindSlotItem(FVector2D slot)
 {
     for (FInventoryData& data : PlayerInventory)
     {
@@ -32,11 +68,21 @@ FInventoryData* APlayerData::FindSlotItem(int slot)
             return &data;  // 해당 슬롯 아이템 반환
         }
     }
-    return nullptr;  // 없으면 nullptr 반환
+    return nullptr;
 }
 
+FVector2D APlayerData::FindItemSlot(UItemData* item) {
+    for (FInventoryData& data : PlayerInventory)
+    {
+        if (data.ItemData->index == item->index && data.ItemCount < item->maxStack)
+        {
+            return data.SlotIndex;
+        }
+    }
+    return FVector2D(-1.0f);
+}
 
-// PlayerData (PlayerState)에 아이템 인벤토리에 관한 데이터가 있고
-// PlayerInventoryUI (UserWidget)에 아이템 인벤토리에 관련된 UI가 있음
-// 아이템 생성 제거의 시작 위치
-// 아이템을 이동시키면 그 함수의 시작 위치
+void APlayerData::MoveItemIndex(FVector2D from, FVector2D to)
+{
+    FindSlotItem(from)->SlotIndex = to;
+}

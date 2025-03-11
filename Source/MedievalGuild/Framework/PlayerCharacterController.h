@@ -11,6 +11,8 @@
 #include "../UI/Trade.h"
 #include "../UI/ScreenUI.h"
 #include "../Character/PlayerData.h"
+#include "../Item/ItemDataManager.h"
+#include "../Object/InteractObject_Base.h"
 
 #include "PlayerCharacterController.generated.h"
 
@@ -87,11 +89,12 @@ protected:
 private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
+	bool bIsInteract;
+	FHitResult hitResult;
+
+public:
 	UPlayerInventory* InventoryUI = nullptr;
 	UTrade* TradeUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
 	APlayerData* PlayerData = nullptr;
-
-	bool bIsInteract;
-	FHitResult hitResult;
 };

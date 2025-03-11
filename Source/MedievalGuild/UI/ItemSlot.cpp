@@ -68,6 +68,7 @@ void UItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointer
 		//canvasSlot->SetPosition(itemIndex * -SlotSize);
 		canvasSlot->SetPosition(CustomOffset3);
 
+		Operation->PrevContainerGroup = ContainerPanel->ContainerGroup;
 		Operation->PrevSlotOwner = GetOuter();
 		Operation->PrevSlotIndex = SlotIndex;
 		Operation->bMoveSuccessed = false;
@@ -106,7 +107,7 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Get Item"));
 		if (Operation->OriginalWidgets[0] != GetSlotItem()) {
 			Operation->bMoveSuccessed = true;
-			ContainerPanel->MoveItemToSlot(Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
+			ContainerPanel->MoveItemToSlot(Operation->PrevContainerGroup, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 		}
 	}
 

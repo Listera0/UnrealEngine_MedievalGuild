@@ -7,6 +7,7 @@
 
 #include "Components/SphereComponent.h"
 #include "../Item/ItemDataManager.h"
+#include "../Object/InventoryData.h"
 
 #include "InteractObject_Base.generated.h"
 
@@ -30,4 +31,18 @@ public:
 protected:
 	USceneComponent* RootComponent = nullptr;
 	USphereComponent* InteractArea = nullptr;
+
+public:
+	TArray<FInventoryData> ContainerInventory;
+	bool bIsInit;
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	TMap<int, int> ContainerIndex;
+
+	UPROPERTY(EditAnywhere, Category = "Item")
+	FVector2D ContainerSize;
+
+public:
+	void SetContainerUI();
+	void MoveItemIndex(FVector2D from, FVector2D to);
 };

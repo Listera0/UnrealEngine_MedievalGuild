@@ -2,6 +2,7 @@
 
 
 #include "InteractObject_Base.h"
+#include "../Framework/PlayerCharacterController.h"
 
 // Sets default values
 AInteractObject_Base::AInteractObject_Base()
@@ -22,7 +23,11 @@ void AInteractObject_Base::BeginPlay()
 	Super::BeginPlay();
 
 	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, FString::Printf(TEXT("%d"), itemDatas.Num()));
+	for (const TPair<int, int>& Pair : ContainerIndex) {
+		ContainerInventory.Add(FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
+	}
+
+	bIsInit = false;
 }
 
 // Called every frame
@@ -30,5 +35,21 @@ void AInteractObject_Base::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AInteractObject_Base::SetContainerUI()
+{
+	APlayerCharacterController* Controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	Controller->InventoryUI->Widget_Container->ResetContainer();
+	if (!bIsInit) {
+		bIsInit = true;
+		for (int i = 0; i < ContainerInventory.Num(); i++) {
+			FInventoryData& itemData = ContainerInventory[i];
+			itemData.SlotIndex = Controller->InventoryUI->Widget_Container->MakeItemToSlot(itemData.ItemData, itemData.ItemCount);
+		}
+	}
+	else {
+		Controller->InventoryUI->Widget_Container->ShowContainer(ContainerInventory);
+	}
 }
 

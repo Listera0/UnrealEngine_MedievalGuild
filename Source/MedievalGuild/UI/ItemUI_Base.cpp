@@ -51,3 +51,13 @@ UItemUI_Base* UItemUI_Base::GetOwnerItem()
 
 	return this;
 }
+
+UItemUI_Base* UItemUI_Base::GetCountItem()
+{
+	if (BindItems.Num() > 0) {
+		if(BindItems.Last())
+			return BindItems.Last();
+	}
+
+	return this;
+}

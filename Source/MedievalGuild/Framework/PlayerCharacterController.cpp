@@ -187,7 +187,9 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 {
 	if (bIsInteract) {
 		if (hitResult.GetActor()->ActorHasTag(FName("Coin"))) {
-			InventoryUI->Widget_Inventory->MakeItemToSlot(1, 1, 1);
+			Cast<AInteractObject_Base>(hitResult.GetActor())->SetContainerUI();
+			//PlayerData->AddItemToInventory(FVector2D(-1.0f), UItemDataManager::GetInstance()->GetItemDataList()[0], 11);
+			//InventoryUI->Widget_Inventory->MakeItemToSlot(1, 1, 1);
 		}
 	}
 }
