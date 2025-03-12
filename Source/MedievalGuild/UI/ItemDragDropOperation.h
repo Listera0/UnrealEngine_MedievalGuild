@@ -6,6 +6,7 @@
 #include "Blueprint/DragDropOperation.h"
 
 #include "ItemUI_Base.h"
+#include "../Object/ContainerCategory.h"
 
 #include "ItemDragDropOperation.generated.h"
 
@@ -27,7 +28,7 @@ public:
 	UPROPERTY()
 	TArray<UItemUI_Base*> OriginalWidgets;
 
-	FName PrevContainerGroup;
+	EContainerCategory PrevContainerCategory;
 	UObject* PrevSlotOwner;
 	int PrevSlotIndex;
 

@@ -36,13 +36,13 @@ void UContainer_Base::NativeConstruct()
 }
 
 void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
-												float col, float row)
+												EContainerCategory category, float col, float row)
 {
 	ItemSlotClass = itemSlotClass;
 	ItemBaseClass = itemBaseClass;
 	ItemMoveSlotClass = itemMoveSlotClass;
-
 	MakeContainer(col, row);
+	ContainerCategory = category;
 }
 
 void UContainer_Base::MakeContainer(int col, int row)
@@ -82,10 +82,11 @@ void UContainer_Base::ResetContainer()
 	}
 }
 
-void UContainer_Base::ShowContainer(TArray<FInventoryData> data)
+void UContainer_Base::ShowContainer(TArray<FInventoryData*> data)
 {
+	ResetContainer();
 	for (int i = 0; i < data.Num(); i++) {
-		MakeItemToSlot(data[i].SlotIndex, data[i].ItemData, data[i].ItemCount);
+		MakeItemToSlot(data[i]->SlotIndex, data[i]->ItemData, data[i]->ItemCount);
 	}
 }
 
@@ -151,7 +152,7 @@ FVector2D UContainer_Base::MakeItemToSlot(UItemData* item, int count)
 }
 
 // to index 쪽에서 실행
-void UContainer_Base::MoveItemToSlot(FName group, int fromIndex, int toIndex, TArray<UItemUI_Base*> items)
+void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items)
 {
 	TArray<FVector2D> itemToArea;
 	TArray<FVector2D> itemToIndex;
@@ -177,34 +178,34 @@ void UContainer_Base::MoveItemToSlot(FName group, int fromIndex, int toIndex, TA
 
 	// 안에 아이템이 있으면
 	if (itemToIndex.Num() > 0) {
-		//TArray<UItemUI_Base*> toItems;
-		//TArray<FVector2D> itemFromArea;
-
-		//for (int i = 0; i < itemToIndex.Num(); i++) {
-		//	toItems.AddUnique(GetInventorySlot(itemToIndex[i])->GetSlotItem()->GetOwnerItem());
-		//}
-
-		//// 연결된 모든 아이템 이동 필요
-
-		//for (int i = 0; i < toItems.Num(); i++) {
-		//	FVector2D offsetFrom = toItems[i]->ItemIndex;
-		//	
-		//	fromIndex - (toItems[i]->ItemIndex - ItemSlots[toIndex]->SlotColRow) + index;
-		//}
-
-		//itemFromArea.Add(ItemSlots[fromIndex]->SlotColRow + (items[i]->ItemIndex - offsetFrom));
-
+		// 같은 아이템 조건 필요
 	}
 	else { // 안에 아이템이 없으면
-		// 컨테이너의 소속에 맞추어 설정
-		if (group == FName("Container")) {
-			//AInteractObject_Base;
-			//Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->PlayerData;
+		// Part of Data
+		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+		if (ContainerCategory == before) {
+			TArray<FInventoryData*> targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+			for (FInventoryData* data : targetContainer) {
+				if (data->SlotIndex == ContainerItemSlots[fromIndex]->SlotColRow) {
+					data->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
+					break;
+				}
+			}
 		}
-	
-		//Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->
-			//PlayerData->MoveItemIndex(ContainerItemSlots[fromIndex]->SlotColRow, ContainerItemSlots[toIndex]->SlotColRow);
+		else {
+			TArray<FInventoryData*> FromContainer = controller->PlayerData->GetTargetContainer(before);
+			UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+			for (FInventoryData* data : FromContainer) {
+				if (data->SlotIndex == FromContainerBase->ContainerItemSlots[fromIndex]->SlotColRow) {
+					controller->PlayerData->GetTargetContainer(before).Remove(data);
+					data->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
+					controller->PlayerData->GetTargetContainer(ContainerCategory).Add(data);
+					break;
+				}
+			}
+		}
 
+		// Part of UI
 		for (int i = 0; i < items.Num(); i++) {
 			UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
 			toSlot->ItemSlot->RemoveChildAt(0);

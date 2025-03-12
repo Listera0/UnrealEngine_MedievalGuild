@@ -68,7 +68,7 @@ void UItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointer
 		//canvasSlot->SetPosition(itemIndex * -SlotSize);
 		canvasSlot->SetPosition(CustomOffset3);
 
-		Operation->PrevContainerGroup = ContainerPanel->ContainerGroup;
+		Operation->PrevContainerCategory = ContainerPanel->ContainerCategory;
 		Operation->PrevSlotOwner = GetOuter();
 		Operation->PrevSlotIndex = SlotIndex;
 		Operation->bMoveSuccessed = false;
@@ -101,13 +101,14 @@ void UItemSlot::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDr
 bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
 	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
-	UItemDragDropOperation* Operation = Cast<UItemDragDropOperation>(InOperation);
+	if (!InOperation) return false;
 
+	UItemDragDropOperation* Operation = Cast<UItemDragDropOperation>(InOperation);
 	if (Operation) {
 		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Get Item"));
 		if (Operation->OriginalWidgets[0] != GetSlotItem()) {
 			Operation->bMoveSuccessed = true;
-			ContainerPanel->MoveItemToSlot(Operation->PrevContainerGroup, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
+			ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 		}
 	}
 

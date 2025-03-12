@@ -31,7 +31,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 
 	// InventorySlot
 	Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), Blueprints->InventoryWidget);
-	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 6);
+	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Inventory, 6, 6);
 
 	UHorizontalBoxSlot* Slot_Inventory = InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
 	Slot_Inventory->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
@@ -40,7 +40,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 
 	// ContainerSlot
 	Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 4);
+	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, 6, 4);
 
 	UHorizontalBoxSlot* Slot_Container = InventorySlot->AddChildToHorizontalBox(Widget_Container);
 	Slot_Container->SetSize(FSlateChildSize(ESlateSizeRule::Fill));

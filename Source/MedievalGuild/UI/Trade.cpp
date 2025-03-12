@@ -22,7 +22,7 @@ void UTrade::TradePanelInitSetting()
 {
 	// Merchant
 	UContainerWidget* Widget_Merchant = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 10);
+	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Merchant, 6, 10);
 
 	UHorizontalBoxSlot* Slot_Merchant = TradeSlot->AddChildToHorizontalBox(Widget_Merchant);
 	Slot_Merchant->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
@@ -40,7 +40,7 @@ void UTrade::TradePanelInitSetting()
 
 	// Storage
 	UContainerWidget* Widget_Storage = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, 6, 10);
+	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Storage, 6, 10);
 
 	UHorizontalBoxSlot* Slot_Storage = TradeSlot->AddChildToHorizontalBox(Widget_Storage);
 	Slot_Storage->SetSize(FSlateChildSize(ESlateSizeRule::Fill));

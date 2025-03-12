@@ -37,15 +37,8 @@ void APlayerCharacterController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	lineTraceCheckTag(FName("Interactable"));
-
-	if (bIsInteract) {
-		// 화면에 대상 이름 표시
-		ScreenUI->SetVisibility(ESlateVisibility::Visible);
-		ScreenUI->SetInteractText(true, "Open");
-	}
-	else {
-		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
-	}
+	CheckScreenUI();
+	CheckInteractDistance();
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -94,6 +87,12 @@ void APlayerCharacterController::OnUnPossess()
 
 void APlayerCharacterController::InitViewport()
 {
+	if (ScreenViewport) {
+		ScreenUI = CreateWidget<UScreenUI>(this, ScreenViewport);
+		ScreenUI->AddToViewport();
+		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+
 	if (InventoryViewport) {
 		InventoryUI = CreateWidget<UPlayerInventory>(this, InventoryViewport);
 		InventoryUI->AddToViewport();
@@ -104,12 +103,6 @@ void APlayerCharacterController::InitViewport()
 		TradeUI = CreateWidget<UTrade>(this, TradeViewport);
 		TradeUI->AddToViewport();
 		TradeUI->SetVisibility(ESlateVisibility::Hidden);
-	}
-
-	if (ScreenViewport) {
-		ScreenUI = CreateWidget<UScreenUI>(this, ScreenViewport);
-		ScreenUI->AddToViewport();
-		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -176,6 +169,10 @@ void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& V
 
 		bShowMouseCursor = true;
 		SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
+		InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
+
+		if (InteractObj) { InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Visible); }
+		else { InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Hidden); }
 	}
 	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible) {
 		bShowMouseCursor = false;
@@ -185,13 +182,23 @@ void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& V
 
 void APlayerCharacterController::InputInteractAction(const FInputActionValue& Value)
 {
-	if (bIsInteract) {
-		if (hitResult.GetActor()->ActorHasTag(FName("Coin"))) {
-			Cast<AInteractObject_Base>(hitResult.GetActor())->SetContainerUI();
-			//PlayerData->AddItemToInventory(FVector2D(-1.0f), UItemDataManager::GetInstance()->GetItemDataList()[0], 11);
-			//InventoryUI->Widget_Inventory->MakeItemToSlot(1, 1, 1);
-		}
+	// UI가 열려있을 때
+	if (bIsInteractAction) {
+		bIsInteractAction = false;
+		InteractObj = nullptr;
+		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+		//TradeUI->SetVisibility(ESlateVisibility::Hidden);
 	}
+	else {
+		if (bIsInteract) {
+			if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->SetContainerUI();
+				InputInventoryToggle(Value);
+				bIsInteractAction = true;
+			}
+		}
+	}	
 }
 
 FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
@@ -213,4 +220,49 @@ FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
 	}
 		
 	return FHitResult();
+}
+
+void APlayerCharacterController::CheckScreenUI()
+{
+	if (bIsInteract) {
+		// 화면에 대상 이름 표시
+		ScreenUI->SetVisibility(ESlateVisibility::Visible);
+		ScreenUI->SetInteractText(true, "Open");
+	}
+	else {
+		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void APlayerCharacterController::CheckInteractDistance()
+{
+	if (bIsInteractAction && InteractObj) {
+		if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > 40000.0f) {
+			bIsInteractAction = false;
+			InteractObj = nullptr;
+			InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+			//TradeUI->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+}
+
+UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCategory category)
+{
+	switch (category)
+	{
+	case EContainerCategory::Inventory:
+		return InventoryUI->Widget_Inventory;
+		break;
+	case EContainerCategory::Storage:
+		break;
+	case EContainerCategory::Equipment:
+		break;
+	case EContainerCategory::Container:
+		return InventoryUI->Widget_Container;
+		break;
+	case EContainerCategory::Merchant:
+		break;
+	}
+
+	return nullptr;
 }
