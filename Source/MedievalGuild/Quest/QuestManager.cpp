@@ -11,17 +11,7 @@ UQuestManager* UQuestManager::Instance = nullptr;
 
 UQuestManager::UQuestManager()
 {
-
-	UQuest_Base* NewQuest = NewObject<UQuest_Base>();
-	UQuestData_Base* NewQuestData = NewObject<UQuestData_Base>();
-	NewQuestData->QuestIndex = 1;
-	NewQuestData->QuestName = TEXT("Start");
-	NewQuestData->Description = TEXT("Start");
-	NewQuest->SetQuestData(NewQuestData);
-	this->QuestList.Add(NewQuest);
-	SaveAllQuestDataToJson();
 	LoadAllQuestDataFromJson();
-	
 }
 
 UQuestManager* UQuestManager::GetInstance()
