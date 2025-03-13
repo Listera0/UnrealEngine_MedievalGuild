@@ -18,17 +18,18 @@ class MEDIEVALGUILD_API APlayerData : public APlayerState
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-	void AddItemToInventory(FVector2D slot, UItemData* item, int count);
+	void AddItemTo(TArray<FInventoryData*>& target, FInventoryData* item);
+	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete);
+	void RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item, int count, bool withDelete);
+	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to); // 내부용
+	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, FInventoryData* data); // 외부용
 
-	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-	void RemoveItemFromInventory(int slot, UItemData* item, int count);
+	FInventoryData* HasItem(TArray<FInventoryData*>& target, int itemIndex, bool checkMaxStack);
+	FInventoryData* FindItemWithLocation(TArray<FInventoryData*>& target, FVector2D location);
 
-	void MoveItemIndex(FVector2D from, FVector2D to);
+	TArray<FInventoryData*>& GetTargetContainer(EContainerCategory category);
 
 protected:
-	FInventoryData* FindSlotItem(FVector2D slot);
-	FVector2D FindItemSlot(UItemData* item);
 	void MakePlayerInventoryUI();
 	void ChangePlayerInventoryUI();
 	void ShowPlayerInventory();
@@ -46,11 +47,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
 	float PlayerEnergy;
 
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
-	TArray<FInventoryData> PlayerInventory;
-
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
-	TArray<FInventoryData> PlayerContainer;
+	TArray<FInventoryData*> PlayerInventory;
+	TArray<FInventoryData*> PlayerStorage;
 
 	UPROPERTY()
 	UPlayerInventory* PlayerInventoryUI;

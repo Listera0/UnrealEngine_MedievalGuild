@@ -30,10 +30,12 @@ public:
 
 protected:
 	USceneComponent* RootComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* InteractArea = nullptr;
 
 public:
-	TArray<FInventoryData> ContainerInventory;
+	TArray<FInventoryData*> ContainerInventory;
 	bool bIsInit;
 
 	UPROPERTY(EditAnywhere, Category = "Item")
@@ -44,5 +46,13 @@ public:
 
 public:
 	void SetContainerUI();
-	void MoveItemIndex(FVector2D from, FVector2D to);
+
+	void AddItemToInv(FInventoryData* data);
+	void RemoveItemToInv(FVector2D location, int count, bool withDelete);
+	void RemoveItemToInv(UItemData* item, int count, bool withDelete);
+	void MoveItemIndex(FVector2D to, FInventoryData* data); // 외부용
+	void MoveItemIndex(FVector2D from, FVector2D to); // 내부용
+
+	FInventoryData* HasItem(int itemIndex, bool checkMaxStack);
+	FInventoryData* FindItemWithLocation(FVector2D location);
 };

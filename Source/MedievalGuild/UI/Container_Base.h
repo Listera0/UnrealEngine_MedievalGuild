@@ -23,6 +23,7 @@
 #include "ContainerEnum.h"
 #include "../Item/ItemData.h"
 #include "../Object/InventoryData.h"
+#include "../Object/ContainerCategory.h"
 
 #include "Container_Base.generated.h"
 
@@ -49,17 +50,17 @@ protected:
 
 public:
 	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
-								float col, float row);
+								EContainerCategory category, float col, float row);
 	void MakeContainer(int col, int row);
 	void ResetContainer();
-	void ShowContainer(TArray<FInventoryData> data);
+	void ShowContainer(TArray<FInventoryData*> data);
 
 	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
 	void MakeItemToSlot(int sizeX, int sizeY, int count);
 	void MakeItemToSlot(FVector2D index, UItemData* item, int count);
 	FVector2D MakeItemToSlot(UItemData* item, int count);
 
-	void MoveItemToSlot(FName group, int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
+	void MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
 	void SetItemInfo(FVector2D index, int count);
 
 	FVector2D FindEmptySlot(int sizeX, int sizeY);
@@ -82,5 +83,5 @@ protected:
 	FVector2D ContainerSize;
 
 public:
-	FName ContainerGroup;
+	EContainerCategory ContainerCategory;
 };

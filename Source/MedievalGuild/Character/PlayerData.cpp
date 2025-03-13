@@ -2,87 +2,139 @@
 
 
 #include "PlayerData.h"
+#include "../Framework/PlayerCharacterController.h"
 
-void APlayerData::AddItemToInventory(FVector2D slot, UItemData* item, int count)
+void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* data)
 {
-    // 슬롯을 지정하지 않았을 때
-    if (slot == FVector2D(-1.0f)) {
-        // 같은 아이템이 존재하지 않을 때
-        FVector2D itemSlotIndex = FindItemSlot(item);
-        if (itemSlotIndex == FVector2D(-1.0f)) {
-            FVector2D findSlot = PlayerInventoryUI->Widget_Inventory->FindEmptySlot(item->width, item->height);
-            if (findSlot != FVector2D(-1.0f)) {
-                // 최대 스택보다 클 때
-                if (count > item->maxStack) {
-                    FInventoryData newItem(findSlot, item, item->maxStack);
-                    PlayerInventory.Add(newItem);
-                    PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(findSlot, item, item->maxStack);
-                    AddItemToInventory(FVector2D(-1.0f), item, count - item->maxStack);
-                }
-                else {
-                    FInventoryData newItem(findSlot, item, count);
-                    PlayerInventory.Add(newItem);
-                    PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(findSlot, item, count);
-                }
+    if (data->SlotIndex == FVector2D(-1.0f)) {
+        FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
+        if (targetData) {
+            int value = targetData->ItemData->maxStack - targetData->ItemCount;
+            if (value < data->ItemCount) {
+                targetData->ItemCount = targetData->ItemData->maxStack;
+                data->ItemCount -= value;
+                AddItemTo(target, data);
+            }
+            else {
+                targetData->ItemCount += data->ItemCount;
             }
         }
         else {
-            FInventoryData* findItem = FindSlotItem(itemSlotIndex);
-            int beforeCount = findItem->ItemCount;
-            int maxCount = findItem->ItemData->maxStack;
-            if (beforeCount + count > maxCount) {
-                findItem->ItemCount = maxCount;
-                PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
-                AddItemToInventory(FVector2D(-1.0f), item, (count - (maxCount - beforeCount)));
-            }
-            else {
-                findItem->ItemCount += count;
-                PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
-            }
+            target.Add(data);
         }
     }
     else {
-        FInventoryData* findItem = FindSlotItem(slot);
-        if (findItem) {
-            findItem->ItemCount += count;
-            PlayerInventoryUI->Widget_Inventory->SetItemInfo(findItem->SlotIndex, findItem->ItemCount);
+        FInventoryData* targetData = FindItemWithLocation(target, data->SlotIndex);
+        if (targetData) {
+            if (targetData->ItemData->index == data->ItemData->index) {
+                int value = targetData->ItemData->maxStack - targetData->ItemCount;
+                if (value < data->ItemCount) {
+                    targetData->ItemCount = targetData->ItemData->maxStack;
+                    data->ItemCount -= value;
+                    data->SlotIndex = FVector2D(-1.0f);
+                    AddItemTo(target, data);
+                }
+                else {
+                    targetData->ItemCount += data->ItemCount;
+                }
+            }
         }
         else {
-            FInventoryData newItem(slot, item, count);
-            PlayerInventory.Add(newItem);
-            PlayerInventoryUI->Widget_Inventory->MakeItemToSlot(slot, item, count);
+            target.Add(data);
         }
     }
 }
 
-void APlayerData::RemoveItemFromInventory(int slot, UItemData* item, int count)
+void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete)
 {
-}
-
-FInventoryData* APlayerData::FindSlotItem(FVector2D slot)
-{
-    for (FInventoryData& data : PlayerInventory)
-    {
-        if (data.SlotIndex == slot)
-        {
-            return &data;  // 해당 슬롯 아이템 반환
+    FInventoryData* targetData = FindItemWithLocation(target, location);
+    if (targetData) {
+        if (targetData->ItemCount < count) {
+            target.Remove(targetData);
+            if(withDelete) delete targetData;
+        }
+        else {
+            targetData->ItemCount -= count;
         }
     }
+}
+
+void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item, int count, bool withDelete)
+{
+    FInventoryData* targetData = HasItem(target, item->index, false);
+    if (targetData) {
+        if (targetData->ItemCount < count) {
+            int tempCount = count - targetData->ItemCount;
+            target.Remove(targetData);
+            if (withDelete) delete targetData;
+            RemoveItemTo(target, item, tempCount, withDelete);
+        }
+        else {
+            targetData->ItemCount -= count;
+        }
+    }
+}
+
+FInventoryData* APlayerData::HasItem(TArray<FInventoryData*>& target, int itemIndex, bool checkMaxStack)
+{
+    for (FInventoryData* data : target) {
+        if (data->ItemData->index == itemIndex) {
+            if (checkMaxStack) {
+                if (data->ItemCount < data->ItemData->maxStack) {
+                    return data;
+                }
+            }
+            else {
+                return data;
+            }
+        }
+    }
+
     return nullptr;
 }
 
-FVector2D APlayerData::FindItemSlot(UItemData* item) {
-    for (FInventoryData& data : PlayerInventory)
-    {
-        if (data.ItemData->index == item->index && data.ItemCount < item->maxStack)
-        {
-            return data.SlotIndex;
+FInventoryData* APlayerData::FindItemWithLocation(TArray<FInventoryData*>& target, FVector2D location)
+{
+    for (FInventoryData* data : target) {
+        if (data->SlotIndex == location) {
+            return data;
         }
     }
-    return FVector2D(-1.0f);
+
+    return nullptr;
 }
 
-void APlayerData::MoveItemIndex(FVector2D from, FVector2D to)
+TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory category)
 {
-    FindSlotItem(from)->SlotIndex = to;
+    switch (category)
+    {
+    case EContainerCategory::Inventory:
+        return PlayerInventory;
+        break;
+    case EContainerCategory::Storage:
+        break;
+    case EContainerCategory::Equipment:
+        break;
+    case EContainerCategory::Container:
+        return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
+        break;
+    case EContainerCategory::Merchant:
+        break;
+    }
+
+    return PlayerStorage;
+}
+
+void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)
+{
+    FInventoryData* targetData = FindItemWithLocation(target, from);
+    if (targetData) {
+        targetData->SlotIndex = to;
+    }
+}
+
+void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, FInventoryData* data)
+{
+    data->SlotIndex = to;
+    target.Add(data);
 }

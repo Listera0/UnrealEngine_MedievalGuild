@@ -31,7 +31,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
-
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
@@ -48,6 +47,8 @@ protected:
 	void InputInteractAction(const FInputActionValue& Value);
 
 	FHitResult lineTraceCheckTag(FName tag);
+	void CheckScreenUI();
+	void CheckInteractDistance();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
@@ -90,11 +91,15 @@ private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
 	bool bIsInteract;
+	bool bIsInteractAction;
 	FHitResult hitResult;
 
 public:
+	UContainer_Base* GetTargetContainer(EContainerCategory category);
+
 	UPlayerInventory* InventoryUI = nullptr;
 	UTrade* TradeUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
 	APlayerData* PlayerData = nullptr;
+	AInteractObject_Base* InteractObj = nullptr;
 };
