@@ -8,6 +8,7 @@
 #include "ItemDragDropOperation.h"
 #include "ItemMoveSlot.h"
 #include "ItemUI_Base.h"
+#include "../Object/InventoryData.h"
 
 #include "Components/UniformGridSlot.h"
 #include "Components/Button.h"
@@ -34,6 +35,7 @@ public:
 
 	inline bool HasItem() { return ItemSlot->GetChildrenCount() > 0 ? true : false; }
 	inline UItemUI_Base* GetSlotItem() { return Cast<UItemUI_Base>(ItemSlot->GetChildAt(0)); }
+	inline FInventoryData* GetItemData() { return HasItem() ? GetSlotItem()->ItemData : nullptr; }
 	
 protected:
 	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
@@ -44,16 +46,13 @@ public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
 
-	//UItemMoveSlot* dragSlot = nullptr;
-
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* ItemSlot;
 
-	float SlotSize;
-
 	int SlotIndex;
 	FVector2D SlotColRow;
+	float SlotSize;
 };

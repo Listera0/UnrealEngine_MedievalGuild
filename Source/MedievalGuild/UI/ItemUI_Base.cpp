@@ -9,36 +9,11 @@ void UItemUI_Base::NativeConstruct()
 
 }
 
-void UItemUI_Base::SetItemCount(int count)
-{
-	ItemCount = count;
-	bStackable = true;
-	ItemCountText->SetText(FText::AsNumber(ItemCount));
-}
-
 void UItemUI_Base::SetItemCountText()
 {
-	if (bStackable)
-		ItemCountText->SetText(FText::AsNumber(ItemCount));
-	else
-		ItemCountText->SetText(FText());
-}
-
-
-void UItemUI_Base::SetItemBind(TArray<UItemUI_Base*> items)
-{
-	BindItems.Empty();
-	BindItems.Append(items);
-}
-
-void UItemUI_Base::SetDuplicateInit(UItemUI_Base* target)
-{
-	target->bStackable = bStackable;
-	target->ItemCount = ItemCount;
-	target->SetItemBind(BindItems);
-	target->SetItemCountText();
-	target->SetItemIndex(ItemIndex);
-	target->SetItemSize(ItemSize);
+	UItemUI_Base* lastItemUI = GetCountItem();
+	if (lastItemUI->ItemData->ItemData->eItemType == EItemType::None) lastItemUI->ItemCountText->SetText(FText::AsNumber(ItemData->ItemCount));
+	else lastItemUI->ItemCountText->SetText(FText());
 }
 
 UItemUI_Base* UItemUI_Base::GetOwnerItem()

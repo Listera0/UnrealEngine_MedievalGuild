@@ -45,12 +45,10 @@ void AInteractObject_Base::SetContainerUI()
 		bIsInit = true;
 		for (int i = 0; i < ContainerInventory.Num(); i++) {
 			FInventoryData* itemData = ContainerInventory[i];
-			itemData->SlotIndex = Controller->InventoryUI->Widget_Container->MakeItemToSlot(itemData->ItemData, itemData->ItemCount);
+			itemData->SlotIndex = Controller->InventoryUI->Widget_Container->MakeItem(itemData);
 		}
 	}
-	else {
-		Controller->InventoryUI->Widget_Container->ShowContainer(ContainerInventory);
-	}
+	Controller->InventoryUI->Widget_Container->ShowContainer(ContainerInventory);
 }
 
 void AInteractObject_Base::AddItemToInv(FInventoryData* data)

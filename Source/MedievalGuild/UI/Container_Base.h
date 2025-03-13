@@ -55,21 +55,19 @@ public:
 	void ResetContainer();
 	void ShowContainer(TArray<FInventoryData*> data);
 
-	void MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count);
-	void MakeItemToSlot(int sizeX, int sizeY, int count);
-	void MakeItemToSlot(FVector2D index, UItemData* item, int count);
-	FVector2D MakeItemToSlot(UItemData* item, int count);
+	void MakeItemUI(FInventoryData* data);
+	FVector2D MakeItem(UItemData* item, int count);
+	FVector2D MakeItem(FInventoryData* data);
 
 	void MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
-	void SetItemInfo(FVector2D index, int count);
 
-	FVector2D FindEmptySlot(int sizeX, int sizeY);
+	UItemSlot* HasItem(UItemData* item, bool checkMax);
+	FVector2D FindEmptySlot(FVector2D size);
+	FInventoryData* FindContainerSlotData(TArray<FInventoryData*>& data, FVector2D slotIndex);
 	void SlotInitSetting(UButton* button);
 
 protected:
-	UItemSlot* GetContainerSlot(int col, int row);
 	UItemSlot* GetContainerSlot(FVector2D index);
-
 	inline bool IsInContainer(FVector2D index) { return (index.X < ContainerSize.X && index.Y < ContainerSize.Y && index.X >= 0 && index.Y >= 0); };
 
 	float ContainerSlotSize = 100.0f;
