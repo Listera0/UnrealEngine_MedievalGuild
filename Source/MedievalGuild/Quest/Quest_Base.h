@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"  
-#include "EQuest.h"
-#include "../Item/Item_Base.h"
+#include "Data/QuestData_Base.h"
 #include "Quest_Base.generated.h"
 
 UCLASS(Blueprintable, BlueprintType)  
@@ -19,32 +18,12 @@ public:
 	void CancleQuest();
 	void CompleteQuest();
 	void QuestReward();
+	virtual void SetQuestData(UQuestData_Base* InQuest);
 	virtual bool CheckQuest(int index = 0);
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	EQuestStatus QuestStatus = EQuestStatus::NotStarted;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	EQuestType QuestType = EQuestType::None;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	FName QuestName;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	FString Description;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	TArray<UQuest_Base*> PreRequisiteQuests;  
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
-	TSubclassOf<AItem_Base> RewardItem;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
-	int RewardItemAmount = 1;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
-	int RewardGold;
+	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject);
+	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
+	virtual EQuestStatus GetQuestStatus();
+	virtual int GetQuestIndex();
+private:
+	UQuestData_Base* Quest;
 };

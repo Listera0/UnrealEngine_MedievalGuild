@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Quest_Base.h"
-
+#include "Data/QuestData_Item.h"
 #include "Quest_Item.generated.h"
 
 /**
@@ -16,15 +16,13 @@ class MEDIEVALGUILD_API UQuest_Item : public UQuest_Base
 	GENERATED_BODY()
 	
 public:
+	virtual void SetQuestData(UQuestData_Base* InQuest) override;
 	virtual bool CheckQuest(int index = 0) override;
+	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
+	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
+	virtual EQuestStatus GetQuestStatus() override;
+	virtual int GetQuestIndex() override;
 
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	TSubclassOf<AItem_Base> QuestItem;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	int RequiredAmount;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	int Amount = 0;
+private:
+	UQuestData_Item* Quest;
 };

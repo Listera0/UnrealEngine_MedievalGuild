@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	void LoadAllItemDataFromJson(const FString& FilePath);
 
+	UItemData* FindItemData(int ItemIndex);
+
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	TArray<UItemData*> GetItemDataList() const { return ItemDataList; }
 
@@ -42,4 +44,6 @@ private:
 
 	UPROPERTY()
 	TArray<UItemData*> ItemDataList;
+
+	FString CurrentFilePath = FPaths::ProjectContentDir() + TEXT("Data/Item/Data/");
 };

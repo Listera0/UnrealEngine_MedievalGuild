@@ -22,7 +22,7 @@ void ATest_Item::BeginPlay()
 
     for (UItemData* FoundItem : Itemlist)
     {
-        if (FoundItem->index == 1)
+        if (FoundItem->index == 0)
         {
             item = FoundItem;
         }

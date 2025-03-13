@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Quest_Base.h"
-
+#include "Data/QuestData_Arrive.h"
 #include "Quest_Arrive.generated.h"
 
 /**
@@ -15,15 +15,13 @@ class MEDIEVALGUILD_API UQuest_Arrive : public UQuest_Base
 {
 	GENERATED_BODY()
 public:
+	virtual void SetQuestData(UQuestData_Base* InQuest) override;
 	virtual bool CheckQuest(int index = 0) override;
-	
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	FVector TargetLocation;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	float AcceptableRadius = 100.0f;
-
+	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
+	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
+	virtual EQuestStatus GetQuestStatus() override;
+	virtual int GetQuestIndex() override;
 private:
+	UQuestData_Arrive* Quest;
 	APlayerController* PlayerController = nullptr;
 };

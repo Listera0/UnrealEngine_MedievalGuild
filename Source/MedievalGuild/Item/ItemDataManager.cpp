@@ -6,7 +6,7 @@ UItemDataManager* UItemDataManager::Instance = nullptr;
 
 UItemDataManager::UItemDataManager()
 {
-
+    /*
     UItemData* NewItem = NewObject<UItemData>();
     NewItem->name = TEXT("Coin");
     NewItem->description = TEXT("Coin");
@@ -19,11 +19,11 @@ UItemDataManager::UItemDataManager()
     NewItem->maxStack = 50;
     NewItem->bStackable = true;
     this->AddItemData(NewItem);
-
+    */
 
 
     FString FilePath = TEXT("TestitemData.json");
-    this->SaveAllItemDataToJson(FilePath);
+    //this->SaveAllItemDataToJson(FilePath);
     this->LoadAllItemDataFromJson(FilePath);
 
 }
@@ -95,9 +95,9 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
 
     if (FJsonSerializer::Serialize(JsonArray, Writer))
     {
-        FString CurrentFilePath = FPaths::ProjectContentDir() + TEXT("Data/Item/Data/") + FilePath;
+        FString Path = CurrentFilePath + FilePath;
 
-        FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath);
+        FFileHelper::SaveStringToFile(OutputString, *Path);
     }
 }
 
@@ -105,7 +105,9 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
 void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
 {
     FString FileContents;
-    if (FFileHelper::LoadFileToString(FileContents, *FilePath))
+    FString Path = CurrentFilePath + FilePath;
+
+    if (FFileHelper::LoadFileToString(FileContents, *Path))
     {
         TArray<TSharedPtr<FJsonValue>> JsonArray;
         TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(FileContents);
@@ -158,11 +160,28 @@ void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
     }
 }
 
+UItemData* UItemDataManager::FindItemData(int ItemIndex)
+{
+    UItemData* FindItem = nullptr;
+    for (UItemData* ItemData : ItemDataList)
+    {
+        if (ItemData->index == ItemIndex)
+        {
+            FindItem = ItemData;
+            break;
+        }
+    }
+    return FindItem;
+}
+
 UStaticMesh* UItemDataManager::GetMeshForItem(const UItemData* item)
 {
+    if (!item)
+        return nullptr;
+
     FString MeshReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
     FString MeshPath = FString::Printf(TEXT("/Game/Data/Item/Mesh/%s"), *MeshReference);
-
+    GEngine->AddOnScreenDebugMessage(1, 3, FColor::Red, MeshPath);
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *MeshPath);
 
     if (Mesh)
@@ -178,6 +197,9 @@ UStaticMesh* UItemDataManager::GetMeshForItem(const UItemData* item)
 
 UMaterialInterface* UItemDataManager::GetMaterialForItem(const UItemData* item)
 {
+    if (!item)
+        return nullptr;
+
     FString MaterialReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
     FString MaterialPath = FString::Printf(TEXT("/Game/Data/Item/Material/%s"), *MaterialReference);
 
