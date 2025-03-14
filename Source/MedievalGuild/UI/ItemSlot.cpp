@@ -111,4 +111,14 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 	return false;
 }
 
+void UItemSlot::RemoveItem()
+{
+	UItemUI_Base* ownerItem = GetSlotItem()->GetOwnerItem();
+
+	for (UItemUI_Base* target : ownerItem->BindItems) {
+		target->GetParent()->RemoveChildAt(0);
+	}
+	ownerItem->GetParent()->RemoveChildAt(0);
+}
+
 

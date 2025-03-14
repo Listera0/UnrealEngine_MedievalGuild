@@ -20,6 +20,7 @@ class MEDIEVALGUILD_API APlayerData : public APlayerState
 public:
 	void AddItemTo(TArray<FInventoryData*>& target, FInventoryData* item);
 	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete);
+	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, bool withDelete);
 	void RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item, int count, bool withDelete);
 	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to); // 내부용
 	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, FInventoryData* data); // 외부용

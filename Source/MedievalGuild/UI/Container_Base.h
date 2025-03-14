@@ -53,10 +53,9 @@ public:
 								EContainerCategory category, float col, float row);
 	void MakeContainer(int col, int row);
 	void ResetContainer();
-	void ShowContainer(TArray<FInventoryData*> data);
+	void ShowContainer(TArray<FInventoryData*>& data);
 
 	void MakeItemUI(FInventoryData* data);
-	FVector2D MakeItem(UItemData* item, int count);
 	FVector2D MakeItem(FInventoryData* data);
 
 	void MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items);

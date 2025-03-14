@@ -36,6 +36,7 @@ public:
 	inline bool HasItem() { return ItemSlot->GetChildrenCount() > 0 ? true : false; }
 	inline UItemUI_Base* GetSlotItem() { return Cast<UItemUI_Base>(ItemSlot->GetChildAt(0)); }
 	inline FInventoryData* GetItemData() { return HasItem() ? GetSlotItem()->ItemData : nullptr; }
+	void RemoveItem();
 	
 protected:
 	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };

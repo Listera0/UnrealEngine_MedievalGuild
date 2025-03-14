@@ -190,9 +190,10 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-				UItemData* targetItem = InteractObj->ContainerInventory[0]->ItemData;
-				int targetCount = InteractObj->ContainerInventory[0]->ItemCount;
-				PlayerData->AddItemTo(PlayerData->PlayerInventory, new FInventoryData(InventoryUI->Widget_Inventory->MakeItem(targetItem, targetCount), targetItem, targetCount));
+				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
+				targetItem->SlotIndex = FVector2D(-1.0f);
+				targetItem->SlotIndex = InventoryUI->Widget_Inventory->MakeItem(targetItem);
+				PlayerData->AddItemTo(PlayerData->PlayerInventory, targetItem);
 				hitResult.GetActor()->Destroy();
 			}
 		}

@@ -6,7 +6,10 @@
 
 void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* data)
 {
-    if (data->SlotIndex == FVector2D(-1.0f)) {
+    FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
+    if (!targetData) { target.Add(data); }
+
+    /*if (data->SlotIndex == FVector2D(-1.0f)) {
         FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
         if (targetData) {
             int value = targetData->ItemData->maxStack - targetData->ItemCount;
@@ -35,14 +38,16 @@ void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* dat
                     AddItemTo(target, data);
                 }
                 else {
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, FString::Printf(TEXT("before %s {%d}"), *targetData->ItemData->name, targetData->ItemCount));
                     targetData->ItemCount += data->ItemCount;
+                    GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, FString::Printf(TEXT("Add %s +%d = {%d}"), *targetData->ItemData->name, data->ItemCount, targetData->ItemCount));
                 }
             }
         }
         else {
             target.Add(data);
         }
-    }
+    }*/
 }
 
 void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete)
@@ -55,6 +60,15 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D locati
         }
         else {
             targetData->ItemCount -= count;
+        }
+    }
+}
+
+void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, bool withDelete)
+{
+    for (int i = 0; i < target.Num(); i++) {
+        if (target[i]->SlotIndex == location) {
+            target.RemoveAt(i);
         }
     }
 }
