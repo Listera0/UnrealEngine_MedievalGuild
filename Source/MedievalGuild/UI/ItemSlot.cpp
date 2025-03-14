@@ -3,11 +3,13 @@
 
 #include "ItemSlot.h"
 #include "Container_Base.h"
+#include "../Framework/PlayerCharacterController.h"
 
 void UItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	ItemSlot->OnClicked.AddDynamic(this, &UItemSlot::SlotButtonClickBind);
 	SetIsFocusable(false);
 }
 
@@ -119,6 +121,28 @@ void UItemSlot::RemoveItem()
 		target->GetParent()->RemoveChildAt(0);
 	}
 	ownerItem->GetParent()->RemoveChildAt(0);
+}
+
+void UItemSlot::SlotButtonClickBind()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, FString(TEXT("work")));
+	if (HasItem()) {
+		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+		if (controller->IsShiftPressed()) {
+			if (controller->IsInteractAction() && controller->hitResult.GetActor()->ActorHasTag(FName("Container"))) {
+				if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) {
+					UContainer_Base* otherContainer = controller->GetTargetContainer(EContainerCategory::Container);
+					TArray<UItemUI_Base*> moveItems;
+					moveItems.Add(GetSlotItem());
+					moveItems.Append(moveItems[0]->BindItems);
+					otherContainer->MoveItemToSlot(ContainerPanel->ContainerCategory, SlotIndex, -1, moveItems);
+				}
+			}
+			else if (true) {
+				// storage
+			}
+		}
+	}
 }
 
 

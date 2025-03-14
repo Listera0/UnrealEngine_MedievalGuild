@@ -94,13 +94,16 @@ private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
 	bool bIsUIOpened;
+	bool bIsShiftPressed;
 	bool bIsInteract;
 	bool bIsInteractAction;
-	FHitResult hitResult;
 
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
+	inline bool IsShiftPressed() { return bIsShiftPressed; }
+	inline bool IsInteractAction() { return bIsInteractAction; }
 
+	FHitResult hitResult;
 	UPlayerInventory* InventoryUI = nullptr;
 	UTrade* TradeUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;

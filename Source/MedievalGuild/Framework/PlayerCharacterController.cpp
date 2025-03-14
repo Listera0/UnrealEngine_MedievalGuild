@@ -145,11 +145,13 @@ void APlayerCharacterController::InputCameraMove(const FInputActionValue& Value)
 void APlayerCharacterController::InputPressRunKey(const FInputActionValue& Value)
 {
 	PlayerCharacter->InputRunning(true);
+	bIsShiftPressed = true;
 }
 
 void APlayerCharacterController::InputRealeaseRunKey(const FInputActionValue& Value)
 {
 	PlayerCharacter->InputRunning(false);
+	bIsShiftPressed = false;
 }
 
 void APlayerCharacterController::InputStealthToggle(const FInputActionValue& Value)
