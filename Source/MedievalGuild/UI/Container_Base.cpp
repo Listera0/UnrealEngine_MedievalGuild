@@ -85,20 +85,21 @@ void UContainer_Base::ResetContainer()
 void UContainer_Base::ShowContainer(TArray<FInventoryData*> data)
 {
 	ResetContainer();
-	for (int i = 0; i < data.Num(); i++) {
-		MakeItemToSlot(data[i]->SlotIndex, data[i]->ItemData, data[i]->ItemCount);
+	for (FInventoryData* eachData : data) {
+		MakeItemUI(eachData);
+		GetContainerSlot(eachData->SlotIndex)->GetSlotItem()->SetItemCountText();
 	}
 }
 
-void UContainer_Base::MakeItemToSlot(int col, int row, int sizeX, int sizeY, int count)
+void UContainer_Base::MakeItemUI(FInventoryData* data)
 {
 	TArray<UItemUI_Base*> makingItems;
-	for (int i = col; i < col + sizeX; i++) {
-		for (int j = row; j < row + sizeY; j++) {
-			UItemSlot* targetSlot = GetContainerSlot(i, j);
+	for (int i = data->SlotIndex.X; i < data->SlotIndex.X + data->ItemData->width; i++) {
+		for (int j = data->SlotIndex.Y; j < data->SlotIndex.Y + data->ItemData->height; j++) {
+			UItemSlot* targetSlot = GetContainerSlot(FVector2D(i, j));
 			UItemUI_Base* item = CreateWidget<UItemUI_Base>(GetWorld(), ItemBaseClass);
-			item->SetItemIndex(FVector2D(i - col, j - row));
-			item->SetItemSize(FVector2D(sizeX, sizeY));
+			item->SetItemIndex(FVector2D(i - data->SlotIndex.X, j - data->SlotIndex.Y));
+			item->SetItemData(data);
 
 			UButtonSlot* buttonSlot = Cast<UButtonSlot>(targetSlot->ItemSlot->AddChild(item));
 			buttonSlot->SetPadding(FMargin(0.0f));
@@ -119,36 +120,49 @@ void UContainer_Base::MakeItemToSlot(int col, int row, int sizeX, int sizeY, int
 		}
 		makingItems[i]->SetItemBind(tempItems);
 	}
-
-	makingItems.Last()->SetItemCount(count);
 }
 
-void UContainer_Base::MakeItemToSlot(int sizeX, int sizeY, int count)
+FVector2D UContainer_Base::MakeItem(UItemData* item, int count)
 {
-	FVector2D EmptySlot = FindEmptySlot(sizeX, sizeY);
-
-	if (EmptySlot != FVector2D(-1.0f)) {
-		// 찾은 위치에 아이템 생성
-		MakeItemToSlot(EmptySlot.X, EmptySlot.Y, sizeX, sizeY, count);
+	UItemSlot* targetSlot = HasItem(item, true);
+	if (targetSlot) {
+		int value = item->maxStack - targetSlot->GetSlotItem()->ItemData->ItemCount;
+		if (value < count) {
+			targetSlot->GetSlotItem()->ItemData->ItemCount += value;
+			MakeItem(item, count - value);
+			return targetSlot->SlotColRow;
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, FString(TEXT("Action")));
+			targetSlot->GetSlotItem()->ItemData->ItemCount += count;
+			return targetSlot->SlotColRow;
+		}
+	}
+	else {
+		FVector2D EmptySlot = FindEmptySlot(FVector2D(item->width, item->height));
+		if (EmptySlot != FVector2D(-1.0f)) {
+			// 찾은 위치에 아이템 생성
+			MakeItemUI(new FInventoryData(EmptySlot, item, count));
+		}
+		return EmptySlot;
 	}
 }
 
-void UContainer_Base::MakeItemToSlot(FVector2D index, UItemData* item, int count)
+FVector2D UContainer_Base::MakeItem(FInventoryData* data)
 {
-	MakeItemToSlot(index.X, index.Y, item->width, item->height, count);
-	//GetContainerSlot(index);
-}
-
-FVector2D UContainer_Base::MakeItemToSlot(UItemData* item, int count)
-{
-	FVector2D EmptySlot = FindEmptySlot(item->width, item->height);
-
-	if (EmptySlot != FVector2D(-1.0f)) {
-		// 찾은 위치에 아이템 생성
-		MakeItemToSlot(EmptySlot.X, EmptySlot.Y, item->width, item->height, count);
+	if (data->SlotIndex == FVector2D(-1.0f)) {
+		return MakeItem(data->ItemData, data->ItemCount);
 	}
-
-	return EmptySlot;
+	else {
+		if (GetContainerSlot(data->SlotIndex)->HasItem()) {
+			FInventoryData* targetData = GetContainerSlot(data->SlotIndex)->GetItemData();
+			targetData->ItemCount = (targetData->ItemCount + data->ItemCount < data->ItemData->maxStack ? targetData->ItemCount + data->ItemCount : data->ItemData->maxStack);
+		}
+		else {
+			MakeItemUI(data);
+		}
+		return data->SlotIndex;
+	}
 }
 
 // to index 쪽에서 실행
@@ -176,21 +190,87 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 		}
 	}
 
+	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 안에 아이템이 있으면
 	if (itemToIndex.Num() > 0) {
-		// 같은 아이템 조건 필요
-	}
-	else { // 안에 아이템이 없으면
-		// Part of Data
-		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-		if (ContainerCategory == before) {
-			TArray<FInventoryData*> targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-			for (FInventoryData* data : targetContainer) {
-				if (data->SlotIndex == ContainerItemSlots[fromIndex]->SlotColRow) {
-					data->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
-					break;
+		if (ContainerItemSlots[toIndex]->GetItemData()->ItemData->index == items[0]->ItemData->ItemData->index) {
+			if (ContainerCategory == before) {
+				TArray<FInventoryData*> targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+				FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
+				FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
+
+				int value = toData->ItemData->maxStack - toData->ItemCount;
+				if (value < fromData->ItemCount) {
+					// UI Part
+					toData->ItemCount += value;
+					fromData->ItemCount -= value;
+
+					// Data Part
+					FindContainerSlotData(targetContainer, toData->SlotIndex)->ItemCount = toData->ItemCount;
+					FindContainerSlotData(targetContainer, fromData->SlotIndex)->ItemCount = fromData->ItemCount;
+
+					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
+					fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+				}
+				else {
+					// Count 변경 & 기존 아이템 삭제
+					targetContainer.Remove(FindContainerSlotData(targetContainer, fromData->SlotIndex));
+
+					toData->ItemCount += fromData->ItemCount;
+					FindContainerSlotData(targetContainer, toData->SlotIndex)->ItemCount = toData->ItemCount;
+
+					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
+					fromSlot->GetSlotItem()->GetOwnerItem()->GetParent()->RemoveChildAt(0);
 				}
 			}
+			else {
+				TArray<FInventoryData*> ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+				UContainer_Base* ToContainerBase = this;
+				TArray<FInventoryData*> FromContainer = controller->PlayerData->GetTargetContainer(before);
+				UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+
+				FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
+				FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
+
+				int value = toData->ItemData->maxStack - toData->ItemCount;
+				if (value < fromData->ItemCount) {
+					// UI Part
+					toData->ItemCount += value;
+					fromData->ItemCount -= value;
+
+					// Data Part
+					FindContainerSlotData(ToContainer, toData->SlotIndex)->ItemCount = toData->ItemCount;
+					FindContainerSlotData(FromContainer, fromData->SlotIndex)->ItemCount = fromData->ItemCount;
+
+					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(FromContainerBase->ContainerItemSlots[fromIndex]->SlotColRow);
+					fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+				}
+				else {
+					// Count 변경 & 기존 아이템 삭제
+					FromContainer.Remove(FindContainerSlotData(FromContainer, fromData->SlotIndex));
+
+					toData->ItemCount += fromData->ItemCount;
+					FindContainerSlotData(ToContainer, toData->SlotIndex)->ItemCount = toData->ItemCount;
+
+					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(FromContainerBase->ContainerItemSlots[fromIndex]->SlotColRow);
+					fromSlot->GetSlotItem()->GetOwnerItem()->GetParent()->RemoveChildAt(0);
+				}
+			}
+		}
+	}
+	else { // 안에 아이템이 없으면
+		// Data Part
+		if (ContainerCategory == before) {
+			TArray<FInventoryData*> targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+			FindContainerSlotData(targetContainer, ContainerItemSlots[fromIndex]->SlotColRow)->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
 		}
 		else {
 			TArray<FInventoryData*> FromContainer = controller->PlayerData->GetTargetContainer(before);
@@ -205,7 +285,7 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 			}
 		}
 
-		// Part of UI
+		// UI Part
 		for (int i = 0; i < items.Num(); i++) {
 			UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
 			toSlot->ItemSlot->RemoveChildAt(0);
@@ -217,12 +297,26 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 	}
 }
 
-void UContainer_Base::SetItemInfo(FVector2D index, int count)
+UItemSlot* UContainer_Base::HasItem(UItemData* item, bool checkMax)
 {
-	GetContainerSlot(index)->GetSlotItem()->GetCountItem()->SetItemCount(count);
+	for (UItemSlot* target : ContainerItemSlots) {
+		if (target->HasItem() && target->GetSlotItem()->ItemData->ItemData->index == item->index) {
+			if (checkMax) {
+				if (target->GetSlotItem()->ItemData->ItemCount < item->maxStack) {
+					return target;
+				}
+			}
+			else {
+				return target;
+			}
+			break;
+		}
+	}
+
+	return nullptr;
 }
 
-FVector2D UContainer_Base::FindEmptySlot(int sizeX, int sizeY)
+FVector2D UContainer_Base::FindEmptySlot(FVector2D size)
 {
 	// 빈 위치 찾기
 	int col = 0; int row = 0;
@@ -235,8 +329,8 @@ FVector2D UContainer_Base::FindEmptySlot(int sizeX, int sizeY)
 
 		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, FString::Printf(TEXT("%.1f")));
 
-		for (int j = 0; j < sizeX; j++) {
-			for (int k = 0; k < sizeY; k++) {
+		for (int j = 0; j < size.X; j++) {
+			for (int k = 0; k < size.Y; k++) {
 				FVector2D TargetColRow = FVector2D(slotColRow.X + j, slotColRow.Y + k);
 
 				if (!IsInContainer(TargetColRow)) {
@@ -262,6 +356,16 @@ FVector2D UContainer_Base::FindEmptySlot(int sizeX, int sizeY)
 	return FVector2D(-1, -1);
 }
 
+FInventoryData* UContainer_Base::FindContainerSlotData(TArray<FInventoryData*>& data, FVector2D slotIndex)
+{
+	for (FInventoryData* inData : data) {
+		if (inData->SlotIndex == slotIndex) {
+			return inData;
+		}
+	}
+	return nullptr;
+}
+
 void UContainer_Base::SlotInitSetting(UButton* button)
 {
 	FButtonStyle buttonStyle;
@@ -283,22 +387,12 @@ void UContainer_Base::SlotInitSetting(UButton* button)
 	button->IsFocusable = false;
 }
 
-UItemSlot* UContainer_Base::GetContainerSlot(int col, int row)
-{
-	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
-		if ((int)(ContainerItemSlots[i]->SlotColRow.X) == col && (int)(ContainerItemSlots[i]->SlotColRow.Y) == row) {
-			return ContainerItemSlots[i];
-		}
-	}
-	return nullptr;
-}
-
 UItemSlot* UContainer_Base::GetContainerSlot(FVector2D index)
 {
 	int col = index.X; int row = index.Y;
 
 	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
-		if ((int)(ContainerItemSlots[i]->SlotColRow.X) == col && (int)(ContainerItemSlots[i]->SlotColRow.Y) == row) {
+		if (ContainerItemSlots[i]->SlotColRow == index) {
 			return ContainerItemSlots[i];
 		}
 	}

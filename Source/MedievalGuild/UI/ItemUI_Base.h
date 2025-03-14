@@ -7,6 +7,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
+#include "../Object/InventoryData.h"
 
 #include "ItemUI_Base.generated.h"
 
@@ -19,12 +20,11 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
-	void SetItemCount(int count);
-	void SetItemCountText();
-	void SetItemBind(TArray<UItemUI_Base*> items);
-	void SetDuplicateInit(UItemUI_Base* target);
+	inline void SetItemData(FInventoryData* data) { ItemData = data; }
 	inline void SetItemIndex(FVector2D index) { ItemIndex = index; }
-	inline void SetItemSize(FVector2D size) { ItemSize = size; }
+	inline void SetItemBind(TArray<UItemUI_Base*> items) { BindItems.Empty(); BindItems.Append(items); }
+	void SetItemCountText();
+
 	UItemUI_Base* GetOwnerItem();
 	UItemUI_Base* GetCountItem();
 
@@ -35,12 +35,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ItemCountText;
 
-	int ItemCount;
-
-	bool bStackable = false;
-
-	TArray<UItemUI_Base*> BindItems;
-
+	FInventoryData* ItemData;
 	FVector2D ItemIndex;
-	FVector2D ItemSize;
+	TArray<UItemUI_Base*> BindItems;
 };

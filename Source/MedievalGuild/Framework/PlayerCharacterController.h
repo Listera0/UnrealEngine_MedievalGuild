@@ -46,9 +46,12 @@ protected:
 	void InputInventoryToggle(const FInputActionValue& Value);
 	void InputInteractAction(const FInputActionValue& Value);
 
+	void OpenInventoryUI();
+
 	FHitResult lineTraceCheckTag(FName tag);
 	void CheckScreenUI();
 	void CheckInteractDistance();
+	void AllUIHidden();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
@@ -90,6 +93,7 @@ protected:
 private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
+	bool bIsUIOpened;
 	bool bIsInteract;
 	bool bIsInteractAction;
 	FHitResult hitResult;

@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "../Character/PlayerCharacter.h"
+#include "../Item/Test/Test_Item.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -133,10 +134,12 @@ void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 
 void APlayerCharacterController::InputCameraMove(const FInputActionValue& Value)
 {
-	FVector2D inputValue = Value.Get<FVector2D>() * CameraSensitive;
+	if (!bIsUIOpened) {
+		FVector2D inputValue = Value.Get<FVector2D>() * CameraSensitive;
 
-	AddYawInput(inputValue.X);
-	AddPitchInput(inputValue.Y);
+		AddYawInput(inputValue.X);
+		AddPitchInput(inputValue.Y);
+	}
 }
 
 void APlayerCharacterController::InputPressRunKey(const FInputActionValue& Value)
@@ -162,21 +165,10 @@ void APlayerCharacterController::InputAttackAction(const FInputActionValue& Valu
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
 {
 	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden) {
-		InventoryUI->SetVisibility(ESlateVisibility::Visible);
-				
-		int32 screenX; int32 screenY;
-		GetViewportSize(screenX, screenY);
-
-		bShowMouseCursor = true;
-		SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
-		InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
-
-		if (InteractObj) { InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Visible); }
-		else { InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Hidden); }
+		OpenInventoryUI();
 	}
 	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible) {
-		bShowMouseCursor = false;
-		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+		AllUIHidden();
 	}
 }
 
@@ -184,21 +176,45 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 {
 	// UI가 열려있을 때
 	if (bIsInteractAction) {
-		bIsInteractAction = false;
-		InteractObj = nullptr;
-		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
-		//TradeUI->SetVisibility(ESlateVisibility::Hidden);
+		AllUIHidden();
 	}
 	else {
 		if (bIsInteract) {
 			if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				InteractObj->SetContainerUI();
-				InputInventoryToggle(Value);
+
+				OpenInventoryUI();
+				InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Visible);
 				bIsInteractAction = true;
+			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				UItemData* targetItem = InteractObj->ContainerInventory[0]->ItemData;
+				int targetCount = InteractObj->ContainerInventory[0]->ItemCount;
+				PlayerData->AddItemTo(PlayerData->PlayerInventory, new FInventoryData(InventoryUI->Widget_Inventory->MakeItem(targetItem, targetCount), targetItem, targetCount));
+				hitResult.GetActor()->Destroy();
 			}
 		}
 	}	
+}
+
+void APlayerCharacterController::OpenInventoryUI()
+{
+	InventoryUI->SetVisibility(ESlateVisibility::Visible);
+	bIsUIOpened = true;
+
+	int32 screenX; int32 screenY;
+	GetViewportSize(screenX, screenY);
+
+	bShowMouseCursor = true;
+	SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
+
+	InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
+	
+	FInputModeGameAndUI InputMode;
+	InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
+	SetInputMode(InputMode);
 }
 
 FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
@@ -238,12 +254,23 @@ void APlayerCharacterController::CheckInteractDistance()
 {
 	if (bIsInteractAction && InteractObj) {
 		if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > 40000.0f) {
-			bIsInteractAction = false;
-			InteractObj = nullptr;
-			InventoryUI->SetVisibility(ESlateVisibility::Hidden);
-			//TradeUI->SetVisibility(ESlateVisibility::Hidden);
+			AllUIHidden();
 		}
 	}
+}
+
+void APlayerCharacterController::AllUIHidden()
+{
+	bIsUIOpened = false;
+	bIsInteractAction = false;
+	bShowMouseCursor = false;
+	InteractObj = nullptr;
+	InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+	InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Hidden);
+	//TradeUI->SetVisibility(ESlateVisibility::Hidden);
+
+	FInputModeGameOnly InputMode;
+	SetInputMode(InputMode);
 }
 
 UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCategory category)

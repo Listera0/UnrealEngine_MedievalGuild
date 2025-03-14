@@ -45,28 +45,24 @@ void UItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointer
 
 		// 드래그한 그 아이템정보 저장 및 슬롯 크기 변경
 		FVector2D itemIndex = movingItems[0]->ItemIndex;
-		FVector2D itemSize = movingItems[0]->ItemSize;
-		dragSlot->InitSetting(SlotSize * movingItems[0]->ItemSize);
+		FVector2D itemSize = FVector2D(movingItems[0]->ItemData->ItemData->width, movingItems[0]->ItemData->ItemData->height);
+		dragSlot->InitSetting(SlotSize * itemSize);
 
 		// 가져온 모든 아이템들 복제본 만들어 슬롯에 넣기
 		for (int i = 0; i < movingItems.Num(); i++) {
 			UItemUI_Base* draggingItem = CreateWidget<UItemUI_Base>(GetWorld(), ItemBaseClass);
-			movingItems[i]->SetDuplicateInit(draggingItem);
+			draggingItem->SetItemData(movingItems[i]->ItemData);
 			movingItems[i]->SetVisibility(ESlateVisibility::Collapsed);
 
 			UUniformGridSlot* gridSlot = dragSlot->MovingSlot->AddChildToUniformGrid(draggingItem, draggingItem->ItemIndex.X, draggingItem->ItemIndex.Y);
 			gridSlot->SetHorizontalAlignment(HAlign_Fill);
 			gridSlot->SetVerticalAlignment(VAlign_Fill);
 		}
-		//dragSlot->MovingSlot->SetRenderTransform(FWidgetTransform((-itemIndex * SlotSize), FVector2D(1.0f), FVector2D(), 0.0f));
 
-		FVector2D CustomOffset = FVector2D(GetOffSetValue(itemIndex.X, itemSize.X), GetOffSetValue(itemIndex.Y, itemSize.Y));
-		FVector2D CustomOffset2 = ((itemSize - itemIndex) * -SlotSize * 0.5f);
-		FVector2D CustomOffset3 = (itemIndex - ((itemSize - 1) * 0.5f)) * -SlotSize;
-
+		movingItems[0]->SetItemCountText();
+		FVector2D CustomOffset = (itemIndex - ((itemSize - 1) * 0.5f)) * -SlotSize;
 		UCanvasPanelSlot* canvasSlot = Cast<UCanvasPanelSlot>(dragSlot->MovingSlot->Slot);
-		//canvasSlot->SetPosition(itemIndex * -SlotSize);
-		canvasSlot->SetPosition(CustomOffset3);
+		canvasSlot->SetPosition(CustomOffset);
 
 		Operation->PrevContainerCategory = ContainerPanel->ContainerCategory;
 		Operation->PrevSlotOwner = GetOuter();
