@@ -83,7 +83,7 @@ void UQuestManager::SaveAllQuestDataToJson()
 	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
 	FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
 
-	FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath);
+	FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8);
 }
 
 void UQuestManager::LoadAllQuestDataFromJson()

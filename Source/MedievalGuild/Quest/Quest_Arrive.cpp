@@ -7,7 +7,8 @@
 
 void UQuest_Arrive::SetQuestData(UQuestData_Base* InQuest)
 {
-	Quest = static_cast<UQuestData_Arrive*>(InQuest);
+    Quest = InQuest;
+	Quest_Arrive = static_cast<UQuestData_Arrive*>(InQuest);
 }
 
 bool UQuest_Arrive::CheckQuest(int index)
@@ -20,9 +21,9 @@ bool UQuest_Arrive::CheckQuest(int index)
 	if (PlayerController)
 	{
 		FVector PlayerLocation = PlayerController->GetPawn()->GetActorLocation();
-		float Distance = FVector::Dist(PlayerLocation, Quest->TargetLocation);
+		float Distance = FVector::Dist(PlayerLocation, Quest_Arrive->TargetLocation);
 
-		if (Distance <= Quest->AcceptableRadius)
+		if (Distance <= Quest_Arrive->AcceptableRadius)
 		{
 			CompleteQuest();
 			return true;
@@ -34,19 +35,19 @@ bool UQuest_Arrive::CheckQuest(int index)
 
 void UQuest_Arrive::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
-    JsonObject->SetStringField("QuestName", Quest->QuestName);
-    JsonObject->SetStringField("Description", Quest->Description);
-    JsonObject->SetNumberField("QuestIndex", Quest->QuestIndex);
-    JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest->QuestStatus));
-    JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest->QuestType));
-    JsonObject->SetNumberField("RewardGold", Quest->RewardGold);
-    JsonObject->SetNumberField("TargetLocation_X", Quest->TargetLocation.X);
-    JsonObject->SetNumberField("TargetLocation_Y", Quest->TargetLocation.Y);
-    JsonObject->SetNumberField("TargetLocation_Z", Quest->TargetLocation.Z);
-    JsonObject->SetNumberField("AcceptableRadius", Quest->AcceptableRadius);
+    JsonObject->SetStringField("QuestName", Quest_Arrive->QuestName);
+    JsonObject->SetStringField("Description", Quest_Arrive->Description);
+    JsonObject->SetNumberField("QuestIndex", Quest_Arrive->QuestIndex);
+    JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest_Arrive->QuestStatus));
+    JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest_Arrive->QuestType));
+    JsonObject->SetNumberField("RewardGold", Quest_Arrive->RewardGold);
+    JsonObject->SetNumberField("TargetLocation_X", Quest_Arrive->TargetLocation.X);
+    JsonObject->SetNumberField("TargetLocation_Y", Quest_Arrive->TargetLocation.Y);
+    JsonObject->SetNumberField("TargetLocation_Z", Quest_Arrive->TargetLocation.Z);
+    JsonObject->SetNumberField("AcceptableRadius", Quest_Arrive->AcceptableRadius);
 
     TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
-    for (UItemData* PreQuest : Quest->RewardItems)
+    for (UItemData* PreQuest : Quest_Arrive->RewardItems)
     {
         RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
     }
@@ -54,14 +55,14 @@ void UQuest_Arrive::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 
 
     TArray<TSharedPtr<FJsonValue>> RewardItemAmountJsonArray;
-    for (int PreAmount : Quest->RewardItemAmount)
+    for (int PreAmount : Quest_Arrive->RewardItemAmount)
     {
         RewardItemAmountJsonArray.Add(MakeShared<FJsonValueNumber>(PreAmount));
     }
     JsonObject->SetArrayField("RewardItemAmount", RewardItemAmountJsonArray);
 
     TArray<TSharedPtr<FJsonValue>> PreRequisiteJsonArray;
-    for (int PreQuest : Quest->PreRequisiteQuests)
+    for (int PreQuest : Quest_Arrive->PreRequisiteQuests)
     {
         PreRequisiteJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
     }
@@ -72,25 +73,25 @@ void UQuest_Arrive::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-        if (!Quest)
-            Quest = NewObject<UQuestData_Arrive>();
+        if (!Quest_Arrive)
+            Quest_Arrive = NewObject<UQuestData_Arrive>();
 
-        Quest->QuestName = JsonObject->GetStringField("QuestName");
-        Quest->Description = JsonObject->GetStringField("Description");
-        Quest->QuestIndex = JsonObject->GetIntegerField("QuestIndex");
-        Quest->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
-        Quest->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
-        Quest->RewardGold = JsonObject->GetIntegerField("RewardGold");
-        Quest->TargetLocation.X = JsonObject->GetNumberField("TargetLocation_X");
-        Quest->TargetLocation.Y = JsonObject->GetNumberField("TargetLocation_Y");
-        Quest->TargetLocation.Z = JsonObject->GetNumberField("TargetLocation_Z");
-        Quest->AcceptableRadius = JsonObject->GetNumberField("AcceptableRadius");
+        Quest_Arrive->QuestName = JsonObject->GetStringField("QuestName");
+        Quest_Arrive->Description = JsonObject->GetStringField("Description");
+        Quest_Arrive->QuestIndex = JsonObject->GetIntegerField("QuestIndex");
+        Quest_Arrive->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
+        Quest_Arrive->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
+        Quest_Arrive->RewardGold = JsonObject->GetIntegerField("RewardGold");
+        Quest_Arrive->TargetLocation.X = JsonObject->GetNumberField("TargetLocation_X");
+        Quest_Arrive->TargetLocation.Y = JsonObject->GetNumberField("TargetLocation_Y");
+        Quest_Arrive->TargetLocation.Z = JsonObject->GetNumberField("TargetLocation_Z");
+        Quest_Arrive->AcceptableRadius = JsonObject->GetNumberField("AcceptableRadius");
 
         const TArray<TSharedPtr<FJsonValue>>& RewardItemAmountJsonArray = JsonObject->GetArrayField("RewardItemAmount");
         for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemAmountJsonArray)
         {
             int RewardItemAmount = PreJsonValue->AsNumber();
-            Quest->RewardItemAmount.Add(RewardItemAmount);
+            Quest_Arrive->RewardItemAmount.Add(RewardItemAmount);
         }
 
         const TArray<TSharedPtr<FJsonValue>>& RewardItemJsonArray = JsonObject->GetArrayField("RewardItems");
@@ -99,24 +100,14 @@ void UQuest_Arrive::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
             int RewardItemIndex = PreJsonValue->AsNumber();
             UItemData* PreQuest = UItemDataManager::GetInstance()->FindItemData(RewardItemIndex);
             if (PreQuest)
-                Quest->RewardItems.Add(PreQuest);
+                Quest_Arrive->RewardItems.Add(PreQuest);
         }
 
         const TArray<TSharedPtr<FJsonValue>>& PreRequisiteJsonArray = JsonObject->GetArrayField("PreRequisiteQuests");
         for (const TSharedPtr<FJsonValue>& PreJsonValue : PreRequisiteJsonArray)
         {
             int PreQuestIndex = PreJsonValue->AsNumber();
-            Quest->PreRequisiteQuests.Add(PreQuestIndex);
+            Quest_Arrive->PreRequisiteQuests.Add(PreQuestIndex);
         }
     }
-}
-
-EQuestStatus UQuest_Arrive::GetQuestStatus()
-{
-    return Quest->QuestStatus;
-}
-
-int UQuest_Arrive::GetQuestIndex()
-{
-    return Quest->QuestIndex;
 }

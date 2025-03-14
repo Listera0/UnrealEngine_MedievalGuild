@@ -97,7 +97,7 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
     {
         FString Path = CurrentFilePath + FilePath;
 
-        FFileHelper::SaveStringToFile(OutputString, *Path);
+        FFileHelper::SaveStringToFile(OutputString, *Path, FFileHelper::EEncodingOptions::ForceUTF8);
     }
 }
 

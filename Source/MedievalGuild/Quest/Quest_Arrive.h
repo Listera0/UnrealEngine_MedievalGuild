@@ -19,9 +19,7 @@ public:
 	virtual bool CheckQuest(int index = 0) override;
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
 	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
-	virtual EQuestStatus GetQuestStatus() override;
-	virtual int GetQuestIndex() override;
 private:
-	UQuestData_Arrive* Quest;
+	UQuestData_Arrive* Quest_Arrive;
 	APlayerController* PlayerController = nullptr;
 };

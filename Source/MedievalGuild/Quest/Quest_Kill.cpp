@@ -6,17 +6,18 @@
 
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
 {
-	Quest = static_cast<UQuestData_Kill*>(InQuest);
+    Quest = InQuest;
+	Quest_Kill = static_cast<UQuestData_Kill*>(InQuest);
 }
 
 bool UQuest_Kill::CheckQuest(int index)
 {
-	if (Quest->ObjectIndex == index)
+	if (Quest_Kill->ObjectIndex == index)
 	{
-		Quest->Amount++;
+		Quest_Kill->Amount++;
 	}
 
-	if (Quest->Amount >= Quest->RequiredAmount)
+	if (Quest_Kill->Amount >= Quest_Kill->RequiredAmount)
 	{
 		CompleteQuest();
 		return true;
@@ -27,34 +28,34 @@ bool UQuest_Kill::CheckQuest(int index)
 
 void UQuest_Kill::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
-    JsonObject->SetStringField("QuestName", Quest->QuestName);
-    JsonObject->SetStringField("Description", Quest->Description);
-    JsonObject->SetNumberField("QuestIndex", Quest->QuestIndex);
-    JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest->QuestStatus));
-    JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest->QuestType));
-    JsonObject->SetNumberField("RewardGold", Quest->RewardGold);
+    JsonObject->SetStringField("QuestName", Quest_Kill->QuestName);
+    JsonObject->SetStringField("Description", Quest_Kill->Description);
+    JsonObject->SetNumberField("QuestIndex", Quest_Kill->QuestIndex);
+    JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest_Kill->QuestStatus));
+    JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest_Kill->QuestType));
+    JsonObject->SetNumberField("RewardGold", Quest_Kill->RewardGold);
 
-    JsonObject->SetNumberField("ObjectIndex", Quest->ObjectIndex);
-    JsonObject->SetNumberField("RequiredAmount", Quest->RequiredAmount);
-    JsonObject->SetNumberField("Amount", Quest->Amount);
+    JsonObject->SetNumberField("ObjectIndex", Quest_Kill->ObjectIndex);
+    JsonObject->SetNumberField("RequiredAmount", Quest_Kill->RequiredAmount);
+    JsonObject->SetNumberField("Amount", Quest_Kill->Amount);
 
 
     TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
-    for (UItemData* PreQuest : Quest->RewardItems)
+    for (UItemData* PreQuest : Quest_Kill->RewardItems)
     {
         RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
     }
     JsonObject->SetArrayField("RewardItems", RewardItemJsonArray);
 
     TArray<TSharedPtr<FJsonValue>> RewardItemAmountJsonArray;
-    for (int PreAmount : Quest->RewardItemAmount)
+    for (int PreAmount : Quest_Kill->RewardItemAmount)
     {
         RewardItemAmountJsonArray.Add(MakeShared<FJsonValueNumber>(PreAmount));
     }
     JsonObject->SetArrayField("RewardItemAmount", RewardItemAmountJsonArray);
 
     TArray<TSharedPtr<FJsonValue>> PreRequisiteJsonArray;
-    for (int PreQuest : Quest->PreRequisiteQuests)
+    for (int PreQuest : Quest_Kill->PreRequisiteQuests)
     {
         PreRequisiteJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
     }
@@ -65,24 +66,24 @@ void UQuest_Kill::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-        if (!Quest)
-            Quest = NewObject<UQuestData_Kill>();
+        if (!Quest_Kill)
+            Quest_Kill = NewObject<UQuestData_Kill>();
 
-        Quest->QuestName = JsonObject->GetStringField("QuestName");
-        Quest->Description = JsonObject->GetStringField("Description");
-        Quest->QuestIndex = JsonObject->GetIntegerField("QuestIndex");
-        Quest->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
-        Quest->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
-        Quest->RewardGold = JsonObject->GetIntegerField("RewardGold");
-        Quest->ObjectIndex = JsonObject->GetIntegerField("ObjectIndex");
-        Quest->RequiredAmount = JsonObject->GetIntegerField("RequiredAmount");
-        Quest->Amount = JsonObject->GetIntegerField("Amount");
+        Quest_Kill->QuestName = JsonObject->GetStringField("QuestName");
+        Quest_Kill->Description = JsonObject->GetStringField("Description");
+        Quest_Kill->QuestIndex = JsonObject->GetIntegerField("QuestIndex");
+        Quest_Kill->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
+        Quest_Kill->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
+        Quest_Kill->RewardGold = JsonObject->GetIntegerField("RewardGold");
+        Quest_Kill->ObjectIndex = JsonObject->GetIntegerField("ObjectIndex");
+        Quest_Kill->RequiredAmount = JsonObject->GetIntegerField("RequiredAmount");
+        Quest_Kill->Amount = JsonObject->GetIntegerField("Amount");
 
         const TArray<TSharedPtr<FJsonValue>>& RewardItemAmountJsonArray = JsonObject->GetArrayField("RewardItemAmount");
         for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemAmountJsonArray)
         {
             int RewardItemAmount = PreJsonValue->AsNumber();
-            Quest->RewardItemAmount.Add(RewardItemAmount);
+            Quest_Kill->RewardItemAmount.Add(RewardItemAmount);
         }
 
         const TArray<TSharedPtr<FJsonValue>>& RewardItemJsonArray = JsonObject->GetArrayField("RewardItems");
@@ -91,24 +92,14 @@ void UQuest_Kill::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
             int RewardItemIndex = PreJsonValue->AsNumber();
             UItemData* PreQuest = UItemDataManager::GetInstance()->FindItemData(RewardItemIndex);
             if (PreQuest)
-                Quest->RewardItems.Add(PreQuest);
+                Quest_Kill->RewardItems.Add(PreQuest);
         }
 
         const TArray<TSharedPtr<FJsonValue>>& PreRequisiteJsonArray = JsonObject->GetArrayField("PreRequisiteQuests");
         for (const TSharedPtr<FJsonValue>& PreJsonValue : PreRequisiteJsonArray)
         {
             int PreQuestIndex = PreJsonValue->AsNumber();
-            Quest->PreRequisiteQuests.Add(PreQuestIndex);
+            Quest_Kill->PreRequisiteQuests.Add(PreQuestIndex);
         }
     }
-}
-
-EQuestStatus UQuest_Kill::GetQuestStatus()
-{
-    return Quest->QuestStatus;
-}
-
-int UQuest_Kill::GetQuestIndex()
-{
-    return Quest->QuestIndex;
 }

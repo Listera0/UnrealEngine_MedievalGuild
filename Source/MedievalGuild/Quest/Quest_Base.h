@@ -22,8 +22,8 @@ public:
 	virtual bool CheckQuest(int index = 0);
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject);
 	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
-	virtual EQuestStatus GetQuestStatus();
-	virtual int GetQuestIndex();
-private:
+	EQuestStatus GetQuestStatus();
+	int GetQuestIndex();
+protected:
 	UQuestData_Base* Quest;
 };
