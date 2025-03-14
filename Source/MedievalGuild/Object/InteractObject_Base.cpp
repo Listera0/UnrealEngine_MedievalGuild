@@ -106,7 +106,10 @@ void AInteractObject_Base::RemoveItemToInv(FVector2D location, int count, bool w
 			if(withDelete) delete targetData;
 		}
 		else {
-			targetData->ItemCount -= count;
+			if ((targetData->ItemCount -= count) <= 0) {
+				ContainerInventory.Remove(targetData);
+				if (withDelete) delete targetData;
+			}
 		}
 	}
 }
@@ -122,7 +125,10 @@ void AInteractObject_Base::RemoveItemToInv(UItemData* item, int count, bool with
 			RemoveItemToInv(item, tempCount, withDelete);
 		}
 		else {
-			targetData->ItemCount -= count;
+			if ((targetData->ItemCount -= count) <= 0) {
+				ContainerInventory.Remove(targetData);
+				if (withDelete) delete targetData;
+			}
 		}
 	}
 }
