@@ -4,6 +4,11 @@
 #include "PlayerData.h"
 #include "../Framework/PlayerCharacterController.h"
 
+APlayerData::APlayerData(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+    QuestCompo = CreateDefaultSubobject<UQuestComponent>(FName("Quest Component"));
+}
+
 void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* data)
 {
     FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
@@ -66,10 +71,10 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D locati
 
 void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, bool withDelete)
 {
-    for (int i = 0; i < target.Num(); i++) {
-        if (target[i]->SlotIndex == location) {
-            target.RemoveAt(i);
-        }
+    FInventoryData* targetData = FindItemWithLocation(target, location);
+    if (targetData) {
+        target.Remove(targetData);
+        if (withDelete) delete targetData;
     }
 }
 
@@ -122,21 +127,43 @@ TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory cate
 {
     switch (category)
     {
-    case EContainerCategory::Inventory:
-        return PlayerInventory;
-        break;
-    case EContainerCategory::Storage:
-        break;
-    case EContainerCategory::Equipment:
-        break;
-    case EContainerCategory::Container:
-        return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
-        break;
-    case EContainerCategory::Merchant:
-        break;
+        case EContainerCategory::Inventory:
+            return PlayerInventory;
+            break;
+        case EContainerCategory::Storage:
+            return PlayerStorage;
+            break;
+        case EContainerCategory::Helmet:
+        case EContainerCategory::Cloth:
+        case EContainerCategory::Shoes:
+        case EContainerCategory::Bag:
+        case EContainerCategory::Weapon:
+            return PlayerEquipment;
+            break;
+        case EContainerCategory::Container:
+            return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
+            break;
+        case EContainerCategory::Merchant:
+            //return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
+            break;
     }
 
     return PlayerStorage;
+}
+
+int APlayerData::GetEquipmentIndex(EContainerCategory category)
+{
+    int returnValue = -1;
+
+    switch (category) {
+        case EContainerCategory::Helmet: returnValue = 0; break;
+        case EContainerCategory::Cloth: returnValue = 1; break;
+        case EContainerCategory::Shoes: returnValue = 2; break;
+        case EContainerCategory::Bag: returnValue = 3; break;
+        case EContainerCategory::Weapon: returnValue = 4; break;
+    }
+
+    return returnValue;
 }
 
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)

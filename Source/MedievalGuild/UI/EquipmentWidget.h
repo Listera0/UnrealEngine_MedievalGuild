@@ -24,6 +24,7 @@ public:
 	void InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
 						TSubclassOf<UUserWidget> gearWidget);
 
+	void ShowContainer();
 public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
@@ -44,4 +45,10 @@ public:
 	UCanvasPanel* BagSlot;
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* WeaponSlot;
+
+	UGearWidget* Widget_Helmet;
+	UGearWidget* Widget_Cloth;
+	UGearWidget* Widget_Shoes;
+	UGearWidget* Widget_Bag;
+	UGearWidget* Widget_Weapon;
 };

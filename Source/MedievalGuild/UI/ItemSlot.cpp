@@ -9,7 +9,6 @@ void UItemSlot::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ItemSlot->OnClicked.AddDynamic(this, &UItemSlot::SlotButtonClickBind);
 	SetIsFocusable(false);
 }
 
@@ -18,11 +17,14 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 	FEventReply Reply;
 	Reply.NativeReply = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 
-	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton)) {
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Mouse Button Down Left"));
+	if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 
-		if (ItemSlot->GetChildrenCount() != 0) {
-			Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton)) {
+		if (HasItem()) {
+			if (PlayerController->IsShiftPressed()) 
+				SlotButtonShiftClick();
+			else 
+				Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
 		}
 	}
 
@@ -100,17 +102,50 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 {
 	Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 	if (!InOperation) return false;
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 
 	UItemDragDropOperation* Operation = Cast<UItemDragDropOperation>(InOperation);
 	if (Operation) {
-		//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::White, TEXT("Get Item"));
 		if (Operation->OriginalWidgets[0] != GetSlotItem()) {
-			Operation->bMoveSuccessed = true;
-			ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
+			UItemUI_Base* ownerItem = Operation->OriginalWidgets[0]->GetOwnerItem();
+			int containerTypeIndex = PlayerController->PlayerData->GetEquipmentIndex(ContainerPanel->ContainerCategory);
+
+			// container is equipment
+			if (containerTypeIndex != -1) {
+				int equipmentIndex = GetEquipmentIndex(ownerItem->ItemData->ItemData->eItemType);
+				if (containerTypeIndex == equipmentIndex && !HasItem()) {
+					ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->OriginalWidgets[0]->GetOwnerItem()->ItemData);
+					Operation->bMoveSuccessed = true;
+				}
+			}
+			else {
+				if (PlayerController->PlayerData->GetEquipmentIndex(Operation->PrevContainerCategory) != -1) {
+					ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets, true);
+				}
+				else {
+					ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
+				}
+				Operation->bMoveSuccessed = true;
+			}
 		}
 	}
 
 	return false;
+}
+
+int UItemSlot::GetEquipmentIndex(EItemType itemType)
+{
+	int returnValue = -1;
+
+	switch (itemType) {
+		case EItemType::Helmet: returnValue = 0; break;
+		case EItemType::Cloth: returnValue = 1; break;
+		case EItemType::Shoes: returnValue = 2; break;
+		case EItemType::Bag: returnValue = 3; break;
+		case EItemType::Weapon: returnValue = 4; break;
+	}
+
+	return returnValue;
 }
 
 void UItemSlot::RemoveItem()
@@ -123,26 +158,82 @@ void UItemSlot::RemoveItem()
 	ownerItem->GetParent()->RemoveChildAt(0);
 }
 
-void UItemSlot::SlotButtonClickBind()
+void UItemSlot::SlotButtonShiftClick()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::White, FString(TEXT("work")));
-	if (HasItem()) {
-		APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-		if (controller->IsShiftPressed()) {
-			if (controller->IsInteractAction() && controller->hitResult.GetActor()->ActorHasTag(FName("Container"))) {
-				if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) {
-					UContainer_Base* otherContainer = controller->GetTargetContainer(EContainerCategory::Container);
-					TArray<UItemUI_Base*> moveItems;
-					moveItems.Add(GetSlotItem());
-					moveItems.Append(moveItems[0]->BindItems);
-					otherContainer->MoveItemToSlot(ContainerPanel->ContainerCategory, SlotIndex, -1, moveItems);
+	if (PlayerController->IsInteractAction() && PlayerController->hitResult.GetActor()->ActorHasTag(FName("Container"))) {
+		UContainer_Base* otherContainer = nullptr;
+		if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) {
+			otherContainer = PlayerController->GetTargetContainer(EContainerCategory::Container);
+			FInventoryData* itemInfo = GetSlotItem()->GetOwnerItem()->ItemData;
+
+			int itemMaxStack = itemInfo->ItemData->maxStack;
+			FVector2D itemSize(itemInfo->ItemData->width, itemInfo->ItemData->height);
+
+			while (itemInfo->ItemCount > 0) {
+				UItemSlot* targetSlot = otherContainer->HasItem(itemInfo->ItemData, true);
+				if (targetSlot) {
+					int value = itemMaxStack - targetSlot->GetItemData()->ItemCount;
+					if (value < itemInfo->ItemCount) {
+						targetSlot->GetItemData()->ItemCount += value;
+						itemInfo->ItemCount -= value;
+					}
+					else {
+						targetSlot->GetItemData()->ItemCount += itemInfo->ItemCount;
+						PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory), itemInfo->SlotIndex, true);
+						break;
+					}
+				}
+				else {
+					FVector2D findLocation = otherContainer->FindEmptySlot(itemSize);
+					if (findLocation != FVector2D(-1.0f)) {
+						PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory), itemInfo->SlotIndex, false);
+						itemInfo->SlotIndex = findLocation;
+						PlayerController->PlayerData->AddItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Container), itemInfo);
+					}
+					break;
 				}
 			}
-			else if (true) {
-				// storage
+
+			ContainerPanel->ShowContainer(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory));
+			otherContainer->ShowContainer(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Container));
+		}
+		else if (ContainerPanel->ContainerCategory == EContainerCategory::Container) {
+			otherContainer = PlayerController->GetTargetContainer(EContainerCategory::Inventory);
+			FInventoryData* itemInfo = GetSlotItem()->GetOwnerItem()->ItemData;
+
+			int itemMaxStack = itemInfo->ItemData->maxStack;
+			FVector2D itemSize(itemInfo->ItemData->width, itemInfo->ItemData->height);
+
+			while (itemInfo->ItemCount > 0) {
+				UItemSlot* targetSlot = otherContainer->HasItem(itemInfo->ItemData, true);
+				if (targetSlot) {
+					int value = itemMaxStack - targetSlot->GetItemData()->ItemCount;
+					if (value < itemInfo->ItemCount) {
+						targetSlot->GetItemData()->ItemCount += value;
+						itemInfo->ItemCount -= value;
+					}
+					else {
+						targetSlot->GetItemData()->ItemCount += itemInfo->ItemCount;
+						PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Container), itemInfo->SlotIndex, true);
+						break;
+					}
+				}
+				else {
+					FVector2D findLocation = otherContainer->FindEmptySlot(itemSize);
+					if (findLocation != FVector2D(-1.0f)) {
+						PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Container), itemInfo->SlotIndex, false);
+						itemInfo->SlotIndex = findLocation;
+						PlayerController->PlayerData->AddItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory), itemInfo);
+					}
+					break;
+				}
 			}
+
+			ContainerPanel->ShowContainer(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Container));
+			otherContainer->ShowContainer(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory));
 		}
 	}
+	else if (true) {
+		// storage
+	}
 }
-
-

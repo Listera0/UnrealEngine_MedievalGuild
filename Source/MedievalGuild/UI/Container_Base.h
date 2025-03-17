@@ -54,12 +54,18 @@ public:
 	void MakeContainer(int col, int row);
 	void ResetContainer();
 	void ShowContainer(TArray<FInventoryData*>& data);
+	void ShowContainer(FInventoryData* data);
 
 	void MakeItemUI(FInventoryData* data);
 	FVector2D MakeItem(FInventoryData* data);
 
 	void MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items);
+	void MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items, bool equipment); // for move equipment from equiopment slot
+	void MoveItemToSlot(EContainerCategory before, FInventoryData* itemData); // for move equipment to equipment slot
 
+	/// <summary>
+	/// If checkMax is ture -> check item count less then item maxStack
+	/// </summary>
 	UItemSlot* HasItem(UItemData* item, bool checkMax);
 	FVector2D FindEmptySlot(FVector2D size);
 	FInventoryData* FindContainerSlotData(TArray<FInventoryData*>& data, FVector2D slotIndex);
@@ -67,6 +73,7 @@ public:
 
 protected:
 	UItemSlot* GetContainerSlot(FVector2D index);
+	int GetEquipmentIndex(EItemType type);
 	inline bool IsInContainer(FVector2D index) { return (index.X < ContainerSize.X && index.Y < ContainerSize.Y && index.X >= 0 && index.Y >= 0); };
 
 	float ContainerSlotSize = 100.0f;

@@ -23,27 +23,81 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	// EquipmentWidget
 	Widget_Equipment = CreateWidget<UEquipmentWidget>(GetWorld(), Blueprints->EquipmentWidget);
 	Widget_Equipment->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->GearWidget);
+	InventorySlot->AddChildToHorizontalBox(Widget_Equipment);
+	PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Collapsed);
 
-	UHorizontalBoxSlot* Slot_Equipment = InventorySlot->AddChildToHorizontalBox(Widget_Equipment);
-	Slot_Equipment->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	Slot_Equipment->SetHorizontalAlignment(HAlign_Fill);
-	Slot_Equipment->SetVerticalAlignment(VAlign_Fill);
+	// MerchantWidget
+	Widget_Merchant = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, 6, 4);
+	InventorySlot->AddChildToHorizontalBox(Widget_Merchant);
+	PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Collapsed);
 
 	// InventorySlot
 	Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), Blueprints->InventoryWidget);
 	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Inventory, 6, 6);
+	InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
+	PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Collapsed);
 
-	UHorizontalBoxSlot* Slot_Inventory = InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
-	Slot_Inventory->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	Slot_Inventory->SetHorizontalAlignment(HAlign_Fill);
-	Slot_Inventory->SetVerticalAlignment(VAlign_Fill);
+	// TradeSlot
+	Widget_Trade = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_Trade->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, 6, 4);
+	InventorySlot->AddChildToHorizontalBox(Widget_Trade);
+	PanelVisibleSetting(Widget_Trade, ESlateVisibility::Collapsed);
 
 	// ContainerSlot
 	Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
 	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, 6, 4);
+	InventorySlot->AddChildToHorizontalBox(Widget_Container);
+	PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
 
-	UHorizontalBoxSlot* Slot_Container = InventorySlot->AddChildToHorizontalBox(Widget_Container);
-	Slot_Container->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	Slot_Container->SetHorizontalAlignment(HAlign_Fill);
-	Slot_Container->SetVerticalAlignment(VAlign_Fill);
+	// StorageSlot
+	Widget_Storage = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, 6, 4);
+	InventorySlot->AddChildToHorizontalBox(Widget_Storage);
+	PanelVisibleSetting(Widget_Storage, ESlateVisibility::Collapsed);
+}
+
+void UPlayerInventory::PanelVisibleSetting(int value)
+{
+	if (value == 0) {
+		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Trade, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Hidden);
+	}
+	else if (value == 1) {
+		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Trade, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Container, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Collapsed);
+	}
+	else if (value == 2) {
+		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Trade, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Visible);
+	}
+	else if (value == 3) {
+		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Trade, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
+		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Visible);
+	}
+}
+
+void UPlayerInventory::PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible)
+{
+	widget->SetVisibility(visible);
+	UHorizontalBoxSlot* boxSlot = Cast<UHorizontalBoxSlot>(widget->Slot);
+	boxSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+	boxSlot->SetHorizontalAlignment(HAlign_Fill);
+	boxSlot->SetVerticalAlignment(VAlign_Fill);
 }

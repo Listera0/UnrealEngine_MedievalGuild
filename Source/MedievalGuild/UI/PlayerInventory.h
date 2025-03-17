@@ -34,6 +34,12 @@ protected:
 public:
 	void PlayerInventoryInitSetting();
 
+	/// <summary>
+	/// 0 = equip, inv, empty / 1 = equip, inv, con / 2 = equip, inv, storage / 3 = merchant, trade, storage
+	/// </summary>
+	void PanelVisibleSetting(int value);
+	void PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible);
+
 protected:
 	AGameManager* GameManager = nullptr;
 	UBlueprintBindComponent* Blueprints = nullptr;
@@ -45,4 +51,9 @@ public:
 	UEquipmentWidget* Widget_Equipment;
 	UPlayerContainerWidget* Widget_Inventory;
 	UContainerWidget* Widget_Container;
+	UContainerWidget* Widget_Storage;
+
+	//
+	UContainerWidget* Widget_Merchant;
+	UContainerWidget* Widget_Trade;
 };

@@ -111,6 +111,7 @@ void APlayerCharacterController::InitPlayerData()
 {
 	PlayerData = GetPlayerState<APlayerData>();
 	PlayerData->PlayerInventoryUI = InventoryUI;
+	PlayerData->PlayerEquipment.Init(nullptr, 5);
 }
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
@@ -167,7 +168,10 @@ void APlayerCharacterController::InputAttackAction(const FInputActionValue& Valu
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
 {
 	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden) {
-		OpenInventoryUI();
+		InventoryUI->PanelVisibleSetting(0);
+		OpenUISetting();
+		InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
+		InventoryUI->Widget_Equipment->ShowContainer();
 	}
 	else if (InventoryUI->GetVisibility() == ESlateVisibility::Visible) {
 		AllUIHidden();
@@ -182,15 +186,7 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 	}
 	else {
 		if (bIsInteract) {
-			if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
-				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-				InteractObj->SetContainerUI();
-
-				OpenInventoryUI();
-				InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Visible);
-				bIsInteractAction = true;
-			}
-			else if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
+			if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
 				targetItem->SlotIndex = FVector2D(-1.0f);
@@ -198,26 +194,24 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				PlayerData->AddItemTo(PlayerData->PlayerInventory, targetItem);
 				hitResult.GetActor()->Destroy();
 			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
+				InventoryUI->PanelVisibleSetting(1);
+				OpenUISetting();
+
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->SetContainerUI();
+				InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
+				InventoryUI->Widget_Equipment->ShowContainer();
+			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
+				bIsInteractAction = true;
+
+				InventoryUI->PanelVisibleSetting(3);
+				OpenUISetting();
+			}
 		}
 	}	
-}
-
-void APlayerCharacterController::OpenInventoryUI()
-{
-	InventoryUI->SetVisibility(ESlateVisibility::Visible);
-	bIsUIOpened = true;
-
-	int32 screenX; int32 screenY;
-	GetViewportSize(screenX, screenY);
-
-	bShowMouseCursor = true;
-	SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
-
-	InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
-	
-	FInputModeGameAndUI InputMode;
-	InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
-	SetInputMode(InputMode);
 }
 
 FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
@@ -262,6 +256,23 @@ void APlayerCharacterController::CheckInteractDistance()
 	}
 }
 
+void APlayerCharacterController::OpenUISetting()
+{
+	bIsUIOpened = true;
+	InventoryUI->SetVisibility(ESlateVisibility::Visible);
+
+	// Mouse mode 설정 - 마우스 표시 및 중앙으로 이동
+	bShowMouseCursor = true;
+	int32 screenX; int32 screenY;
+	GetViewportSize(screenX, screenY);
+	SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
+
+	// Mouse mode 설정 - 마우스로 UI클릭 가능하게 설정
+	FInputModeGameAndUI InputMode;
+	InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
+	SetInputMode(InputMode);
+}
+
 void APlayerCharacterController::AllUIHidden()
 {
 	bIsUIOpened = false;
@@ -269,8 +280,6 @@ void APlayerCharacterController::AllUIHidden()
 	bShowMouseCursor = false;
 	InteractObj = nullptr;
 	InventoryUI->SetVisibility(ESlateVisibility::Hidden);
-	InventoryUI->Widget_Container->SetVisibility(ESlateVisibility::Hidden);
-	//TradeUI->SetVisibility(ESlateVisibility::Hidden);
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
@@ -278,20 +287,16 @@ void APlayerCharacterController::AllUIHidden()
 
 UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCategory category)
 {
-	switch (category)
-	{
-	case EContainerCategory::Inventory:
-		return InventoryUI->Widget_Inventory;
-		break;
-	case EContainerCategory::Storage:
-		break;
-	case EContainerCategory::Equipment:
-		break;
-	case EContainerCategory::Container:
-		return InventoryUI->Widget_Container;
-		break;
-	case EContainerCategory::Merchant:
-		break;
+	switch (category) {
+		case EContainerCategory::Inventory: return InventoryUI->Widget_Inventory; break;
+		case EContainerCategory::Storage: return nullptr; break;
+		case EContainerCategory::Helmet: return InventoryUI->Widget_Equipment->Widget_Helmet; break;
+		case EContainerCategory::Cloth: return InventoryUI->Widget_Equipment->Widget_Cloth; break;
+		case EContainerCategory::Shoes: return InventoryUI->Widget_Equipment->Widget_Shoes; break;
+		case EContainerCategory::Bag: return InventoryUI->Widget_Equipment->Widget_Bag; break;
+		case EContainerCategory::Weapon: return InventoryUI->Widget_Equipment->Widget_Weapon; break;
+		case EContainerCategory::Container: return InventoryUI->Widget_Container; break;
+		case EContainerCategory::Merchant: return  nullptr; break;
 	}
 
 	return nullptr;

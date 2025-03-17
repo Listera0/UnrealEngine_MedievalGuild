@@ -73,6 +73,15 @@ void UContainer_Base::ShowContainer(TArray<FInventoryData*>& data)
 	}
 }
 
+void UContainer_Base::ShowContainer(FInventoryData* data)
+{
+	ResetContainer();
+	if (data) {
+		MakeItemUI(data);
+		GetContainerSlot(data->SlotIndex)->GetSlotItem()->SetItemCountText();
+	}
+}
+
 void UContainer_Base::MakeItemUI(FInventoryData* data)
 {
 	TArray<UItemUI_Base*> makingItems;
@@ -269,6 +278,64 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 	}
 }
 
+void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items, bool equipment)
+{
+	TArray<FVector2D> itemToArea;
+	TArray<FVector2D> itemToIndex;
+
+	FVector2D offsetTo = items[0]->ItemIndex;
+
+	// 범위 만들기 (items 의 슬롯에 offset을 빼기)
+	for (int i = 0; i < items.Num(); i++) {
+		// 실제 인벤토리의 좌표
+		itemToArea.Add(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
+
+		// 인벤토리의 칸을 넘어감
+		if (!IsInContainer(itemToArea[i])) return;
+
+		// 해당 칸에 아이템 존재
+		UItemSlot* targetSlot = GetContainerSlot(itemToArea[i]);
+		if (targetSlot->HasItem()) {
+			if (targetSlot->GetSlotItem()->GetOwnerItem() != items[i]->GetOwnerItem()) {
+				itemToIndex.Add(itemToArea[i]);
+			}
+		}
+	}
+
+	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	if (itemToIndex.Num() > 0) { return; }
+	else {
+		TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+		TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
+		UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+		int typeIndex = controller->PlayerData->GetEquipmentIndex(before);
+
+		FInventoryData* fromData = FromContainer[typeIndex];
+		FromContainer[typeIndex] = nullptr;
+		fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
+		ToContainer.Add(fromData);
+
+		FromContainerBase->ShowContainer(FromContainer[typeIndex]);
+		ShowContainer(ToContainer);
+	}
+}
+
+void UContainer_Base::MoveItemToSlot(EContainerCategory before, FInventoryData* itemData)
+{
+	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
+	TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+	int typeIndex = GetEquipmentIndex(itemData->ItemData->eItemType);
+
+	FromContainer.Remove(itemData);
+	itemData->SlotIndex = FVector2D(0.0f, 0.0f);
+	ToContainer[typeIndex] = itemData;
+
+	controller->GetTargetContainer(before)->ShowContainer(FromContainer);
+	ShowContainer(ToContainer[typeIndex]);
+}
+
+
 UItemSlot* UContainer_Base::HasItem(UItemData* item, bool checkMax)
 {
 	for (UItemSlot* target : ContainerItemSlots) {
@@ -364,4 +431,30 @@ UItemSlot* UContainer_Base::GetContainerSlot(FVector2D index)
 	}
 
 	return nullptr;
+}
+
+int UContainer_Base::GetEquipmentIndex(EItemType type)
+{
+	int returnValue = 0;
+
+	switch (type)
+	{
+	case EItemType::Helmet:
+		returnValue = 0;
+		break;
+	case EItemType::Cloth:
+		returnValue = 1;
+		break;
+	case EItemType::Shoes:
+		returnValue = 2;
+		break;
+	case EItemType::Bag:
+		returnValue = 3;
+		break;
+	case EItemType::Weapon:
+		returnValue = 4;
+		break;
+	}
+
+	return returnValue;
 }

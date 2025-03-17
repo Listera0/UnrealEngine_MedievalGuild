@@ -8,7 +8,11 @@ enum class EContainerCategory : uint8
 	None,
 	Inventory,
 	Storage,
-	Equipment,
+	Helmet,
+	Cloth,
+	Shoes,
+	Bag,
+	Weapon,
 	Container,
 	Merchant
 };

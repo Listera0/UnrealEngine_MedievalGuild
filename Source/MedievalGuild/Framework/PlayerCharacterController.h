@@ -46,11 +46,10 @@ protected:
 	void InputInventoryToggle(const FInputActionValue& Value);
 	void InputInteractAction(const FInputActionValue& Value);
 
-	void OpenInventoryUI();
-
 	FHitResult lineTraceCheckTag(FName tag);
 	void CheckScreenUI();
 	void CheckInteractDistance();
+	void OpenUISetting();
 	void AllUIHidden();
 
 protected:
