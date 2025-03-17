@@ -181,7 +181,6 @@ UStaticMesh* UItemDataManager::GetMeshForItem(const UItemData* item)
 
     FString MeshReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
     FString MeshPath = FString::Printf(TEXT("/Game/Data/Item/Mesh/%s"), *MeshReference);
-    GEngine->AddOnScreenDebugMessage(1, 3, FColor::Red, MeshPath);
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *MeshPath);
 
     if (Mesh)

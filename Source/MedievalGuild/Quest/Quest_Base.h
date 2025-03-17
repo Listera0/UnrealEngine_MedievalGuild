@@ -8,7 +8,7 @@
 #include "Quest_Base.generated.h"
 
 UCLASS(Blueprintable, BlueprintType)  
-class MEDIEVALGUILD_API UQuest_Base : public UDataAsset 
+class MEDIEVALGUILD_API UQuest_Base : public UObject 
 {
 	GENERATED_BODY()
 

@@ -5,12 +5,13 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 
-#include "../Item/ItemData.h"
+
+#include "../Object/InteractObject_Base.h"
 
 #include "Merchant.generated.h"
 
 UCLASS()
-class MEDIEVALGUILD_API AMerchant : public AActor
+class MEDIEVALGUILD_API AMerchant : public AInteractObject_Base
 {
 	GENERATED_BODY()
 
@@ -21,9 +22,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 
-	UItemData* SellItem(int index, int Count);
+	FInventoryData* SellItem(int index, int Count);
 
 	UFUNCTION()
 	void OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -35,6 +36,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
 	UCapsuleComponent* Collision = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Merchant")
+	class UQuestComponent* QuestComponent = nullptr;
+
 private:
-	TArray<UItemData*> ItemDatas;
+	TArray<class UItemData*> ItemDatas;
 };
