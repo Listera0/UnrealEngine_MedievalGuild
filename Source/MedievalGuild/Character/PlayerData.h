@@ -21,6 +21,7 @@ class MEDIEVALGUILD_API APlayerData : public APlayerState
 public:
 	APlayerData(const FObjectInitializer& ObjectInitializer);
 
+	void AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryData* item, UContainer_Base* targetContainer);
 	void AddItemTo(TArray<FInventoryData*>& target, FInventoryData* item);
 	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete);
 	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, bool withDelete);
@@ -33,6 +34,7 @@ public:
 
 	TArray<FInventoryData*>& GetTargetContainer(EContainerCategory category);
 	int GetEquipmentIndex(EContainerCategory category);
+	int GetPlayerCurrency();
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
@@ -49,6 +51,7 @@ public:
 
 	TArray<FInventoryData*> PlayerInventory;
 	TArray<FInventoryData*> PlayerStorage;
+	TArray<FInventoryData*> PlayerTrade;
 	TArray<FInventoryData*> PlayerEquipment;
 
 	UPROPERTY()

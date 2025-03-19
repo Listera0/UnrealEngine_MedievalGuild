@@ -9,10 +9,33 @@ APlayerData::APlayerData(const FObjectInitializer& ObjectInitializer) : Super(Ob
     QuestCompo = CreateDefaultSubobject<UQuestComponent>(FName("Quest Component"));
 }
 
-void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* data)
+void APlayerData::AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryData* item, UContainer_Base* targetContainer)
 {
-    FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
-    if (!targetData) { target.Add(data); }
+    FInventoryData* hasitem = HasItem(target, item->ItemData->index, true);
+    if (hasitem) {
+        int value = hasitem->ItemData->maxStack - hasitem->ItemCount;
+        if (value < item->ItemCount) {
+            hasitem->ItemCount += value;
+            item->ItemCount = value - item->ItemCount;
+            AddItemToAllWork(target, item, targetContainer);
+        }
+        else {
+            hasitem->ItemCount += item->ItemCount;
+        }
+    }
+    else {
+        FVector2D findLocation = targetContainer->FindEmptySlot(FVector2D(item->ItemData->width, item->ItemData->height));
+        if (findLocation != FVector2D(-1.0f)) {
+            item->SlotIndex = findLocation;
+            target.Add(item);
+        }
+    }
+}
+
+void APlayerData::AddItemTo(TArray<FInventoryData*>& target, FInventoryData* item)
+{
+    FInventoryData* targetData = HasItem(target, item->ItemData->index, true);
+    if (!targetData) { target.Add(item); }
 
     /*if (data->SlotIndex == FVector2D(-1.0f)) {
         FInventoryData* targetData = HasItem(target, data->ItemData->index, true);
@@ -127,25 +150,19 @@ TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory cate
 {
     switch (category)
     {
-        case EContainerCategory::Inventory:
-            return PlayerInventory;
-            break;
-        case EContainerCategory::Storage:
-            return PlayerStorage;
+        case EContainerCategory::Inventory: return PlayerInventory; break;
+        case EContainerCategory::Storage: return PlayerStorage; break;
+        case EContainerCategory::Trade: return PlayerTrade; break;
+        case EContainerCategory::Container:
+            return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory; break;
+        case EContainerCategory::Merchant:
+            //return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
             break;
         case EContainerCategory::Helmet:
         case EContainerCategory::Cloth:
         case EContainerCategory::Shoes:
         case EContainerCategory::Bag:
-        case EContainerCategory::Weapon:
-            return PlayerEquipment;
-            break;
-        case EContainerCategory::Container:
-            return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
-            break;
-        case EContainerCategory::Merchant:
-            //return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
-            break;
+        case EContainerCategory::Weapon: return PlayerEquipment; break;
     }
 
     return PlayerStorage;
@@ -164,6 +181,17 @@ int APlayerData::GetEquipmentIndex(EContainerCategory category)
     }
 
     return returnValue;
+}
+
+int APlayerData::GetPlayerCurrency()
+{
+    int value = 0;
+    for (FInventoryData* data : PlayerStorage) {
+        if (data->ItemData->index == 0) {
+            value += data->ItemCount;
+        }
+    }
+    return value;
 }
 
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)

@@ -39,9 +39,7 @@ public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ContainerWidget;
 	UPROPERTY()
-	TSubclassOf<UUserWidget> BuyWidget;
-	UPROPERTY()
-	TSubclassOf<UUserWidget> SellWidget;
+	TSubclassOf<UUserWidget> TradeWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> GearWidget;
 		

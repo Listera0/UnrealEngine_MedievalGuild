@@ -35,7 +35,7 @@ public:
 
 	inline bool HasItem() { return ItemSlot->GetChildrenCount() > 0 ? true : false; }
 	inline UItemUI_Base* GetSlotItem() { return Cast<UItemUI_Base>(ItemSlot->GetChildAt(0)); }
-	inline FInventoryData* GetItemData() { return HasItem() ? GetSlotItem()->ItemData : nullptr; }
+	inline FInventoryData* GetItemData() { return HasItem() ? GetSlotItem()->GetOwnerItem()->ItemData : nullptr; }
 	int GetEquipmentIndex(EItemType itemType);
 	void RemoveItem();
 	

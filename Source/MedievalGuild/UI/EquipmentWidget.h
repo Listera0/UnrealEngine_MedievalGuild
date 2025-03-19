@@ -25,6 +25,7 @@ public:
 						TSubclassOf<UUserWidget> gearWidget);
 
 	void ShowContainer();
+
 public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;

@@ -18,25 +18,24 @@ void UContainer_Base::NativeConstruct()
 }
 
 void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
-												EContainerCategory category, float col, float row)
+												EContainerCategory category, FVector2D size)
 {
 	ItemSlotClass = itemSlotClass;
 	ItemBaseClass = itemBaseClass;
 	ItemMoveSlotClass = itemMoveSlotClass;
-	MakeContainer(col, row);
 	ContainerCategory = category;
+	MakeContainer(size);
 }
 
-void UContainer_Base::MakeContainer(int col, int row)
+void UContainer_Base::MakeContainer(FVector2D size)
 {
 	UCanvasPanelSlot* TargetSlot = Cast<UCanvasPanelSlot>(ContainerSlot->Slot);
-	TargetSlot->SetSize(FVector2D(ContainerSlotSize * col, ContainerSlotSize * row));
-
-	ContainerSize = FVector2D(col, row);
+	TargetSlot->SetSize(ContainerSlotSize * size);
+	ContainerSize = size;
 	ContainerItemSlots.Empty();
 	int slotIndex = 0;
-	for (int j = 0; j < row; j++) {
-		for (int i = 0; i < col; i++) {
+	for (int j = 0; j < (int)(ContainerSize.Y); j++) {
+		for (int i = 0; i < (int)(ContainerSize.X); i++) {
 			UItemSlot* newItemSlot = CreateWidget<UItemSlot>(GetWorld(), ItemSlotClass);
 			SlotInitSetting(newItemSlot->ItemSlot);
 			newItemSlot->ContainerPanel = this;
@@ -338,6 +337,11 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, FInventoryData* 
 
 UItemSlot* UContainer_Base::HasItem(UItemData* item, bool checkMax)
 {
+	if (ContainerItemSlots.Num() < 1) {
+		GEngine->AddOnScreenDebugMessage(-1, 2, FColor::White, TEXT("no slots"));
+		return nullptr;
+	}
+
 	for (UItemSlot* target : ContainerItemSlots) {
 		if (target->HasItem() && target->GetSlotItem()->ItemData->ItemData->index == item->index) {
 			if (checkMax) {

@@ -99,12 +99,6 @@ void APlayerCharacterController::InitViewport()
 		InventoryUI->AddToViewport();
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 	}
-
-	if (TradeViewport) {
-		TradeUI = CreateWidget<UTrade>(this, TradeViewport);
-		TradeUI->AddToViewport();
-		TradeUI->SetVisibility(ESlateVisibility::Hidden);
-	}
 }
 
 void APlayerCharacterController::InitPlayerData()
@@ -204,11 +198,26 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
 				InventoryUI->Widget_Equipment->ShowContainer();
 			}
-			else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
-				bIsInteractAction = true;
+			else if (hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
+				InventoryUI->PanelVisibleSetting(2);
+				OpenUISetting();
 
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InventoryUI->Widget_Equipment->ShowContainer();
+				InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
+				InventoryUI->Widget_Storage->ShowContainer(PlayerData->PlayerStorage);
+			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
 				InventoryUI->PanelVisibleSetting(3);
 				OpenUISetting();
+
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->SetContainerUI();
+				InventoryUI->Widget_Trade->ShowContainer();
+				InventoryUI->Widget_Storage->ShowContainer(PlayerData->PlayerStorage);
+
 			}
 		}
 	}	
@@ -289,14 +298,15 @@ UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCatego
 {
 	switch (category) {
 		case EContainerCategory::Inventory: return InventoryUI->Widget_Inventory; break;
-		case EContainerCategory::Storage: return nullptr; break;
+		case EContainerCategory::Storage: return InventoryUI->Widget_Storage; break;
+		case EContainerCategory::Trade: return InventoryUI->Widget_Trade->Widget_Trade; break;
+		case EContainerCategory::Container: return InventoryUI->Widget_Container; break;
+		case EContainerCategory::Merchant: return  InventoryUI->Widget_Merchant; break;
 		case EContainerCategory::Helmet: return InventoryUI->Widget_Equipment->Widget_Helmet; break;
 		case EContainerCategory::Cloth: return InventoryUI->Widget_Equipment->Widget_Cloth; break;
 		case EContainerCategory::Shoes: return InventoryUI->Widget_Equipment->Widget_Shoes; break;
 		case EContainerCategory::Bag: return InventoryUI->Widget_Equipment->Widget_Bag; break;
 		case EContainerCategory::Weapon: return InventoryUI->Widget_Equipment->Widget_Weapon; break;
-		case EContainerCategory::Container: return InventoryUI->Widget_Container; break;
-		case EContainerCategory::Merchant: return  nullptr; break;
 	}
 
 	return nullptr;

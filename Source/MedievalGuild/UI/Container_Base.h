@@ -50,8 +50,8 @@ protected:
 
 public:
 	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
-								EContainerCategory category, float col, float row);
-	void MakeContainer(int col, int row);
+								EContainerCategory category, FVector2D size);
+	void MakeContainer(FVector2D size);
 	void ResetContainer();
 	void ShowContainer(TArray<FInventoryData*>& data);
 	void ShowContainer(FInventoryData* data);

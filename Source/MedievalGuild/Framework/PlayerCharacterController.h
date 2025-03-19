@@ -8,7 +8,6 @@
 #include "InputActionValue.h"
 #include "../UI/Container_Base.h"
 #include "../UI/PlayerInventory.h"
-#include "../UI/Trade.h"
 #include "../UI/ScreenUI.h"
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
@@ -57,9 +56,6 @@ protected:
 	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UTrade> TradeViewport = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenUI> ScreenViewport = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
@@ -104,7 +100,6 @@ public:
 
 	FHitResult hitResult;
 	UPlayerInventory* InventoryUI = nullptr;
-	UTrade* TradeUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
