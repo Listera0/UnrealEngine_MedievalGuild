@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
 	TArray<int> PreRequisiteQuests;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	bool HasPlayer = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
 	TArray<UItemData*> RewardItems;
 

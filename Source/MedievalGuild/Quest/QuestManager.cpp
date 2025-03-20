@@ -9,17 +9,13 @@
 
 UQuestManager* UQuestManager::Instance = nullptr;
 
-UQuestManager::UQuestManager()
-{
-	LoadAllQuestDataFromJson();
-}
-
 UQuestManager* UQuestManager::GetInstance()
 {
     if (!Instance)
     {
         Instance = NewObject<UQuestManager>();
         Instance->AddToRoot();
+		Instance->LoadAllQuestDataFromJson();
     }
     return Instance;;
 }
@@ -83,8 +79,17 @@ void UQuestManager::SaveAllQuestDataToJson()
 	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
 	FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
 
-	FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8);
+	if (FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Quest data saved successfully"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to save quest data"));
+	}
 }
+
+
 
 void UQuestManager::LoadAllQuestDataFromJson()
 {
@@ -103,6 +108,7 @@ void UQuestManager::LoadAllQuestDataFromJson()
 			for (const TSharedPtr<FJsonValue>& JsonValue : JsonArray)
 			{
 				TSharedPtr<FJsonObject> QuestJson = JsonValue->AsObject();
+
 				UQuest_Base* NewQuest = NewObject<UQuest_Base>();
 
 				NewQuest->LoadFromJson(QuestJson);
@@ -127,4 +133,13 @@ UQuest_Base* UQuestManager::FindQuest(int QuestIndex)
 	}
 
 	return find;
+}
+
+void UQuestManager::GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList)
+{
+	for (UQuest_Base* quest : QuestList)
+	{
+		if (quest->GetQuestData()->HasPlayer)
+			PlayerQuestList.Add(quest);
+	}
 }

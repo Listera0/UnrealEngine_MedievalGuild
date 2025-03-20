@@ -19,6 +19,10 @@ UQuestComponent::UQuestComponent()
 void UQuestComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	if (IsPlayer)
+	{
+		UQuestManager::GetInstance()->GetPlayerQuset(MyQuestList);
+	}
 	InitQuest();
 }
 
@@ -45,11 +49,12 @@ void UQuestComponent::GiveQuestToPlayer_Internal(AActor* PlayerActor)
 	{
 		for (UQuest_Base* Quest : MyQuestList)
 		{
-			if (Quest)
+			if (Quest && Quest->CanStartQuest() && Quest->GetQuestStatus() == EQuestStatus::NotStarted)
 			{
 				UQuestComponent* QuestComponent = PlayerCharacter->FindComponentByClass<UQuestComponent>();
 				if (QuestComponent)
 				{
+					Quest->PlayerGetQuest();
 					QuestComponent->AddQuest(Quest);
 				}
 			}
@@ -65,14 +70,56 @@ void UQuestComponent::InitQuest()
 		if (InQuest)
 		{
 			MyQuestList.Add(InQuest);
+
+			if (InQuest->GetQuestStatus() == EQuestStatus::InProgress)
+				StartQuestList.Add(InQuest);
+		}
+		else
+		{
+			bool IsAddQuest = UQuestManager::GetInstance()->AddQuestData(quest);
+			if (IsAddQuest)
+			{
+				InQuest = UQuestManager::GetInstance()->FindQuest(quest->QuestIndex);
+				MyQuestList.Add(InQuest);
+
+				if (InQuest->GetQuestStatus() == EQuestStatus::InProgress)
+					StartQuestList.Add(InQuest);
+
+			}
+			else
+			{
+				FString p = FString::Printf(TEXT("Error!! Not Add Quest [%d] "), quest->QuestIndex) + quest->QuestName;
+				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
+			}
 		}
 	}
 }
 
 void UQuestComponent::AddQuest(UQuest_Base* Quest)
 {
-	if (Quest)
+	if (Quest && !MyQuestList.Contains(Quest))
 	{
 		MyQuestList.Add(Quest);
+	}
+}
+
+void UQuestComponent::StartQuest(UQuest_Base* Quest)
+{
+	if (Quest->CanStartQuest())
+	{
+		if (Quest->GetQuestStatus() == EQuestStatus::NotStarted)
+		{
+			Quest->StartQuest();
+			StartQuestList.Add(Quest);
+		}
+	}
+}
+
+void UQuestComponent::PrintMyQuests()
+{
+	for (UQuest_Base* quest : MyQuestList)
+	{
+		FString p = FString::Printf(TEXT("Add Quest [%d] "), quest->GetQuestIndex()) + quest->GetQuestData()->QuestName;
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, p);
 	}
 }

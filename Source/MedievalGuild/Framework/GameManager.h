@@ -22,7 +22,7 @@ public:
 
 public:
 	virtual void StartPlay() override;
-
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBlueprintBindComponent* Blueprints = nullptr;

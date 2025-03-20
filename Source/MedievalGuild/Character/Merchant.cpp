@@ -60,5 +60,6 @@ void AMerchant::OnCapsuleBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
     if (OtherActor)  // 플레이어와 충돌 시
     {
         SellItem(0, 1);  // SellItem(1, 1) 호출
+        QuestComponent->GiveQuestToPlayer(OtherActor);
     }
 }

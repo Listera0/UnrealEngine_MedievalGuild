@@ -8,7 +8,7 @@
 #include "Quest_Base.generated.h"
 
 UCLASS(Blueprintable, BlueprintType)  
-class MEDIEVALGUILD_API UQuest_Base : public UObject 
+class MEDIEVALGUILD_API UQuest_Base : public UDataAsset
 {
 	GENERATED_BODY()
 
@@ -24,6 +24,8 @@ public:
 	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
 	EQuestStatus GetQuestStatus();
 	int GetQuestIndex();
+	inline UQuestData_Base* GetQuestData()const { return Quest; };
+	inline void PlayerGetQuest() { Quest->HasPlayer = true; };
 protected:
 	UQuestData_Base* Quest;
 };

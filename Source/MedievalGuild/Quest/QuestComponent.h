@@ -23,6 +23,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Quest")
 	void AddQuest(UQuest_Base* Quest);
 
+	void StartQuest(UQuest_Base* Quest);
+
+	void PrintMyQuests();
+
+	inline void PlayerComponent() { IsPlayer = true; }
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -42,4 +47,8 @@ protected:
 
 private:
 	TArray<class UQuest_Base*> MyQuestList;
+
+	TArray<class UQuest_Base*> StartQuestList;
+
+	bool IsPlayer = false;
 };

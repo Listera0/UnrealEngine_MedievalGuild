@@ -7,13 +7,14 @@
 			"QuestStatus": 0,
 			"QuestType": 0,
 			"RewardGold": 100,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": [ 0 ],
 			"TargetLocation_X": 0,
 			"TargetLocation_Y": 0,
 			"TargetLocation_Z": 0,
-			"AcceptableRadius": 100,
-			"RewardItems": [],
-			"RewardItemAmount": [],
-			"PreRequisiteQuests": [ 0 ]
+			"AcceptableRadius": 100
 		},
 		{
 			"QuestName": "start",
@@ -22,6 +23,7 @@
 			"QuestStatus": 0,
 			"QuestType": 3,
 			"RewardGold": 0,
+			"HasPlayer": true,
 			"RewardItems": [],
 			"RewardItemAmount": [],
 			"PreRequisiteQuests": []
@@ -33,6 +35,7 @@
 			"QuestStatus": 0,
 			"QuestType": 3,
 			"RewardGold": 0,
+			"HasPlayer": false,
 			"RewardItems": [],
 			"RewardItemAmount": [],
 			"PreRequisiteQuests": []
@@ -44,12 +47,13 @@
 			"QuestStatus": 0,
 			"QuestType": 2,
 			"RewardGold": 500,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [ 1 ],
+			"PreRequisiteQuests": [ 0, 1, 2 ],
 			"ObjectIndex": 0,
 			"RequiredAmount": 0,
-			"Amount": 0,
-			"RewardItems": [ 1 ],
-			"RewardItemAmount": [ 1 ],
-			"PreRequisiteQuests": [ 0, 1, 2 ]
+			"Amount": 0
 		}
 	]
 }

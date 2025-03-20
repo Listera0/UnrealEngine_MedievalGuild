@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Quest/QuestComponent.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -59,6 +60,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* PlayerCamera = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	UQuestComponent* QuestComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	MoveState PlayerMoveState;

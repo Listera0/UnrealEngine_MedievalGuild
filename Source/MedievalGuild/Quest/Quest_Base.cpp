@@ -24,6 +24,7 @@ void UQuest_Base::StartQuest()
     {
         if (Quest->QuestStatus == EQuestStatus::NotStarted)
             Quest->QuestStatus = EQuestStatus::InProgress;
+
     }
 }
 
@@ -31,12 +32,14 @@ void UQuest_Base::CancleQuest()
 {
 	if (Quest->QuestStatus == EQuestStatus::InProgress)
         Quest->QuestStatus = EQuestStatus::NotStarted;
+
 }
 
 void UQuest_Base::CompleteQuest()
 {
 	if (Quest->QuestStatus == EQuestStatus::InProgress)
         Quest->QuestStatus = EQuestStatus::Completed;
+
 }
 
 void UQuest_Base::QuestReward()
@@ -67,11 +70,13 @@ void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
     JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest->QuestStatus));
     JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest->QuestType));
     JsonObject->SetNumberField("RewardGold", Quest->RewardGold);
+    JsonObject->SetBoolField("HasPlayer", Quest->HasPlayer);
 
     TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
     for (UItemData* PreQuest : Quest->RewardItems)
     {
-        RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+        if (PreQuest)
+         RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
     }
     JsonObject->SetArrayField("RewardItems", RewardItemJsonArray);
 
@@ -104,6 +109,7 @@ void UQuest_Base::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
         Quest->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
         Quest->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
         Quest->RewardGold = JsonObject->GetIntegerField("RewardGold");
+        Quest->HasPlayer = JsonObject->GetBoolField("HasPlayer");
 
         const TArray<TSharedPtr<FJsonValue>>& RewardItemAmountJsonArray = JsonObject->GetArrayField("RewardItemAmount");
         for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemAmountJsonArray)

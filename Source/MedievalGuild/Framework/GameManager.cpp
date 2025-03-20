@@ -2,6 +2,7 @@
 
 
 #include "GameManager.h"
+#include "../Quest/QuestManager.h"
 
 AGameManager::AGameManager()
 {
@@ -12,4 +13,11 @@ void AGameManager::StartPlay()
 {
 	Super::StartPlay();
 
+}
+
+void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UQuestManager::GetInstance()->SaveAllQuestDataToJson();
+
+	Super::EndPlay(EndPlayReason);
 }

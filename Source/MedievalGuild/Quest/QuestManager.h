@@ -16,8 +16,6 @@ class MEDIEVALGUILD_API UQuestManager : public UObject
 	GENERATED_BODY()
 	
 public:
-	UQuestManager();
-
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
 	static UQuestManager* GetInstance();
 
@@ -34,7 +32,10 @@ public:
 	TArray<UQuest_Base*> GetQuestDataList() const { return QuestList; }
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
-	UQuest_Base* FindQuest(int QuestIndex);
+	UQuest_Base* FindQuest(int Quest);
+
+	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
+	void GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList);
 
 private:
 	UPROPERTY()

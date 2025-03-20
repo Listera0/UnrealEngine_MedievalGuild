@@ -25,6 +25,9 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
 	PlayerCamera->SetupAttachment(SpringArm);
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
+
+	QuestComponent = CreateDefaultSubobject<UQuestComponent>(TEXT("QuestComponent"));
+	QuestComponent->PlayerComponent();
 }
 
 // Called when the game starts or when spawned
