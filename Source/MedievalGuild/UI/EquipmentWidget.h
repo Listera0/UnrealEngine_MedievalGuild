@@ -22,13 +22,16 @@ class MEDIEVALGUILD_API UEquipmentWidget : public UUserWidget
 
 public:
 	void InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
-						TSubclassOf<UUserWidget> gearWidget);
+						TSubclassOf<UUserWidget> itemSlotImgClass, TSubclassOf<UUserWidget> gearWidget);
 
 	void ShowContainer();
+	void ShowContainerInfo();
 
 public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> ItemSlotImgClass;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
 	UPROPERTY()
@@ -52,4 +55,7 @@ public:
 	UGearWidget* Widget_Shoes;
 	UGearWidget* Widget_Bag;
 	UGearWidget* Widget_Weapon;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WeightValue;
 };

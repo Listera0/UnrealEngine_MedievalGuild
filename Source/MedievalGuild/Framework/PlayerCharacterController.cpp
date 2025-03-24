@@ -28,7 +28,6 @@ void APlayerCharacterController::BeginPlay()
 			inputSystem->AddMappingContext(InputMappingContext, 0);
 		}
 	}
-
 	InitViewport();
 	InitPlayerData();
 }
@@ -88,6 +87,10 @@ void APlayerCharacterController::OnUnPossess()
 
 void APlayerCharacterController::InitViewport()
 {
+	int ViewportWidth; int ViewportHeight;
+	GetViewportSize(ViewportWidth, ViewportHeight);
+	ViewPortSize = FVector2D(ViewportWidth, ViewportHeight);
+
 	if (ScreenViewport) {
 		ScreenUI = CreateWidget<UScreenUI>(this, ScreenViewport);
 		ScreenUI->AddToViewport();
@@ -98,6 +101,18 @@ void APlayerCharacterController::InitViewport()
 		InventoryUI = CreateWidget<UPlayerInventory>(this, InventoryViewport);
 		InventoryUI->AddToViewport();
 		InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (ItemInteractPanel) {
+		ItemInteractUI = CreateWidget<UItemInteractPanel>(this, ItemInteractPanel);
+		ItemInteractUI->AddToViewport();
+		ItemInteractUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (ItemInfoViewport) {
+		ItemInfoUI = CreateWidget<UItemInfoPanel>(this, ItemInfoViewport);
+		ItemInfoUI->AddToViewport();
+		ItemInfoUI->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -184,8 +199,7 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
 				targetItem->SlotIndex = FVector2D(-1.0f);
-				targetItem->SlotIndex = InventoryUI->Widget_Inventory->MakeItem(targetItem);
-				PlayerData->AddItemTo(PlayerData->PlayerInventory, targetItem);
+				PlayerData->AddItemToAllWork(PlayerData->PlayerInventory, targetItem, InventoryUI->Widget_Inventory);
 				hitResult.GetActor()->Destroy();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
@@ -214,6 +228,7 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+
 				InteractObj->SetContainerUI();
 				InventoryUI->Widget_Trade->ShowContainer();
 				InventoryUI->Widget_Storage->ShowContainer(PlayerData->PlayerStorage);
@@ -284,6 +299,8 @@ void APlayerCharacterController::OpenUISetting()
 
 void APlayerCharacterController::AllUIHidden()
 {
+	if (InteractObj && InteractObj->ActorHasTag("Merchant")) { InventoryUI->Widget_Trade->ResetContainer(); }
+
 	bIsUIOpened = false;
 	bIsInteractAction = false;
 	bShowMouseCursor = false;

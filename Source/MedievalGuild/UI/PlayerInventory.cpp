@@ -22,37 +22,41 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 {
 	// EquipmentWidget
 	Widget_Equipment = CreateWidget<UEquipmentWidget>(GetWorld(), Blueprints->EquipmentWidget);
-	Widget_Equipment->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->GearWidget);
+	Widget_Equipment->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->GearWidget, Blueprints->ItemSlotImgClass);
 	InventorySlot->AddChildToHorizontalBox(Widget_Equipment);
 	PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Collapsed);
 
 	// MerchantWidget
 	Widget_Merchant = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Merchant, FVector2D(6, 4));
+	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, 
+											EContainerCategory::Merchant, FVector2D(6, 4));
 	InventorySlot->AddChildToHorizontalBox(Widget_Merchant);
 	PanelVisibleSetting(Widget_Merchant, ESlateVisibility::Collapsed);
 
 	// InventorySlot
 	Widget_Inventory = CreateWidget<UPlayerContainerWidget>(GetWorld(), Blueprints->InventoryWidget);
-	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Inventory, FVector2D(6, 6));
+	Widget_Inventory->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass,
+											EContainerCategory::Inventory, FVector2D(6, 6));
 	InventorySlot->AddChildToHorizontalBox(Widget_Inventory);
 	PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Collapsed);
 
 	// TradeSlot
 	Widget_Trade = CreateWidget<UTradeWidget>(GetWorld(), Blueprints->TradeWidget);
-	Widget_Trade->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->GearWidget);
+	Widget_Trade->InitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, Blueprints->GearWidget);
 	InventorySlot->AddChildToHorizontalBox(Widget_Trade);
 	PanelVisibleSetting(Widget_Trade, ESlateVisibility::Collapsed);
 
 	// ContainerSlot
 	Widget_Container = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Container, FVector2D(6, 4));
+	Widget_Container->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, 
+											EContainerCategory::Container, FVector2D(6, 4));
 	InventorySlot->AddChildToHorizontalBox(Widget_Container);
 	PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
 
 	// StorageSlot
-	Widget_Storage = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
-	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, EContainerCategory::Storage, FVector2D(6, 8));
+	Widget_Storage = CreateWidget<UPlayerStorage>(GetWorld(), Blueprints->StorageWidget);
+	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, 
+											EContainerCategory::Storage, FVector2D(6, 8));
 	InventorySlot->AddChildToHorizontalBox(Widget_Storage);
 	PanelVisibleSetting(Widget_Storage, ESlateVisibility::Collapsed);
 }

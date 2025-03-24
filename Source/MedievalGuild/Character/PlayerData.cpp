@@ -16,7 +16,7 @@ void APlayerData::AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryDa
         int value = hasitem->ItemData->maxStack - hasitem->ItemCount;
         if (value < item->ItemCount) {
             hasitem->ItemCount += value;
-            item->ItemCount = value - item->ItemCount;
+            item->ItemCount -= value;
             AddItemToAllWork(target, item, targetContainer);
         }
         else {
@@ -24,10 +24,20 @@ void APlayerData::AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryDa
         }
     }
     else {
-        FVector2D findLocation = targetContainer->FindEmptySlot(FVector2D(item->ItemData->width, item->ItemData->height));
+        FVector2D findLocation = FindEmptySlot(target, targetContainer, item);
         if (findLocation != FVector2D(-1.0f)) {
             item->SlotIndex = findLocation;
-            target.Add(item);
+            if (item->ItemData->maxStack < item->ItemCount) {
+                int value = item->ItemCount - item->ItemData->maxStack;
+                item->ItemCount = item->ItemData->maxStack;
+                target.Add(item);
+
+                FInventoryData* newData = new FInventoryData(FVector2D(-1.0f), item->ItemData, value);
+                AddItemToAllWork(target, newData, targetContainer);
+            }
+            else {
+                target.Add(item);
+            }
         }
     }
 }
@@ -88,6 +98,8 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D locati
         }
         else {
             targetData->ItemCount -= count;
+            if (targetData->ItemCount <= 0) target.Remove(targetData);
+            if (withDelete) delete targetData;
         }
     }
 }
@@ -113,6 +125,10 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item,
         }
         else {
             targetData->ItemCount -= count;
+            if (targetData->ItemCount <= 0) {
+                target.Remove(targetData);
+                if (withDelete) delete targetData;
+            }
         }
     }
 }
@@ -144,6 +160,49 @@ FInventoryData* APlayerData::FindItemWithLocation(TArray<FInventoryData*>& targe
     }
 
     return nullptr;
+}
+
+FVector2D APlayerData::FindEmptySlot(TArray<FInventoryData*>& target, UContainer_Base* targetPanel, FInventoryData* targetItem)
+{
+
+    TArray<FVector2D> alreadyInSlot;
+    for (FInventoryData* data : target) {
+        for (int j = 0; j < data->ItemData->height; j++) {
+            for (int i = 0; i < data->ItemData->width; i++) {
+                alreadyInSlot.Add(FVector2D((int)(data->SlotIndex.X) + i, (int)(data->SlotIndex.Y) + j));
+            }
+        }
+    }
+
+    for (int j = 0; j < (int)(targetPanel->ContainerSize.Y); j++) {
+        for (int i = 0; i < (int)(targetPanel->ContainerSize.X); i++) {
+            if (ContainsTArray(alreadyInSlot, FVector2D(i, j))) continue;
+            if (i + targetItem->ItemData->width - 1 < targetPanel->ContainerSize.X && j + targetItem->ItemData->height - 1 < targetPanel->ContainerSize.Y) {
+                bool bFindSlot = true;
+                for (int p = 0; p < targetItem->ItemData->height; p++) {
+                    for (int k = 0; k < targetItem->ItemData->width; k++) {
+                        if (ContainsTArray(alreadyInSlot, FVector2D(i + k, j + p))) {
+                            bFindSlot = false;
+                            break;
+                        }
+                    }
+                    if (!bFindSlot) break;
+                }
+                if (bFindSlot) return FVector2D((float)(i), (float)(j));
+            }
+        }
+    }
+
+    return FVector2D(-1.0f);
+}
+
+bool APlayerData::ContainsTArray(TArray<FVector2D> slot, FVector2D target)
+{
+    for (FVector2D data : slot) {
+        if (data.X == target.X && data.Y == target.Y) return true;
+    }
+
+    return false;
 }
 
 TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory category)

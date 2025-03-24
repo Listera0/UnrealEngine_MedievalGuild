@@ -29,6 +29,8 @@ public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
 	UPROPERTY()
+	TSubclassOf<UUserWidget> ItemSlotImgClass;
+	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemMoveSlotClass;
@@ -38,6 +40,8 @@ public:
 	TSubclassOf<UUserWidget> InventoryWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ContainerWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> StorageWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> TradeWidget;
 	UPROPERTY()

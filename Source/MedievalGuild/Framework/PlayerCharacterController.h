@@ -4,11 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
+
 #include "../UI/Container_Base.h"
 #include "../UI/PlayerInventory.h"
 #include "../UI/ScreenUI.h"
+#include "../UI/ItemInfoPanel.h"
+#include "../UI/ItemInteractPanel.h"
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
@@ -58,6 +62,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenUI> ScreenViewport = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UItemInfoPanel> ItemInfoViewport = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UItemInteractPanel> ItemInteractPanel = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> testwidget = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
 
@@ -101,6 +114,10 @@ public:
 	FHitResult hitResult;
 	UPlayerInventory* InventoryUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
+	UItemInfoPanel* ItemInfoUI = nullptr;
+	UItemInteractPanel* ItemInteractUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
+
+	FVector2D ViewPortSize;
 };

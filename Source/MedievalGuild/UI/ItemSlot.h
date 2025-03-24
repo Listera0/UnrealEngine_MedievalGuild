@@ -37,15 +37,15 @@ public:
 	inline UItemUI_Base* GetSlotItem() { return Cast<UItemUI_Base>(ItemSlot->GetChildAt(0)); }
 	inline FInventoryData* GetItemData() { return HasItem() ? GetSlotItem()->GetOwnerItem()->ItemData : nullptr; }
 	int GetEquipmentIndex(EItemType itemType);
+	int GetEquipmentIndex(EContainerCategory containerCategory);
 	void RemoveItem();
+	void SlotButtonShiftClick();
 	
 protected:
 	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
-	void SlotButtonShiftClick();
-
-	class APlayerCharacterController* PlayerController;
 
 public:
+	class APlayerCharacterController* PlayerController;
 	class UContainer_Base* ContainerPanel;
 
 	UPROPERTY()

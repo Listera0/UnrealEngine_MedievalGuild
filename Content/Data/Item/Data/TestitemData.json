@@ -9,6 +9,54 @@
 		"ItemWeight": 0,
 		"ItemMaxStack": 50,
 		"ItemStackable": true,
-		"ItemType": 6
+		"ItemType": 0
+	},
+	{
+		"ItemName": "Bottle",
+		"ItemDescription": "Bottle",
+		"ItemIndex": 1,
+		"ItemPrice": 2,
+		"ItemWidth": 1,
+		"ItemHeight": 2,
+		"ItemWeight": 5,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "Box",
+		"ItemDescription": "Box",
+		"ItemIndex": 2,
+		"ItemPrice": 10,
+		"ItemWidth": 2,
+		"ItemHeight": 2,
+		"ItemWeight": 10,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "Book",
+		"ItemDescription": "Book",
+		"ItemIndex": 3,
+		"ItemPrice": 25,
+		"ItemWidth": 1,
+		"ItemHeight": 2,
+		"ItemWeight": 1,
+		"ItemMaxStack": 2,
+		"ItemStackable": true,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "Rope",
+		"ItemDescription": "Rope",
+		"ItemIndex": 4,
+		"ItemPrice": 8,
+		"ItemWidth": 2,
+		"ItemHeight": 1,
+		"ItemWeight": 2,
+		"ItemMaxStack": 2,
+		"ItemStackable": true,
+		"ItemType": 0
 	}
 ]

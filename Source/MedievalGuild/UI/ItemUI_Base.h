@@ -17,12 +17,12 @@ class MEDIEVALGUILD_API UItemUI_Base : public UUserWidget
 	GENERATED_BODY()
 	
 protected:
-	virtual void NativeConstruct() override;
 
 public:
 	inline void SetItemData(FInventoryData* data) { ItemData = data; }
 	inline void SetItemIndex(FVector2D index) { ItemIndex = index; }
 	inline void SetItemBind(TArray<UItemUI_Base*> items) { BindItems.Empty(); BindItems.Append(items); }
+	void SetItemImage(UItemData* item, FVector2D partIndex);
 	void SetItemCountText();
 
 	UItemUI_Base* GetOwnerItem();

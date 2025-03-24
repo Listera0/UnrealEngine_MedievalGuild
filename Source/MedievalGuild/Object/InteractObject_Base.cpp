@@ -40,15 +40,22 @@ void AInteractObject_Base::Tick(float DeltaTime)
 void AInteractObject_Base::SetContainerUI()
 {
 	APlayerCharacterController* Controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-	Controller->InventoryUI->Widget_Container->ResetContainer();
+	EContainerCategory targetCategory = EContainerCategory::None;
+
+	if (Controller->InteractObj->ActorHasTag("Container")) { targetCategory = EContainerCategory::Container; }
+	else if (Controller->InteractObj->ActorHasTag("Merchant")) { targetCategory = EContainerCategory::Merchant; }
+
+	UContainer_Base* targetContainerPanel = Controller->GetTargetContainer(targetCategory);
+
+	targetContainerPanel->ResetContainer();
 	if (!bIsInit) {
 		bIsInit = true;
 		for (int i = 0; i < ContainerInventory.Num(); i++) {
 			FInventoryData* itemData = ContainerInventory[i];
-			itemData->SlotIndex = Controller->InventoryUI->Widget_Container->MakeItem(itemData);
+			itemData->SlotIndex = targetContainerPanel->MakeItem(itemData);
 		}
 	}
-	Controller->InventoryUI->Widget_Container->ShowContainer(ContainerInventory);
+	targetContainerPanel->ShowContainer(ContainerInventory);
 }
 
 void AInteractObject_Base::AddItemToInv(FInventoryData* data)

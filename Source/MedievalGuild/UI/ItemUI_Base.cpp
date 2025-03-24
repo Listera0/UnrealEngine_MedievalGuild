@@ -2,17 +2,30 @@
 
 
 #include "ItemUI_Base.h"
+#include "../Item/ItemDataManager.h"
 
-void UItemUI_Base::NativeConstruct()
+
+void UItemUI_Base::SetItemImage(UItemData* item, FVector2D partIndex)
 {
-	Super::NativeConstruct();
+	FSlateBrush brush;
 
+	FVector2D origin = FVector2D(1 / (float)(item->width) * partIndex.X, 1 / (float)(item->height) * partIndex.Y);
+	FVector2D part = FVector2D(1 / (float)(item->width) * (partIndex.X + 1.0f), 1 / (float)(item->height) * (partIndex.Y + 1.0f));
+
+	brush.SetResourceObject(UItemDataManager::GetInstance()->Get2DSpriteForItem(item));
+	brush.SetUVRegion(FBox2D(origin, part));
+	brush.TintColor = FLinearColor(1, 1, 1, 1);
+	brush.DrawAs = ESlateBrushDrawType::Image;
+	brush.Tiling = ESlateBrushTileType::NoTile;
+
+	ItemImage->SetBrush(brush);
+	ItemImage->SetColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void UItemUI_Base::SetItemCountText()
 {
 	UItemUI_Base* lastItemUI = GetCountItem();
-	if (lastItemUI->ItemData->ItemData->eItemType == EItemType::None) lastItemUI->ItemCountText->SetText(FText::AsNumber(ItemData->ItemCount));
+	if (lastItemUI->ItemData->ItemData->bStackable) lastItemUI->ItemCountText->SetText(FText::AsNumber(ItemData->ItemCount));
 	else lastItemUI->ItemCountText->SetText(FText());
 }
 
@@ -29,9 +42,8 @@ UItemUI_Base* UItemUI_Base::GetOwnerItem()
 
 UItemUI_Base* UItemUI_Base::GetCountItem()
 {
-	if (BindItems.Num() > 0) {
-		if(BindItems.Last())
-			return BindItems.Last();
+	if (GetOwnerItem()->BindItems.Num() != 0) {
+		return GetOwnerItem()->BindItems.Last();
 	}
 
 	return this;

@@ -39,6 +39,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	UMaterialInterface* GetMaterialForItem(const UItemData* item);
 
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	UTexture2D* Get2DSpriteForItem(const UItemData* item);
+
 private:
 	static UItemDataManager* Instance;
 

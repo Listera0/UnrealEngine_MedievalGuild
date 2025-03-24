@@ -31,6 +31,8 @@ public:
 
 	FInventoryData* HasItem(TArray<FInventoryData*>& target, int itemIndex, bool checkMaxStack);
 	FInventoryData* FindItemWithLocation(TArray<FInventoryData*>& target, FVector2D location);
+	FVector2D FindEmptySlot(TArray<FInventoryData*>& target, UContainer_Base* targetPanel, FInventoryData* targetItem);
+	bool ContainsTArray(TArray<FVector2D> slot, FVector2D target);
 
 	TArray<FInventoryData*>& GetTargetContainer(EContainerCategory category);
 	int GetEquipmentIndex(EContainerCategory category);

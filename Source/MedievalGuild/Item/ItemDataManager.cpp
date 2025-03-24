@@ -214,3 +214,24 @@ UMaterialInterface* UItemDataManager::GetMaterialForItem(const UItemData* item)
         return nullptr;
     }
 }
+
+UTexture2D* UItemDataManager::Get2DSpriteForItem(const UItemData* item)
+{
+    if (!item)
+        return nullptr;
+
+    FString TextureReference = FString::Printf(TEXT("%d_%s"), item->index, *item->name);
+    FString TexturePath = FString::Printf(TEXT("/Game/Data/Item/Texture/%s"), *TextureReference);
+
+    UTexture2D* Texture = LoadObject<UTexture2D>(nullptr, *TexturePath);
+
+    if (Texture)
+    {
+        return Texture;
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to load Texture: %s"), *TexturePath);
+        return nullptr;
+    }
+}

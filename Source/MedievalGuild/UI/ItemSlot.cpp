@@ -4,6 +4,7 @@
 #include "ItemSlot.h"
 #include "Container_Base.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "Components/UniformGridSlot.h"
 
 void UItemSlot::NativeConstruct()
 {
@@ -22,7 +23,7 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 	if (InMouseEvent.IsMouseButtonDown(EKeys::LeftMouseButton)) {
 		if (HasItem()) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Merchant) {
-				if (PlayerController->InventoryUI->Widget_Trade->bIsSell) { goto PassOnClick; }
+				if (PlayerController->InventoryUI->Widget_Trade->bIsSell) { return Reply.NativeReply; }
 				else {
 					PlayerController->InventoryUI->Widget_Trade->SelectBuyItem(GetItemData());
 				}
@@ -36,14 +37,41 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 					else { Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton); }
 				}
 			}
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::Storage) {
+				if (PlayerController->InteractObj && PlayerController->InteractObj->ActorHasTag("Merchant")) {
+					if (PlayerController->InventoryUI->Widget_Trade->bIsBuy) {
+						Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton);
+					}
+					else {
+						if (PlayerController->IsShiftPressed()) { SlotButtonShiftClick(); }
+						else { Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton); }
+					}
+				}
+				else {
+					if (PlayerController->IsShiftPressed()) { SlotButtonShiftClick(); }
+					else { Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton); }
+				}
+			}
 			else {
 				if (PlayerController->IsShiftPressed()) { SlotButtonShiftClick(); }
 				else { Reply = UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton); }
 			}
 		}
 	}
+	else if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton)) {
+		if (HasItem()) {
+			PlayerController->ItemInteractUI->InteractItem = GetItemData();
+			PlayerController->ItemInteractUI->SetVisibility(ESlateVisibility::Visible);
 
-	PassOnClick:
+
+
+
+			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("Viewport Size: X = %f, Y = %f"), PlayerController->ViewPortSize.X, PlayerController->ViewPortSize.Y));
+
+			PlayerController->ItemInteractUI->SetDesiredSizeInViewport(FVector2D(200.0f, 200.0f));
+		}
+	}
+
 	return Reply.NativeReply;
 }
 
@@ -68,18 +96,25 @@ void UItemSlot::NativeOnDragDetected(const FGeometry& InGeometry, const FPointer
 		FVector2D itemSize = FVector2D(movingItems[0]->ItemData->ItemData->width, movingItems[0]->ItemData->ItemData->height);
 		dragSlot->InitSetting(SlotSize * itemSize);
 
+		TArray<UItemUI_Base*> draggingItems;
+
 		// 가져온 모든 아이템들 복제본 만들어 슬롯에 넣기
 		for (int i = 0; i < movingItems.Num(); i++) {
 			UItemUI_Base* draggingItem = CreateWidget<UItemUI_Base>(GetWorld(), ItemBaseClass);
 			draggingItem->SetItemData(movingItems[i]->ItemData);
+			draggingItem->SetItemIndex(movingItems[i]->ItemIndex);
+			draggingItem->SetItemImage(draggingItem->ItemData->ItemData, draggingItem->ItemIndex);
+			if (draggingItem->ItemIndex == FVector2D(draggingItem->ItemData->ItemData->width - 1, draggingItem->ItemData->ItemData->height - 1)) draggingItem->SetItemCountText();
+
+			draggingItems.Add(draggingItem);
 			movingItems[i]->SetVisibility(ESlateVisibility::Collapsed);
 
-			UUniformGridSlot* gridSlot = dragSlot->MovingSlot->AddChildToUniformGrid(draggingItem, draggingItem->ItemIndex.X, draggingItem->ItemIndex.Y);
+			UUniformGridSlot* gridSlot = dragSlot->MovingSlot->AddChildToUniformGrid(draggingItem, draggingItem->ItemIndex.Y, draggingItem->ItemIndex.X);
 			gridSlot->SetHorizontalAlignment(HAlign_Fill);
 			gridSlot->SetVerticalAlignment(VAlign_Fill);
 		}
 
-		movingItems[0]->SetItemCountText();
+
 		FVector2D CustomOffset = (itemIndex - ((itemSize - 1) * 0.5f)) * -SlotSize;
 		UCanvasPanelSlot* canvasSlot = Cast<UCanvasPanelSlot>(dragSlot->MovingSlot->Slot);
 		canvasSlot->SetPosition(CustomOffset);
@@ -122,6 +157,7 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 			EContainerCategory before = Operation->PrevContainerCategory;
 
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Merchant) { return false; }
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::Trade && PlayerController->InventoryUI->Widget_Trade->bIsBuy) { return false; }
 			else if (before == EContainerCategory::Trade) {
 				UTradeWidget* tradeWidget = PlayerController->InventoryUI->Widget_Trade;
 				if (tradeWidget->bIsBuy) { return false; }
@@ -141,12 +177,22 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 				ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 			}
 
-			if (before == EContainerCategory::Trade) {
+			if (ContainerPanel->ContainerCategory == EContainerCategory::Trade && before == EContainerCategory::Storage) {
+				PlayerController->InventoryUI->Widget_Trade->bIsSell = true;
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::Storage && before == EContainerCategory::Trade) {
+				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
+			}
+			else if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(before) != -1) {
+				PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+			}
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || before == EContainerCategory::Inventory) {
+				PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+			}
 
-			if (ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
-				PlayerController->InventoryUI->Widget_Trade->bIsSell = true;
+			if (PlayerController->InteractObj && PlayerController->InteractObj->ActorHasTag("Merchant") && 
+				ContainerPanel->ContainerCategory == EContainerCategory::Storage) {
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
 
@@ -172,6 +218,21 @@ int UItemSlot::GetEquipmentIndex(EItemType itemType)
 	return returnValue;
 }
 
+int UItemSlot::GetEquipmentIndex(EContainerCategory containerCategory)
+{
+	int returnValue = -1;
+
+	switch (containerCategory) {
+	case EContainerCategory::Helmet: returnValue = 0; break;
+	case EContainerCategory::Cloth: returnValue = 1; break;
+	case EContainerCategory::Shoes: returnValue = 2; break;
+	case EContainerCategory::Bag: returnValue = 3; break;
+	case EContainerCategory::Weapon: returnValue = 4; break;
+	}
+
+	return returnValue;
+}
+
 void UItemSlot::RemoveItem()
 {
 	UItemUI_Base* ownerItem = GetSlotItem()->GetOwnerItem();
@@ -184,6 +245,7 @@ void UItemSlot::RemoveItem()
 
 void UItemSlot::SlotButtonShiftClick()
 {
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController->IsInteractAction()) {
 		UContainer_Base* otherContainer = nullptr;
 		EContainerCategory otherCategory = EContainerCategory::None;
@@ -241,13 +303,18 @@ void UItemSlot::SlotButtonShiftClick()
 		ContainerPanel->ShowContainer(PlayerController->PlayerData->GetTargetContainer(ContainerPanel->ContainerCategory));
 		otherContainer->ShowContainer(PlayerController->PlayerData->GetTargetContainer(otherCategory));
 
-		if (ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
+		if (otherCategory == EContainerCategory::Trade && ContainerPanel->ContainerCategory == EContainerCategory::Storage) {
+			PlayerController->InventoryUI->Widget_Trade->bIsSell = true;
 			PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 		}
-
-		if (otherCategory == EContainerCategory::Trade && ContainerPanel->ContainerCategory == EContainerCategory::Storage) {
-			PlayerController->InventoryUI->Widget_Trade->bIsSell = true;;
+		else if (otherCategory == EContainerCategory::Storage && ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
 			PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
+		}
+		else if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(otherCategory) != -1) {
+			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+		}
+		else if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || otherCategory == EContainerCategory::Inventory) {
+			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 		}
 	}
 }

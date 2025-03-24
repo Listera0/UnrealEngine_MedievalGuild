@@ -18,13 +18,14 @@ class MEDIEVALGUILD_API UTradeWidget : public UUserWidget
 
 public:
 	void InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
-						TSubclassOf<UUserWidget> gearWidget);
+						TSubclassOf<UUserWidget> itemSlotImgClass, TSubclassOf<UUserWidget> gearWidget);
 
 	void ShowContainer();
+	void ResetContainer();
 	void ShowTotalPrice();
 	bool CanMoveItem(EContainerCategory from);
 	void SelectBuyItem(FInventoryData* item);
-	void ButtonSetting(FColor color);
+	void ButtonSetting(FLinearColor color);
 
 	UFUNCTION()
 	void BindSellBuyButton();
@@ -34,6 +35,8 @@ public:
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> ItemSlotImgClass;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
 	UPROPERTY()
@@ -54,7 +57,8 @@ public:
 	bool bIsSell;
 	bool bIsEnoughCurrency;
 	int TotalPrice;
-	FColor NormalColor = FColor(0.5f, 0.5f, 0.5f, 1.0f);
-	FColor FailColor = FColor(0.5f, 0.2f, 0.2f, 1.0f);
-	FColor SuccessColor = FColor(0.2f, 0.25f, 0.2f, 1.0f);
+
+	FLinearColor NormalColor;
+	FLinearColor FailColor;
+	FLinearColor SuccessColor;
 };

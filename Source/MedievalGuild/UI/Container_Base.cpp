@@ -3,6 +3,7 @@
 
 #include "Container_Base.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Item/ItemDataManager.h"
 
 
 UContainer_Base::UContainer_Base(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -14,15 +15,15 @@ void UContainer_Base::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	SetIsFocusable(false);
 }
 
 void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
-												EContainerCategory category, FVector2D size)
+											TSubclassOf<UUserWidget> itemSlotImgClass, EContainerCategory category, FVector2D size)
 {
 	ItemSlotClass = itemSlotClass;
 	ItemBaseClass = itemBaseClass;
 	ItemMoveSlotClass = itemMoveSlotClass;
+	ItemSlotImgClass = itemSlotImgClass;
 	ContainerCategory = category;
 	MakeContainer(size);
 }
@@ -37,7 +38,9 @@ void UContainer_Base::MakeContainer(FVector2D size)
 	for (int j = 0; j < (int)(ContainerSize.Y); j++) {
 		for (int i = 0; i < (int)(ContainerSize.X); i++) {
 			UItemSlot* newItemSlot = CreateWidget<UItemSlot>(GetWorld(), ItemSlotClass);
+			UItemSlotImg* newItemSlotImg = CreateWidget<UItemSlotImg>(GetWorld(), ItemSlotImgClass);
 			SlotInitSetting(newItemSlot->ItemSlot);
+			SlotInitSetting(newItemSlotImg->ItemSlot);
 			newItemSlot->ContainerPanel = this;
 			newItemSlot->SlotIndex = slotIndex++;
 			newItemSlot->ItemMoveSlotClass = ItemMoveSlotClass;
@@ -46,8 +49,11 @@ void UContainer_Base::MakeContainer(FVector2D size)
 			newItemSlot->SlotColRow = FVector2D(i, j);
 
 			UUniformGridSlot* gridSlot = ContainerSlotGrid->AddChildToUniformGrid(newItemSlot, j, i);
+			UUniformGridSlot* gridImgSlot = ContainerSlotImgGrid->AddChildToUniformGrid(newItemSlotImg, j, i);
 			gridSlot->SetHorizontalAlignment(HAlign_Fill);
 			gridSlot->SetVerticalAlignment(VAlign_Fill);
+			gridImgSlot->SetHorizontalAlignment(HAlign_Fill);
+			gridImgSlot->SetVerticalAlignment(VAlign_Fill);
 
 			ContainerItemSlots.Add(newItemSlot);
 		}
@@ -86,12 +92,27 @@ void UContainer_Base::MakeItemUI(FInventoryData* data)
 	TArray<UItemUI_Base*> makingItems;
 	for (int i = data->SlotIndex.X; i < data->SlotIndex.X + data->ItemData->width; i++) {
 		for (int j = data->SlotIndex.Y; j < data->SlotIndex.Y + data->ItemData->height; j++) {
-			UItemSlot* targetSlot = GetContainerSlot(FVector2D(i, j));
 			UItemUI_Base* item = CreateWidget<UItemUI_Base>(GetWorld(), ItemBaseClass);
 			item->SetItemIndex(FVector2D(i - data->SlotIndex.X, j - data->SlotIndex.Y));
 			item->SetItemData(data);
+			item->SetItemImage(data->ItemData, item->ItemIndex);
 
+			if (item == nullptr) {
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "no item ui");
+				break;
+			}
+
+			UItemSlot* targetSlot = GetContainerSlot(FVector2D(i, j));
+			if (targetSlot == nullptr) {
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "no target slot");
+				break;
+			}
 			UButtonSlot* buttonSlot = Cast<UButtonSlot>(targetSlot->ItemSlot->AddChild(item));
+			if (buttonSlot == nullptr) {
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, FString::Printf(TEXT("%d : %d"), i, j));
+				GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, "no button slot");
+				break;
+			}
 			buttonSlot->SetPadding(FMargin(0.0f));
 			buttonSlot->SetHorizontalAlignment(HAlign_Fill);
 			buttonSlot->SetVerticalAlignment(VAlign_Fill);
@@ -179,62 +200,64 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 안에 아이템이 있으면
 	if (itemToIndex.Num() > 0) {
-		if (ContainerItemSlots[toIndex]->GetItemData()->ItemData->index == items[0]->ItemData->ItemData->index) {
-			// 같은 아이템 && 같은 컨테이너일 경우
-			if (ContainerCategory == before) {
-				TArray<FInventoryData*>& targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-				FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
-				FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
+		if (ContainerItemSlots[toIndex]->HasItem()) {
+			if (ContainerItemSlots[toIndex]->GetItemData()->ItemData->index == items[0]->ItemData->ItemData->index) {
+				// 같은 아이템 && 같은 컨테이너일 경우
+				if (ContainerCategory == before) {
+					TArray<FInventoryData*>& targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+					FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
+					FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
 
-				int value = toData->ItemData->maxStack - toData->ItemCount;
-				if (value < fromData->ItemCount) {
-					toData->ItemCount += value;
-					fromData->ItemCount -= value;
+					int value = toData->ItemData->maxStack - toData->ItemCount;
+					if (value < fromData->ItemCount) {
+						toData->ItemCount += value;
+						fromData->ItemCount -= value;
 
-					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
-					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
-					UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
-					fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+						UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+						toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+						UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
+						fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					}
+					else {
+						toData->ItemCount += fromData->ItemCount;
+						targetContainer.Remove(fromData);
+
+						UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+						toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+
+						UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
+						fromSlot->RemoveItem();
+					}
 				}
+				// 같은 아이템 && 다른 컨테이너일 경우
 				else {
-					toData->ItemCount += fromData->ItemCount;
-					targetContainer.Remove(fromData);
+					TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+					TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
+					UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
 
-					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
-					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
+					FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
 
-					UItemSlot* fromSlot = GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
-					fromSlot->RemoveItem();
-				}
-			}
-			// 같은 아이템 && 다른 컨테이너일 경우
-			else {
-				TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-				TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
-				UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+					int value = toData->ItemData->maxStack - toData->ItemCount;
+					if (value < fromData->ItemCount) {
+						toData->ItemCount += value;
+						fromData->ItemCount -= value;
 
-				FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
-				FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
+						UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+						toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+						UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(FromContainerBase->ContainerItemSlots[fromIndex]->SlotColRow);
+						fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
+					}
+					else {
+						toData->ItemCount += fromData->ItemCount;
+						FromContainer.Remove(fromData);
 
-				int value = toData->ItemData->maxStack - toData->ItemCount;
-				if (value < fromData->ItemCount) {
-					toData->ItemCount += value;
-					fromData->ItemCount -= value;
+						UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
+						toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
 
-					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
-					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
-					UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(FromContainerBase->ContainerItemSlots[fromIndex]->SlotColRow);
-					fromSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
-				}
-				else {
-					toData->ItemCount += fromData->ItemCount;
-					FromContainer.Remove(fromData);
-
-					UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow);
-					toSlot->GetSlotItem()->GetOwnerItem()->SetItemCountText();
-
-					UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
-					fromSlot->RemoveItem();
+						UItemSlot* fromSlot = FromContainerBase->GetContainerSlot(ContainerItemSlots[fromIndex]->SlotColRow);
+						fromSlot->RemoveItem();
+					}
 				}
 			}
 		}
@@ -244,16 +267,9 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 		if (ContainerCategory == before) {
 			TArray<FInventoryData*>& targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
 			FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
-			fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
+			fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow - offsetTo;
 
-			for (int i = 0; i < items.Num(); i++) {
-				UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
-				toSlot->ItemSlot->RemoveChildAt(0);
-				UButtonSlot* buttonSlot = Cast<UButtonSlot>(toSlot->ItemSlot->AddChild(items[i]));
-				buttonSlot->SetPadding(FMargin(0.0f));
-				buttonSlot->SetHorizontalAlignment(HAlign_Fill);
-				buttonSlot->SetVerticalAlignment(VAlign_Fill);
-			}
+			ShowContainer(targetContainer);
 		}
 		else { // 다른 컨테이너일 경우
 			TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
@@ -262,17 +278,11 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 
 			FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
 			FromContainer.Remove(fromData);
-			fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
+			fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow - offsetTo;
 			ToContainer.Add(fromData);
 
-			for (int i = 0; i < items.Num(); i++) {
-				UItemSlot* toSlot = GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
-				toSlot->ItemSlot->RemoveChildAt(0);
-				UButtonSlot* buttonSlot = Cast<UButtonSlot>(toSlot->ItemSlot->AddChild(items[i]));
-				buttonSlot->SetPadding(FMargin(0.0f));
-				buttonSlot->SetHorizontalAlignment(HAlign_Fill);
-				buttonSlot->SetVerticalAlignment(VAlign_Fill);
-			}
+			ShowContainer(ToContainer);
+			FromContainerBase->ShowContainer(FromContainer);
 		}
 	}
 }
@@ -361,10 +371,12 @@ UItemSlot* UContainer_Base::HasItem(UItemData* item, bool checkMax)
 
 FVector2D UContainer_Base::FindEmptySlot(FVector2D size)
 {
+	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 빈 위치 찾기
 	bool bFindSlot = false;
 	for (int i = 0; i < ContainerItemSlots.Num(); i++) {
 		if (ContainerItemSlots[i]->HasItem()) continue;
+		//if(controller->PlayerData->GetTargetContainer(ContainerCategory))
 
 		FVector2D slotColRow = ContainerItemSlots[i]->SlotColRow;
 
@@ -408,10 +420,8 @@ void UContainer_Base::SlotInitSetting(UButton* button)
 	FButtonStyle buttonStyle;
 	FSlateBrush borderBrush;
 
-	borderBrush.TintColor = FLinearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	borderBrush.TintColor = FLinearColor(0.2f, 0.2f, 0.2f, 0.0f);
 	borderBrush.DrawAs = ESlateBrushDrawType::Box;
-	//borderBrush.DrawAs = ESlateBrushDrawType::Border;
-	//borderBrush.Margin = FMargin(0.5f);
 
 	buttonStyle.SetNormal(borderBrush);
 	buttonStyle.SetHovered(borderBrush);
@@ -421,7 +431,11 @@ void UContainer_Base::SlotInitSetting(UButton* button)
 	buttonStyle.PressedPadding = 0.0f;
 
 	button->SetStyle(buttonStyle);
-	button->IsFocusable = false;
+}
+
+void UContainer_Base::SlotInitSetting(UImage* image)
+{
+	image->SetColorAndOpacity(FLinearColor(0.2f, 0.2f, 0.2f, 1.0f));
 }
 
 UItemSlot* UContainer_Base::GetContainerSlot(FVector2D index)

@@ -18,6 +18,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "UObject/ConstructorHelpers.h"
 
+#include "ItemSlotImg.h"
 #include "ItemUI_Base.h"
 #include "ItemSlot.h"
 #include "ContainerEnum.h"
@@ -42,6 +43,8 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY()
+	TSubclassOf<UUserWidget> ItemSlotImgClass;
+	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemBaseClass;
@@ -50,11 +53,11 @@ protected:
 
 public:
 	void ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
-								EContainerCategory category, FVector2D size);
+								TSubclassOf<UUserWidget> itemSlotImgClass, EContainerCategory category, FVector2D size);
 	void MakeContainer(FVector2D size);
 	void ResetContainer();
-	void ShowContainer(TArray<FInventoryData*>& data);
-	void ShowContainer(FInventoryData* data);
+	virtual void ShowContainer(TArray<FInventoryData*>& data);
+	virtual void ShowContainer(FInventoryData* data);
 
 	void MakeItemUI(FInventoryData* data);
 	FVector2D MakeItem(FInventoryData* data);
@@ -70,9 +73,10 @@ public:
 	FVector2D FindEmptySlot(FVector2D size);
 	FInventoryData* FindContainerSlotData(TArray<FInventoryData*>& data, FVector2D slotIndex);
 	void SlotInitSetting(UButton* button);
+	void SlotInitSetting(UImage* image);
+	UItemSlot* GetContainerSlot(FVector2D index);
 
 protected:
-	UItemSlot* GetContainerSlot(FVector2D index);
 	int GetEquipmentIndex(EItemType type);
 	inline bool IsInContainer(FVector2D index) { return (index.X < ContainerSize.X && index.Y < ContainerSize.Y && index.X >= 0 && index.Y >= 0); };
 
@@ -82,10 +86,12 @@ protected:
 	UCanvasPanel* ContainerSlot;
 	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* ContainerSlotGrid;
+	UPROPERTY(meta = (BindWidget))
+	UUniformGridPanel* ContainerSlotImgGrid;
 
 	TArray<UItemSlot*> ContainerItemSlots;
-	FVector2D ContainerSize;
 
 public:
 	EContainerCategory ContainerCategory;
+	FVector2D ContainerSize;
 };

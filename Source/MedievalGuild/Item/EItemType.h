@@ -6,12 +6,13 @@
 
 UENUM(BlueprintType)
 enum class EItemType : uint8
-{ 
+{
+	None,
+	Consumeable,
+	Currency,
 	Helmet,
 	Cloth,
 	Shoes,
 	Bag,
-	Weapon,
-	Consumeable,
-	None
+	Weapon
 };
