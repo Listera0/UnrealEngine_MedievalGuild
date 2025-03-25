@@ -4,14 +4,36 @@
 
 UItemDataManager* UItemDataManager::Instance = nullptr;
 
+UItemDataManager::UItemDataManager()
+{
+    /*
+    UItemData* NewItem = NewObject<UItemData>();
+    NewItem->name = TEXT("Coin");
+    NewItem->description = TEXT("Coin");
+    NewItem->price = 1.0f;
+    NewItem->index = 0;
+    NewItem->width = 1;
+    NewItem->height = 1;
+    NewItem->weight = 0.1f;
+    NewItem->eItemType = EItemType::None;
+    NewItem->maxStack = 50;
+    NewItem->bStackable = true;
+    this->AddItemData(NewItem);
+    */
+
+
+    FString FilePath = TEXT("TestitemData.json");
+    //this->SaveAllItemDataToJson(FilePath);
+    this->LoadAllItemDataFromJson(FilePath);
+
+}
+
 UItemDataManager* UItemDataManager::GetInstance()
 {
     if (!Instance)
     {
         Instance = NewObject<UItemDataManager>();
         Instance->AddToRoot();
-        FString FilePath = TEXT("TestitemData.json");
-        Instance->LoadAllItemDataFromJson(FilePath);
     }
     return Instance;
 }

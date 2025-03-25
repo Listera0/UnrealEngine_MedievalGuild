@@ -4,24 +4,6 @@
 #include "Quest_Arrive.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Item/ItemDataManager.h"
-#include "../Quest/QuestManager.h"
-#include "Actor/ArrivalTriggerActor.h"
-
-void UQuest_Arrive::StartQuest(UWorld* World)
-{
-	Super::StartQuest(World);
-	if (World)
-	{
-		FActorSpawnParameters SpawnParams;
-		AArrivalTriggerActor* ArrivalTrigger = World->SpawnActor<AArrivalTriggerActor>(AArrivalTriggerActor::StaticClass(), Quest_Arrive->TargetLocation, FRotator::ZeroRotator, SpawnParams);
-
-		if (ArrivalTrigger)
-		{
-			ArrivalTrigger->SetRadius(Quest_Arrive->AcceptableRadius);
-			ArrivalTrigger->OnPlayerArrived.AddDynamic(this, &UQuest_Arrive::CompleteQuest);
-		}
-	}
-}
 
 void UQuest_Arrive::SetQuestData(UQuestData_Base* InQuest)
 {

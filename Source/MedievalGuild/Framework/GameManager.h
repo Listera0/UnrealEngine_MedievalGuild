@@ -6,7 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 
 #include "BlueprintBindComponent.h"
-#include "../Item/ItemDataManager.h"
+
 #include "GameManager.generated.h"
 
 /**
@@ -26,10 +26,4 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBlueprintBindComponent* Blueprints = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UItemDataManager* ItemDataManager = nullptr;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class UQuestManager* QuestDataManager = nullptr;
 };

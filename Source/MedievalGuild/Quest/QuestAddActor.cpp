@@ -20,6 +20,4 @@ void AQuestAddActor::BeginPlay()
 	{
 		UQuestManager::GetInstance()->AddQuestData(quest);
 	}
-
-	UQuestManager::GetInstance()->SaveAllQuestDataToJson();
 }

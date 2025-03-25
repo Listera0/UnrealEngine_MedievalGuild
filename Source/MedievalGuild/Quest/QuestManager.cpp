@@ -49,7 +49,6 @@ bool UQuestManager::AddQuestData(UQuestData_Base* QuestData)
 				NewQuest = NewObject<UQuest_Kill>();
 			}
 			NewQuest->SetQuestData(QuestData);
-			NewQuest->AddToRoot();
 			QuestList.Add(NewQuest);
 		}
     }
@@ -64,32 +63,29 @@ void UQuestManager::SaveAllQuestDataToJson()
 {
 	TArray<TSharedPtr<FJsonValue>> JsonArray;
 
-	if (!QuestList.IsEmpty())
+	for (UQuest_Base* Quest : QuestList)
 	{
-		for (UQuest_Base* Quest : QuestList)
-		{
-			TSharedPtr<FJsonObject> QuestJson = MakeShared<FJsonObject>();
+		TSharedPtr<FJsonObject> QuestJson = MakeShared<FJsonObject>();
 
-			Quest->SaveFromJson(QuestJson);
+		Quest->SaveFromJson(QuestJson);
 
-			JsonArray.Add(MakeShared<FJsonValueObject>(QuestJson));
-		}
+		JsonArray.Add(MakeShared<FJsonValueObject>(QuestJson));
+	}
 
-		TSharedPtr<FJsonObject> RootJsonObject = MakeShared<FJsonObject>();
-		RootJsonObject->SetArrayField("Quests", JsonArray);
+	TSharedPtr<FJsonObject> RootJsonObject = MakeShared<FJsonObject>();
+	RootJsonObject->SetArrayField("Quests", JsonArray);
 
-		FString OutputString;
-		TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
-		FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
+	FString OutputString;
+	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
+	FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
 
-		if (FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8))
-		{
-			UE_LOG(LogTemp, Log, TEXT("Quest data saved successfully"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Failed to save quest data"));
-		}
+	if (FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Quest data saved successfully"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to save quest data"));
 	}
 }
 
@@ -113,27 +109,10 @@ void UQuestManager::LoadAllQuestDataFromJson()
 			{
 				TSharedPtr<FJsonObject> QuestJson = JsonValue->AsObject();
 
-				EQuestType QuestType = static_cast<EQuestType>(QuestJson->GetIntegerField("QuestType"));
-				UQuest_Base* NewQuest = nullptr;
-
-				if (QuestType == EQuestType::Arrive)
-				{
-					NewQuest = NewObject<UQuest_Arrive>();
-				}
-				else if (QuestType == EQuestType::Item)
-				{
-					NewQuest = NewObject<UQuest_Item>();
-				}
-				else if (QuestType == EQuestType::KillCount)
-				{
-					NewQuest = NewObject<UQuest_Kill>();
-				}
-				else
-				{
-					NewQuest = NewObject<UQuest_Base>();
-				}
+				UQuest_Base* NewQuest = NewObject<UQuest_Base>();
 
 				NewQuest->LoadFromJson(QuestJson);
+
 				QuestList.Add(NewQuest);
 			}
 		}
@@ -161,10 +140,6 @@ void UQuestManager::GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList)
 	for (UQuest_Base* quest : QuestList)
 	{
 		if (quest->GetQuestData()->HasPlayer)
-		{
 			PlayerQuestList.Add(quest);
-			FString p = FString::Printf(TEXT("Player Add Quest ")) + quest->GetQuestData()->QuestName;
-			GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
-		}
 	}
 }
