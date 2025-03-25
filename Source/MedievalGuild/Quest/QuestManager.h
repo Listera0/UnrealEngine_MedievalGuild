@@ -36,7 +36,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
 	void GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList);
-
 private:
 	UPROPERTY()
 	TArray<UQuest_Base*> QuestList;

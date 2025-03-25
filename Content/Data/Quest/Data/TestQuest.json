@@ -1,3 +1,59 @@
 ﻿{
-	"Quests": []
+	"Quests": [
+		{
+			"QuestName": "목표지점까지 이동",
+			"Description": "이동",
+			"QuestIndex": 1,
+			"QuestStatus": 0,
+			"QuestType": 0,
+			"RewardGold": 100,
+			"HasPlayer": true,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": [ ],
+			"TargetLocation_X": 0,
+			"TargetLocation_Y": 0,
+			"TargetLocation_Z": 0,
+			"AcceptableRadius": 100
+		},
+		{
+			"QuestName": "start",
+			"Description": "start",
+			"QuestIndex": 0,
+			"QuestStatus": 0,
+			"QuestType": 3,
+			"RewardGold": 0,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": []
+		},
+		{
+			"QuestName": "아이템",
+			"Description": "아이템",
+			"QuestIndex": 2,
+			"QuestStatus": 0,
+			"QuestType": 3,
+			"RewardGold": 0,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": []
+		},
+		{
+			"QuestName": "킬 테스트",
+			"Description": "킬 테스트",
+			"QuestIndex": 3,
+			"QuestStatus": 0,
+			"QuestType": 2,
+			"RewardGold": 500,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [ 1 ],
+			"PreRequisiteQuests": [ 0, 1, 2 ],
+			"ObjectIndex": 0,
+			"RequiredAmount": 0,
+			"Amount": 0
+		}
+	]
 }
