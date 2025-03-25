@@ -62,10 +62,7 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 	}
 	else if (InMouseEvent.IsMouseButtonDown(EKeys::RightMouseButton)) {
 		if (HasItem()) {
-			PlayerController->ItemInteractUI->InteractItem = GetItemData();
-			PlayerController->ItemInteractUI->SetVisibility(ESlateVisibility::Visible);
-
-			GetSlotPosition();
+			ShowInteractItemPanel();
 		}
 	}
 
@@ -162,7 +159,7 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 					ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 				}
 			}
-			else if (PlayerController->PlayerData->GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1) {
+			else if (PlayerController->PlayerData->GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1) { // is equipment
 				if (HasItem()) { return false; }
 				int containerTypeIndex = GetEquipmentIndex(ownerItem->ItemData->ItemData->eItemType);
 				if (containerTypeIndex == -1) return false;
@@ -316,10 +313,11 @@ void UItemSlot::SlotButtonShiftClick()
 	}
 }
 
-FVector2D UItemSlot::GetSlotPosition()
+FVector2D UItemSlot::ShowInteractItemPanel()
 {
-	//PlayerController->RecordMousePosition();
-	PlayerController->InteractItem = GetItemData();
+	PlayerController->ItemInteractUI->InteractItem = GetItemData();
+	PlayerController->ItemInteractUI->SetVisibility(ESlateVisibility::Visible);
+	PlayerController->RecordMousePosition();
 
 	// Get Optional Value
 	FVector2D WindowPosition = FSlateApplication::Get().GetActiveTopLevelWindow()->GetPositionInScreen();

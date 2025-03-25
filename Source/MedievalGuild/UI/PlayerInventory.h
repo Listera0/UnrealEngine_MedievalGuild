@@ -15,6 +15,7 @@
 #include "ContainerWidget.h"
 #include "TradeWidget.h"
 #include "PlayerStorage.h"
+#include "MerchantInventory.h"
 #include "../Framework/GameManager.h"
 
 #include "PlayerInventory.generated.h"
@@ -55,5 +56,5 @@ public:
 	UContainerWidget* Widget_Container;
 	UTradeWidget* Widget_Trade;
 	UPlayerStorage* Widget_Storage;
-	UContainerWidget* Widget_Merchant;
+	UMerchantInventory* Widget_Merchant;
 };

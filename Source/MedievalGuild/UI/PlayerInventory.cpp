@@ -27,7 +27,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Collapsed);
 
 	// MerchantWidget
-	Widget_Merchant = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_Merchant = CreateWidget<UMerchantInventory>(GetWorld(), Blueprints->MerchantInventoryWidget);
 	Widget_Merchant->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, 
 											EContainerCategory::Merchant, FVector2D(6, 4));
 	InventorySlot->AddChildToHorizontalBox(Widget_Merchant);

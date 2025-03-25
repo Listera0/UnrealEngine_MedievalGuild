@@ -35,6 +35,7 @@ void APlayerCharacterController::Tick(float DeltaTime)
 	lineTraceCheckTag(FName("Interactable"));
 	CheckScreenUI();
 	CheckInteractDistance();
+	CheckInteractUIDistance();
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -301,6 +302,27 @@ void APlayerCharacterController::CheckInteractDistance()
 	}
 }
 
+void APlayerCharacterController::CheckInteractUIDistance()
+{
+	if (bIsInteractItem) {
+		float MouseX; float MouseY; float SlotSize = 100.0f; float PanelOffSet = 100.0f;
+		if (GetMousePosition(MouseX, MouseY)) {
+			FVector2D CurrentMousePosition(MouseX, MouseY);
+			FVector2D DistancePosition = LastMousePosition - CurrentMousePosition;
+			FVector2D UISize = FVector2D((float)(ItemInteractUI->InteractItem->ItemData->width), (float)(ItemInteractUI->InteractItem->ItemData->height));
+			
+			if (CurrentMousePosition.X < LastMousePosition.X - SlotSize * UISize.X ||
+				CurrentMousePosition.X > LastMousePosition.X + SlotSize * UISize.X + PanelOffSet ||
+				CurrentMousePosition.Y < LastMousePosition.Y - SlotSize * UISize.Y ||
+				CurrentMousePosition.Y > LastMousePosition.Y + SlotSize * UISize.Y)
+			{
+				bIsInteractItem = false;
+				ItemInteractUI->SetVisibility(ESlateVisibility::Hidden);
+			}
+		}
+	}
+}
+
 void APlayerCharacterController::OpenUISetting()
 {
 	bIsUIOpened = true;
@@ -350,8 +372,8 @@ UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCatego
 	return nullptr;
 }
 
-void APlayerCharacterController::RecordMousePosition(FVector2D position)
+void APlayerCharacterController::RecordMousePosition()
 {
 	bIsInteractItem = true;
-
+	GetMousePosition(LastMousePosition.X, LastMousePosition.Y);
 }

@@ -54,6 +54,7 @@ protected:
 	FHitResult lineTraceCheckTag(FName tag);
 	void CheckScreenUI();
 	void CheckInteractDistance();
+	void CheckInteractUIDistance();
 	void OpenUISetting();
 	void AllUIHidden();
 
@@ -103,6 +104,8 @@ protected:
 private:
 	class APlayerCharacter* PlayerCharacter = nullptr;
 
+	FVector2D LastMousePosition;
+
 	bool bIsUIOpened;
 	bool bIsShiftPressed;
 	bool bIsInteract;
@@ -111,9 +114,10 @@ private:
 
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
-	void RecordMousePosition(FVector2D position);
+	void RecordMousePosition();
 	inline bool IsShiftPressed() { return bIsShiftPressed; }
 	inline bool IsInteractAction() { return bIsInteractAction; }
+	bool bIsMovingItem;
 
 	FHitResult hitResult;
 	UPlayerInventory* InventoryUI = nullptr;
@@ -122,7 +126,6 @@ public:
 	UItemInteractPanel* ItemInteractUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
-	FInventoryData* InteractItem = nullptr;
 
 	FVector2D ViewPortSize;
 };

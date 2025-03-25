@@ -37,6 +37,10 @@ UBlueprintBindComponent::UBlueprintBindComponent()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> GearFinder(TEXT("/Game/Blueprint/UI/WB_GearWidget"));
 	if (GearFinder.Succeeded()) GearWidget = GearFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> MerchantInventoryFinder(TEXT("/Game/Blueprint/UI/WB_MerchantInventory"));
+	if (MerchantInventoryFinder.Succeeded()) MerchantInventoryWidget = MerchantInventoryFinder.Class;
+	
 }
 
 
@@ -55,7 +59,7 @@ void UBlueprintBindComponent::BeginPlay()
 	if (!GearWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load GearFinder"));
 	if (!TradeWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load TradeWidget"));
 	if (!StorageWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load StorageWidget"));
-	//if (!SellWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load SellFinder"));
+	if (!MerchantInventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load MerchantInventoryWidget"));
 }
 
 

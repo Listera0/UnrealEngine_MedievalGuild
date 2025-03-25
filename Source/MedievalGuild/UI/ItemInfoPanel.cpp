@@ -24,8 +24,8 @@ void UItemInfoPanel::SettingItem(FInventoryData* data)
 
 	// 정보 설정
 	ItemName->SetText(FText::FromString(data->ItemData->name));
-	ItemInfo->SetText(FText::FromString(data->ItemData->description));
-	ItemValue->SetText(FText::AsNumber((int)(data->ItemData->price)));
+	ItemInfo->SetText(FText::FromString(data->ItemData->description + FString::Printf(TEXT("\n(Max %d)"), data->ItemData->maxStack)));
+	ItemValue->SetText(FText::FromString(FString::Printf(TEXT("%d G"), (int)(data->ItemData->price))));
 	TagValue->SetText(FText::FromString(GetItemType(data)));
 }
 

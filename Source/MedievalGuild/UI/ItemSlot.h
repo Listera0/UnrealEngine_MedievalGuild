@@ -43,7 +43,7 @@ public:
 	
 protected:
 	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
-	FVector2D GetSlotPosition();
+	FVector2D ShowInteractItemPanel();
 
 public:
 	class APlayerCharacterController* PlayerController;

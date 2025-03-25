@@ -45,6 +45,8 @@ public:
 	UPROPERTY()
 	TSubclassOf<UUserWidget> TradeWidget;
 	UPROPERTY()
+	TSubclassOf<UUserWidget> MerchantInventoryWidget;
+	UPROPERTY()
 	TSubclassOf<UUserWidget> GearWidget;
 		
 };

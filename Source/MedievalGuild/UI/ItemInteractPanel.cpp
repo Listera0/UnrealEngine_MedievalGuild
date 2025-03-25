@@ -17,7 +17,7 @@ void UItemInteractPanel::ShowInformationPanel()
 
 	SetVisibility(ESlateVisibility::Hidden);
 	PlayerController->ItemInfoUI->SetVisibility(ESlateVisibility::Visible);
-	PlayerController->ItemInfoUI->SettingItem(PlayerController->InteractItem);
+	PlayerController->ItemInfoUI->SettingItem(PlayerController->ItemInteractUI->InteractItem);
 }
 
 void UItemInteractPanel::UseItem()
