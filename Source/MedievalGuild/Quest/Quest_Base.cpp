@@ -18,7 +18,7 @@ bool UQuest_Base::CanStartQuest()
     return true;
 }
 
-void UQuest_Base::StartQuest()
+void UQuest_Base::StartQuest(UWorld* World)
 {
     if (CanStartQuest())
     {
@@ -37,14 +37,17 @@ void UQuest_Base::CancleQuest()
 
 void UQuest_Base::CompleteQuest()
 {
-	if (Quest->QuestStatus == EQuestStatus::InProgress)
+    if (Quest->QuestStatus == EQuestStatus::InProgress)
+    {
+        FString p = Quest->QuestName + FString::Printf(TEXT(" - Quest Is Completed!!"));
+        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
         Quest->QuestStatus = EQuestStatus::Completed;
-
+        QuestReward();
+    }
 }
 
 void UQuest_Base::QuestReward()
-{
-    
+{   
     if (Quest->RewardGold != 0)
     {
         APlayerController* PC = GetWorld()->GetFirstPlayerController();

@@ -7,6 +7,8 @@
 AGameManager::AGameManager()
 {
 	Blueprints = CreateDefaultSubobject<UBlueprintBindComponent>(FName("BlueprintBind"));
+	ItemDataManager = UItemDataManager::GetInstance();
+	QuestDataManager = UQuestManager::GetInstance();
 }
 
 void AGameManager::StartPlay()
@@ -17,7 +19,5 @@ void AGameManager::StartPlay()
 
 void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	UQuestManager::GetInstance()->SaveAllQuestDataToJson();
-
 	Super::EndPlay(EndPlayReason);
 }
