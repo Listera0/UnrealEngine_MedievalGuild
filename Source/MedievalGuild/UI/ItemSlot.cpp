@@ -5,6 +5,8 @@
 #include "Container_Base.h"
 #include "../Framework/PlayerCharacterController.h"
 #include "Components/UniformGridSlot.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "GameFramework/GameUserSettings.h"
 
 void UItemSlot::NativeConstruct()
 {
@@ -63,12 +65,7 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 			PlayerController->ItemInteractUI->InteractItem = GetItemData();
 			PlayerController->ItemInteractUI->SetVisibility(ESlateVisibility::Visible);
 
-
-
-
-			GEngine->AddOnScreenDebugMessage(-1, 5, FColor::Green, FString::Printf(TEXT("Viewport Size: X = %f, Y = %f"), PlayerController->ViewPortSize.X, PlayerController->ViewPortSize.Y));
-
-			PlayerController->ItemInteractUI->SetDesiredSizeInViewport(FVector2D(200.0f, 200.0f));
+			GetSlotPosition();
 		}
 	}
 
@@ -317,4 +314,37 @@ void UItemSlot::SlotButtonShiftClick()
 			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 		}
 	}
+}
+
+FVector2D UItemSlot::GetSlotPosition()
+{
+	//PlayerController->RecordMousePosition();
+	PlayerController->InteractItem = GetItemData();
+
+	// Get Optional Value
+	FVector2D WindowPosition = FSlateApplication::Get().GetActiveTopLevelWindow()->GetPositionInScreen();
+	FVector2D ContainerPanelPosition = ContainerPanel->ContainerSlotGrid->GetCachedGeometry().GetAbsolutePosition();
+	FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
+	FVector2D ScreenResolution = UGameUserSettings::GetGameUserSettings()->GetScreenResolution();
+	FVector2D TargetSlotColRow = SlotColRow - FVector2D(GetSlotItem()->ItemIndex.X, 0.0f) + FVector2D((float)(GetItemData()->ItemData->width - 1), 0.0f);
+
+	FVector2D Scale = ViewportSize / ScreenResolution;
+
+	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, FString::Printf(TEXT("%f, %f"), Scale.X, Scale.Y));
+
+	// Set SlotPosition to ViewportPostion
+	FVector2D SlotPosition = (TargetSlotColRow + FVector2D(0.5f, 0.5f)) * SlotSize;
+	FVector2D PositionOffset = FVector2D(30.0f, -30.0f);
+
+	// Get ScreenPosition between window and container
+	FVector2D ScreenPosition = ContainerPanelPosition - WindowPosition + SlotPosition + PositionOffset;
+
+	// Trans to Viewport from Screen
+	FVector2D ViewportPosition = ScreenPosition * Scale;
+
+	FVector2D FinalViewportPosition = ViewportPosition;
+	PlayerController->ItemInteractUI->SetDesiredSizeInViewport(FVector2D(100.0f, 150.0f) * Scale);
+	PlayerController->ItemInteractUI->SetPositionInViewport(FinalViewportPosition);
+
+	return FVector2D();
 }

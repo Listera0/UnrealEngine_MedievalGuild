@@ -82,6 +82,11 @@ protected:
 
 	float ContainerSlotSize = 100.0f;
 
+
+public:
+	EContainerCategory ContainerCategory;
+	FVector2D ContainerSize;
+
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* ContainerSlot;
 	UPROPERTY(meta = (BindWidget))
@@ -90,8 +95,4 @@ protected:
 	UUniformGridPanel* ContainerSlotImgGrid;
 
 	TArray<UItemSlot*> ContainerItemSlots;
-
-public:
-	EContainerCategory ContainerCategory;
-	FVector2D ContainerSize;
 };

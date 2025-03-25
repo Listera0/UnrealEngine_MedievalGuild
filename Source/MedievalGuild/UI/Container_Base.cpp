@@ -4,6 +4,8 @@
 #include "Container_Base.h"
 #include "../Framework/PlayerCharacterController.h"
 #include "../Item/ItemDataManager.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "GameFramework/GameUserSettings.h"
 
 
 UContainer_Base::UContainer_Base(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -30,13 +32,17 @@ void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClas
 
 void UContainer_Base::MakeContainer(FVector2D size)
 {
+	FVector2D TempValue = FVector2D(0.996875f, 0.927778f);
+	ContainerSlotSize = 100.0f * TempValue.X;
+	ContainerSize = size;
+
 	UCanvasPanelSlot* TargetSlot = Cast<UCanvasPanelSlot>(ContainerSlot->Slot);
 	TargetSlot->SetSize(ContainerSlotSize * size);
-	ContainerSize = size;
+
 	ContainerItemSlots.Empty();
 	int slotIndex = 0;
-	for (int j = 0; j < (int)(ContainerSize.Y); j++) {
-		for (int i = 0; i < (int)(ContainerSize.X); i++) {
+	for (int j = 0; j < (int)(size.Y); j++) {
+		for (int i = 0; i < (int)(size.X); i++) {
 			UItemSlot* newItemSlot = CreateWidget<UItemSlot>(GetWorld(), ItemSlotClass);
 			UItemSlotImg* newItemSlotImg = CreateWidget<UItemSlotImg>(GetWorld(), ItemSlotImgClass);
 			SlotInitSetting(newItemSlot->ItemSlot);

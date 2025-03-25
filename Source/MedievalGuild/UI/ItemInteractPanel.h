@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 
 #include "Components/Button.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "../Object/InventoryData.h"
 
 #include "ItemInteractPanel.generated.h"
@@ -28,6 +30,10 @@ protected:
 	void TrashItem();
 	
 public:
+	class APlayerCharacterController* PlayerController = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* OwnerPanel;
 	UPROPERTY(meta = (BindWidget))
 	UButton* Information;
 	UPROPERTY(meta = (BindWidget))

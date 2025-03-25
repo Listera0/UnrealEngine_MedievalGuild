@@ -2,6 +2,7 @@
 
 
 #include "ItemInteractPanel.h"
+#include "../Framework/PlayerCharacterController.h"
 
 void UItemInteractPanel::NativeConstruct()
 {
@@ -12,12 +13,25 @@ void UItemInteractPanel::NativeConstruct()
 
 void UItemInteractPanel::ShowInformationPanel()
 {
+	if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	SetVisibility(ESlateVisibility::Hidden);
+	PlayerController->ItemInfoUI->SetVisibility(ESlateVisibility::Visible);
+	PlayerController->ItemInfoUI->SettingItem(PlayerController->InteractItem);
 }
 
 void UItemInteractPanel::UseItem()
 {
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 void UItemInteractPanel::TrashItem()
 {
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	SetVisibility(ESlateVisibility::Hidden);
+
 }

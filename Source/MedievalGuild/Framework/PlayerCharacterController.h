@@ -37,6 +37,8 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
+	void InitSceenResolution();
+	void InitMoveInput();
 	void InitViewport();
 	void InitPlayerData();
 
@@ -105,9 +107,11 @@ private:
 	bool bIsShiftPressed;
 	bool bIsInteract;
 	bool bIsInteractAction;
+	bool bIsInteractItem;
 
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
+	void RecordMousePosition(FVector2D position);
 	inline bool IsShiftPressed() { return bIsShiftPressed; }
 	inline bool IsInteractAction() { return bIsInteractAction; }
 
@@ -118,6 +122,7 @@ public:
 	UItemInteractPanel* ItemInteractUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
+	FInventoryData* InteractItem = nullptr;
 
 	FVector2D ViewPortSize;
 };

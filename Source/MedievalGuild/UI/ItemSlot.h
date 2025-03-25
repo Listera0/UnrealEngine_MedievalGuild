@@ -43,6 +43,7 @@ public:
 	
 protected:
 	inline float GetOffSetValue(int index, int size) { return -((index - ((size - 1) * 0.5f)) * 2.0f * (0.5f / size)); };
+	FVector2D GetSlotPosition();
 
 public:
 	class APlayerCharacterController* PlayerController;
@@ -57,7 +58,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ItemSlot;
 
-	int SlotIndex;
 	FVector2D SlotColRow;
+	int SlotIndex;
 	float SlotSize;
 };

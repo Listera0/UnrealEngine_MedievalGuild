@@ -8,6 +8,7 @@
 #include "../Item/Test/Test_Item.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameUserSettings.h"
 
 
 APlayerCharacterController::APlayerCharacterController()
@@ -21,13 +22,8 @@ void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ULocalPlayer* localPlayer = GetLocalPlayer();
-	if (localPlayer) {
-		UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-		if (inputSystem && InputMappingContext) {
-			inputSystem->AddMappingContext(InputMappingContext, 0);
-		}
-	}
+	InitSceenResolution();
+	InitMoveInput();
 	InitViewport();
 	InitPlayerData();
 }
@@ -83,6 +79,31 @@ void APlayerCharacterController::OnPossess(APawn* InPawn)
 void APlayerCharacterController::OnUnPossess()
 {
 	Super::OnUnPossess();
+}
+
+void APlayerCharacterController::InitSceenResolution()
+{
+	FVector2D UserScreenResolution = FVector2D(1920, 1080);
+	FIntPoint UserScreenResolutionPoint = FIntPoint(UserScreenResolution.X, UserScreenResolution.Y);
+
+	FSlateApplication::Get().GetActiveTopLevelWindow()->SetSizingRule(ESizingRule::FixedSize);
+	FSlateApplication::Get().GetActiveTopLevelWindow()->SetCachedSize(UserScreenResolution);
+
+	UGameUserSettings* UserSettings = UGameUserSettings::GetGameUserSettings();
+	UserSettings->SetScreenResolution(UserScreenResolutionPoint);
+	UserSettings->SetFullscreenMode(EWindowMode::Windowed);
+	UserSettings->ApplySettings(false);
+}
+
+void APlayerCharacterController::InitMoveInput()
+{
+	ULocalPlayer* localPlayer = GetLocalPlayer();
+	if (localPlayer) {
+		UEnhancedInputLocalPlayerSubsystem* inputSystem = localPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+		if (inputSystem && InputMappingContext) {
+			inputSystem->AddMappingContext(InputMappingContext, 0);
+		}
+	}
 }
 
 void APlayerCharacterController::InitViewport()
@@ -327,4 +348,10 @@ UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCatego
 	}
 
 	return nullptr;
+}
+
+void APlayerCharacterController::RecordMousePosition(FVector2D position)
+{
+	bIsInteractItem = true;
+
 }
