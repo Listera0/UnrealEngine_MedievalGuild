@@ -7,9 +7,9 @@
 		"ItemWidth": 1,
 		"ItemHeight": 1,
 		"ItemWeight": 0,
-		"ItemMaxStack": 50,
+		"ItemMaxStack": 100,
 		"ItemStackable": true,
-		"ItemType": 0
+		"ItemType": 2
 	},
 	{
 		"ItemName": "Bottle",
@@ -21,7 +21,7 @@
 		"ItemWeight": 5,
 		"ItemMaxStack": 1,
 		"ItemStackable": false,
-		"ItemType": 0
+		"ItemType": 1
 	},
 	{
 		"ItemName": "Box",

@@ -54,6 +54,10 @@ public:
 	UFUNCTION()
 	void OnSectionJumpEnd(class USectionControlNotify* SectionControl);
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
+	MoveState PlayerMoveState;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArm = nullptr;
@@ -65,16 +69,13 @@ protected:
 	UQuestComponent* QuestComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
-	MoveState PlayerMoveState;
+	float StealthMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
-	float NormalMoveSpeed = 600.0f;
+	float NormalMoveSpeed;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
-	float RunningMoveSpeed = 900.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
-	float StealthMoveSpeed = 300.0f;
+	float RunningMoveSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
 	UAnimMontage* AttackMontage = nullptr;

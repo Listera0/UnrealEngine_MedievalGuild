@@ -22,6 +22,9 @@ void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+	PlayerCameraManager->ViewPitchMin = -40.0f;
+	PlayerCameraManager->ViewPitchMax = 40.0f;
 	InitSceenResolution();
 	InitMoveInput();
 	InitViewport();
@@ -284,9 +287,16 @@ FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
 void APlayerCharacterController::CheckScreenUI()
 {
 	if (bIsInteract) {
-		// 화면에 대상 이름 표시
 		ScreenUI->SetVisibility(ESlateVisibility::Visible);
-		ScreenUI->SetInteractText(true, "Open");
+		if (hitResult.GetActor()->ActorHasTag(FName("Item"))) { 
+			ScreenUI->SetInteractText(true, Cast<AInteractObject_Base>(hitResult.GetActor())->ContainerInventory[0]->ItemData->name);
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
+			ScreenUI->SetInteractText(true, "Talk"); 
+		}
+		else if(hitResult.GetActor()->ActorHasTag(FName("Container")) || hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
+			ScreenUI->SetInteractText(true, "Open");
+		}
 	}
 	else {
 		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
