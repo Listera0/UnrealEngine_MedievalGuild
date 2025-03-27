@@ -315,10 +315,6 @@ void UItemSlot::SlotButtonShiftClick()
 
 FVector2D UItemSlot::ShowInteractItemPanel()
 {
-	PlayerController->ItemInteractUI->InteractItem = GetItemData();
-	PlayerController->ItemInteractUI->SetVisibility(ESlateVisibility::Visible);
-	PlayerController->RecordMousePosition();
-
 	// Get Optional Value
 	FVector2D WindowPosition = FSlateApplication::Get().GetActiveTopLevelWindow()->GetPositionInScreen();
 	FVector2D ContainerPanelPosition = ContainerPanel->ContainerSlotGrid->GetCachedGeometry().GetAbsolutePosition();
@@ -341,8 +337,10 @@ FVector2D UItemSlot::ShowInteractItemPanel()
 	FVector2D ViewportPosition = ScreenPosition * Scale;
 
 	FVector2D FinalViewportPosition = ViewportPosition;
-	PlayerController->ItemInteractUI->SetDesiredSizeInViewport(FVector2D(100.0f, 150.0f) * Scale);
 	PlayerController->ItemInteractUI->SetPositionInViewport(FinalViewportPosition);
+	PlayerController->ItemInteractUI->InteractItem = GetItemData();
+	PlayerController->ItemInteractUI->ShowPanelSetting(Scale);
+	PlayerController->RecordMousePosition();
 
 	return FVector2D();
 }

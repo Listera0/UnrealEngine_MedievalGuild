@@ -22,8 +22,11 @@ class MEDIEVALGUILD_API UItemInteractPanel : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
+	
 	UFUNCTION() 
 	void ShowInformationPanel();
+	UFUNCTION()
+	void EquipItem();
 	UFUNCTION() 
 	void UseItem();
 	UFUNCTION() 
@@ -31,15 +34,18 @@ protected:
 	
 public:
 	class APlayerCharacterController* PlayerController = nullptr;
+	FInventoryData* InteractItem = nullptr;
+
+	void ShowPanelSetting(FVector2D Scale);
 
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* OwnerPanel;
 	UPROPERTY(meta = (BindWidget))
 	UButton* Information;
 	UPROPERTY(meta = (BindWidget))
+	UButton* Equip;
+	UPROPERTY(meta = (BindWidget))
 	UButton* Use;
 	UPROPERTY(meta = (BindWidget))
 	UButton* Trash;
-
-	FInventoryData* InteractItem = nullptr;
 };

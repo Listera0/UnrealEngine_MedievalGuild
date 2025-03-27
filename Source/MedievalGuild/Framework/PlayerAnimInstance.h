@@ -21,10 +21,15 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 	
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
-	float Speed = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool bIsStealth;
 
 	UPROPERTY()
 	APlayerCharacter* PlayerCharacter = nullptr;
+
+	UPROPERTY()
+	APlayerCharacterController* PlayerController = nullptr;
 
 };

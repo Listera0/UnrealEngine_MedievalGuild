@@ -242,6 +242,23 @@ int APlayerData::GetEquipmentIndex(EContainerCategory category)
     return returnValue;
 }
 
+int APlayerData::GetEquipmentIndex(EItemType category)
+{
+    int returnValue = -1;
+
+    switch (category) {
+    case EItemType::Helmet: returnValue = 0; break;
+    case EItemType::Cloth: returnValue = 1; break;
+    case EItemType::Shoes: returnValue = 2; break;
+    case EItemType::Bag: returnValue = 3; break;
+    case EItemType::Weapon: returnValue = 4; break;
+    }
+
+    return returnValue;
+}
+
+
+
 int APlayerData::GetPlayerCurrency()
 {
     int value = 0;

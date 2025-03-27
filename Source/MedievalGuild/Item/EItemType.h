@@ -7,7 +7,7 @@
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
-	None,
+	None = 0,
 	Consumeable,
 	Currency,
 	Helmet,

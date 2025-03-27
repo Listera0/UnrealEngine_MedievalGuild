@@ -35,6 +35,9 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	StealthMoveSpeed = 300.0f;
+	NormalMoveSpeed = 450.0f;
+	RunningMoveSpeed = 600.0f;
 }
 
 // Called every frame

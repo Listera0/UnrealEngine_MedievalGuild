@@ -36,6 +36,7 @@ public:
 
 	TArray<FInventoryData*>& GetTargetContainer(EContainerCategory category);
 	int GetEquipmentIndex(EContainerCategory category);
+	int GetEquipmentIndex(EItemType category);
 	int GetPlayerCurrency();
 
 public:
