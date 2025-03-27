@@ -5,23 +5,27 @@
 #include "../Character/PlayerCharacter.h"
 #include "../Quest/QuestManager.h"
 
+
 UQuestComponent::UQuestComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-
-	// ...
 }
 
-
-// Called when the game starts
 void UQuestComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	MyQuestList.Empty();
+	StartQuestList.Empty();
 	if (IsPlayer)
 	{
 		UQuestManager::GetInstance()->GetPlayerQuset(MyQuestList);
+		if (!MyQuestList.IsEmpty())
+		{
+			for (UQuest_Base* quest : MyQuestList)
+			{
+				quest->StartQuest(GetWorld());
+			}
+		}
 	}
 	InitQuest();
 }
@@ -49,11 +53,12 @@ void UQuestComponent::GiveQuestToPlayer_Internal(AActor* PlayerActor)
 	{
 		for (UQuest_Base* Quest : MyQuestList)
 		{
-			if (Quest && Quest->CanStartQuest() && Quest->GetQuestStatus() == EQuestStatus::NotStarted)
+			if (Quest && Quest->CanStartQuest() && !Quest->IsPlayerGet())
 			{
 				UQuestComponent* QuestComponent = PlayerCharacter->FindComponentByClass<UQuestComponent>();
 				if (QuestComponent)
 				{
+					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("Player Get Quest"));
 					Quest->PlayerGetQuest();
 					QuestComponent->AddQuest(Quest);
 				}
@@ -109,7 +114,7 @@ void UQuestComponent::StartQuest(UQuest_Base* Quest)
 	{
 		if (Quest->GetQuestStatus() == EQuestStatus::NotStarted)
 		{
-			Quest->StartQuest();
+			Quest->StartQuest(GetWorld());
 			StartQuestList.Add(Quest);
 		}
 	}

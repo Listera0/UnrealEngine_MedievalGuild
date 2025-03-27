@@ -1,6 +1,11 @@
 #include "Quest_Item.h"
 #include "../Item/ItemDataManager.h"
 
+void UQuest_Item::StartQuest(UWorld* World)
+{
+	Super::StartQuest(World);
+}
+
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 {
     Quest = InQuest;
@@ -28,24 +33,60 @@ bool UQuest_Item::CheckQuest(int ItemID)
 void UQuest_Item::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
     Super::SaveFromJson(JsonObject);
-    JsonObject->SetNumberField("QuestItemIndex", Quest_Item->QuestIndex);
-    JsonObject->SetNumberField("QuestItemAmount", Quest_Item->Amount);
-    JsonObject->SetNumberField("QuestItemRequiredAmount", Quest_Item->RequiredAmount);
 
+    if (Quest_Item)
+    {
+        JsonObject->SetNumberField(TEXT("QuestItemIndex"), Quest_Item->QuestIndex);
+        JsonObject->SetNumberField(TEXT("QuestItemAmount"), Quest_Item->Amount);
+        JsonObject->SetNumberField(TEXT("QuestItemRequiredAmount"), Quest_Item->RequiredAmount);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Quest_Item is null in SaveFromJson"));
+    }
 }
 
 void UQuest_Item::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-		Super::LoadFromJson(JsonObject);
-		SetQuestData(Quest);
+        Super::LoadFromJson(JsonObject);
+        SetQuestData(Quest);
 
-        Quest_Item->Amount = JsonObject->GetIntegerField("QuestItemAmount");
-        Quest_Item->RequiredAmount = JsonObject->GetIntegerField("QuestItemRequiredAmount");
+        if (Quest_Item)
+        {
+            if (JsonObject->HasField(TEXT("QuestItemAmount")))
+                Quest_Item->Amount = JsonObject->GetIntegerField(TEXT("QuestItemAmount"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("QuestItemAmount field missing in JSON"));
 
-        int ItemIndex = JsonObject->GetIntegerField("QuestItemIndex");
-        Quest_Item->QuestItem = UItemDataManager::GetInstance()->FindItemData(ItemIndex);
+            if (JsonObject->HasField(TEXT("QuestItemRequiredAmount")))
+                Quest_Item->RequiredAmount = JsonObject->GetIntegerField(TEXT("QuestItemRequiredAmount"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("QuestItemRequiredAmount field missing in JSON"));
 
+            if (JsonObject->HasField(TEXT("QuestItemIndex")))
+            {
+                int ItemIndex = JsonObject->GetIntegerField(TEXT("QuestItemIndex"));
+                Quest_Item->QuestItem = UItemDataManager::GetInstance()->FindItemData(ItemIndex);
+
+                if (!Quest_Item->QuestItem)
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("QuestItem not found for index %d"), ItemIndex);
+                }
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("QuestItemIndex field missing in JSON"));
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Quest_Item is null in LoadFromJson"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid JSON object passed to LoadFromJson"));
     }
 }

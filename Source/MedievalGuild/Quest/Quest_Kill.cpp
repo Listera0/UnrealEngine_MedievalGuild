@@ -4,6 +4,11 @@
 #include "Quest_Kill.h"
 #include "../Item/ItemDataManager.h"
 
+void UQuest_Kill::StartQuest(UWorld* World)
+{
+	Super::StartQuest(World);
+}
+
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
 {
     Quest = InQuest;
@@ -29,21 +34,50 @@ bool UQuest_Kill::CheckQuest(int index)
 void UQuest_Kill::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
     Super::SaveFromJson(JsonObject);
-    JsonObject->SetNumberField("ObjectIndex", Quest_Kill->ObjectIndex);
-    JsonObject->SetNumberField("RequiredAmount", Quest_Kill->RequiredAmount);
-    JsonObject->SetNumberField("Amount", Quest_Kill->Amount);
 
+    if (Quest_Kill)
+    {
+        JsonObject->SetNumberField(TEXT("ObjectIndex"), Quest_Kill->ObjectIndex);
+        JsonObject->SetNumberField(TEXT("RequiredAmount"), Quest_Kill->RequiredAmount);
+        JsonObject->SetNumberField(TEXT("Amount"), Quest_Kill->Amount);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Quest_Kill is null in SaveFromJson"));
+    }
 }
 
 void UQuest_Kill::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-		Super::LoadFromJson(JsonObject);
-		SetQuestData(Quest);
+        Super::LoadFromJson(JsonObject);
+        SetQuestData(Quest);
 
-        Quest_Kill->ObjectIndex = JsonObject->GetIntegerField("ObjectIndex");
-        Quest_Kill->RequiredAmount = JsonObject->GetIntegerField("RequiredAmount");
-        Quest_Kill->Amount = JsonObject->GetIntegerField("Amount");
+        if (Quest_Kill)
+        {
+            if (JsonObject->HasField(TEXT("ObjectIndex")))
+                Quest_Kill->ObjectIndex = JsonObject->GetIntegerField(TEXT("ObjectIndex"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("ObjectIndex field missing in JSON"));
+
+            if (JsonObject->HasField(TEXT("RequiredAmount")))
+                Quest_Kill->RequiredAmount = JsonObject->GetIntegerField(TEXT("RequiredAmount"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("RequiredAmount field missing in JSON"));
+
+            if (JsonObject->HasField(TEXT("Amount")))
+                Quest_Kill->Amount = JsonObject->GetIntegerField(TEXT("Amount"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("Amount field missing in JSON"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Quest_Kill is null in LoadFromJson"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid JSON object passed to LoadFromJson"));
     }
 }

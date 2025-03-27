@@ -4,6 +4,24 @@
 #include "Quest_Arrive.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Item/ItemDataManager.h"
+#include "../Quest/QuestManager.h"
+#include "Actor/ArrivalTriggerActor.h"
+
+void UQuest_Arrive::StartQuest(UWorld* World)
+{
+	Super::StartQuest(World);
+	if (World)
+	{
+		FActorSpawnParameters SpawnParams;
+		AArrivalTriggerActor* ArrivalTrigger = World->SpawnActor<AArrivalTriggerActor>(AArrivalTriggerActor::StaticClass(), Quest_Arrive->TargetLocation, FRotator::ZeroRotator, SpawnParams);
+
+		if (ArrivalTrigger)
+		{
+			ArrivalTrigger->SetRadius(Quest_Arrive->AcceptableRadius);
+			ArrivalTrigger->OnPlayerArrived.AddDynamic(this, &UQuest_Arrive::CompleteQuest);
+		}
+	}
+}
 
 void UQuest_Arrive::SetQuestData(UQuestData_Base* InQuest)
 {
@@ -36,23 +54,56 @@ bool UQuest_Arrive::CheckQuest(int index)
 void UQuest_Arrive::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
     Super::SaveFromJson(JsonObject);
-    JsonObject->SetNumberField("TargetLocation_X", Quest_Arrive->TargetLocation.X);
-    JsonObject->SetNumberField("TargetLocation_Y", Quest_Arrive->TargetLocation.Y);
-    JsonObject->SetNumberField("TargetLocation_Z", Quest_Arrive->TargetLocation.Z);
-    JsonObject->SetNumberField("AcceptableRadius", Quest_Arrive->AcceptableRadius);
 
+    if (Quest_Arrive)
+    {
+        JsonObject->SetNumberField(TEXT("TargetLocation_X"), Quest_Arrive->TargetLocation.X);
+        JsonObject->SetNumberField(TEXT("TargetLocation_Y"), Quest_Arrive->TargetLocation.Y);
+        JsonObject->SetNumberField(TEXT("TargetLocation_Z"), Quest_Arrive->TargetLocation.Z);
+        JsonObject->SetNumberField(TEXT("AcceptableRadius"), Quest_Arrive->AcceptableRadius);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Quest_Arrive is null in SaveFromJson"));
+    }
 }
 
 void UQuest_Arrive::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-		Super::LoadFromJson(JsonObject);
+        Super::LoadFromJson(JsonObject);
         SetQuestData(Quest);
 
-        Quest_Arrive->TargetLocation.X = JsonObject->GetNumberField("TargetLocation_X");
-        Quest_Arrive->TargetLocation.Y = JsonObject->GetNumberField("TargetLocation_Y");
-        Quest_Arrive->TargetLocation.Z = JsonObject->GetNumberField("TargetLocation_Z");
-        Quest_Arrive->AcceptableRadius = JsonObject->GetNumberField("AcceptableRadius");
+        if (Quest_Arrive)
+        {
+            if (JsonObject->HasField(TEXT("TargetLocation_X")))
+                Quest_Arrive->TargetLocation.X = JsonObject->GetNumberField(TEXT("TargetLocation_X"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("TargetLocation_X field missing in JSON"));
+
+            if (JsonObject->HasField(TEXT("TargetLocation_Y")))
+                Quest_Arrive->TargetLocation.Y = JsonObject->GetNumberField(TEXT("TargetLocation_Y"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("TargetLocation_Y field missing in JSON"));
+
+            if (JsonObject->HasField(TEXT("TargetLocation_Z")))
+                Quest_Arrive->TargetLocation.Z = JsonObject->GetNumberField(TEXT("TargetLocation_Z"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("TargetLocation_Z field missing in JSON"));
+
+            if (JsonObject->HasField(TEXT("AcceptableRadius")))
+                Quest_Arrive->AcceptableRadius = JsonObject->GetNumberField(TEXT("AcceptableRadius"));
+            else
+                UE_LOG(LogTemp, Warning, TEXT("AcceptableRadius field missing in JSON"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Quest_Arrive is null in LoadFromJson"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid JSON object passed to LoadFromJson"));
     }
 }

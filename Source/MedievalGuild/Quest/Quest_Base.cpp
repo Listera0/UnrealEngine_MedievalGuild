@@ -18,7 +18,7 @@ bool UQuest_Base::CanStartQuest()
     return true;
 }
 
-void UQuest_Base::StartQuest()
+void UQuest_Base::StartQuest(UWorld* World)
 {
     if (CanStartQuest())
     {
@@ -37,14 +37,17 @@ void UQuest_Base::CancleQuest()
 
 void UQuest_Base::CompleteQuest()
 {
-	if (Quest->QuestStatus == EQuestStatus::InProgress)
+    if (Quest->QuestStatus == EQuestStatus::InProgress)
+    {
+        FString p = Quest->QuestName + FString::Printf(TEXT(" - Quest Is Completed!!"));
+        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
         Quest->QuestStatus = EQuestStatus::Completed;
-
+        QuestReward();
+    }
 }
 
 void UQuest_Base::QuestReward()
-{
-    
+{   
     if (Quest->RewardGold != 0)
     {
         APlayerController* PC = GetWorld()->GetFirstPlayerController();
@@ -64,77 +67,101 @@ bool UQuest_Base::CheckQuest(int index)
 
 void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
-    JsonObject->SetStringField("QuestName", Quest->QuestName);
-    JsonObject->SetStringField("Description", Quest->Description);
-    JsonObject->SetNumberField("QuestIndex", Quest->QuestIndex);
-    JsonObject->SetNumberField("QuestStatus", static_cast<int32>(Quest->QuestStatus));
-    JsonObject->SetNumberField("QuestType", static_cast<int32>(Quest->QuestType));
-    JsonObject->SetNumberField("RewardGold", Quest->RewardGold);
-    JsonObject->SetBoolField("HasPlayer", Quest->HasPlayer);
+    if (!Quest)
+    {
+        UE_LOG(LogTemp, Error, TEXT("Quest data is null!"));
+        return;
+    }
+
+    JsonObject->SetStringField(TEXT("QuestName"), Quest->QuestName);
+    JsonObject->SetStringField(TEXT("Description"), Quest->Description);
+    JsonObject->SetNumberField(TEXT("QuestIndex"), Quest->QuestIndex);
+    JsonObject->SetNumberField(TEXT("QuestStatus"), static_cast<int32>(Quest->QuestStatus));
+    JsonObject->SetNumberField(TEXT("QuestType"), static_cast<int32>(Quest->QuestType));
+    JsonObject->SetNumberField(TEXT("RewardGold"), Quest->RewardGold);
+    JsonObject->SetBoolField(TEXT("HasPlayer"), Quest->HasPlayer);
+
 
     TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
     for (UItemData* PreQuest : Quest->RewardItems)
     {
         if (PreQuest)
-         RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+        {
+            RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+        }
     }
-    JsonObject->SetArrayField("RewardItems", RewardItemJsonArray);
-
+    JsonObject->SetArrayField(TEXT("RewardItems"), RewardItemJsonArray);
 
     TArray<TSharedPtr<FJsonValue>> RewardItemAmountJsonArray;
     for (int PreAmount : Quest->RewardItemAmount)
     {
         RewardItemAmountJsonArray.Add(MakeShared<FJsonValueNumber>(PreAmount));
     }
-    JsonObject->SetArrayField("RewardItemAmount", RewardItemAmountJsonArray);
+    JsonObject->SetArrayField(TEXT("RewardItemAmount"), RewardItemAmountJsonArray);
 
     TArray<TSharedPtr<FJsonValue>> PreRequisiteJsonArray;
     for (int PreQuest : Quest->PreRequisiteQuests)
     {
         PreRequisiteJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
     }
-    JsonObject->SetArrayField("PreRequisiteQuests", PreRequisiteJsonArray);
+    JsonObject->SetArrayField(TEXT("PreRequisiteQuests"), PreRequisiteJsonArray);
 }
 
 void UQuest_Base::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 {
     if (JsonObject.IsValid())
     {
-        if(!Quest)
-            Quest = NewObject<UQuestData_Base>();
-
-        Quest->QuestName = JsonObject->GetStringField("QuestName");
-        Quest->Description = JsonObject->GetStringField("Description");
-        Quest->QuestIndex = JsonObject->GetIntegerField("QuestIndex");
-        Quest->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField("QuestStatus"));
-        Quest->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField("QuestType"));
-        Quest->RewardGold = JsonObject->GetIntegerField("RewardGold");
-        Quest->HasPlayer = JsonObject->GetBoolField("HasPlayer");
-
-        const TArray<TSharedPtr<FJsonValue>>& RewardItemAmountJsonArray = JsonObject->GetArrayField("RewardItemAmount");
-        for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemAmountJsonArray)
+        if (!Quest)
         {
-            int RewardItemAmount = PreJsonValue->AsNumber();
-            Quest->RewardItemAmount.Add(RewardItemAmount);
+            Quest = NewObject<UQuestData_Base>();
         }
 
-        const TArray<TSharedPtr<FJsonValue>>& RewardItemJsonArray = JsonObject->GetArrayField("RewardItems");
+        Quest->QuestName = JsonObject->GetStringField(TEXT("QuestName"));
+        Quest->Description = JsonObject->GetStringField(TEXT("Description"));
+        Quest->QuestIndex = JsonObject->GetIntegerField(TEXT("QuestIndex"));
+        Quest->QuestStatus = static_cast<EQuestStatus>(JsonObject->GetIntegerField(TEXT("QuestStatus")));
+        Quest->QuestType = static_cast<EQuestType>(JsonObject->GetIntegerField(TEXT("QuestType")));
+        Quest->RewardGold = JsonObject->GetIntegerField(TEXT("RewardGold"));
+        Quest->HasPlayer = JsonObject->GetBoolField(TEXT("HasPlayer"));
+
+        const TArray<TSharedPtr<FJsonValue>>& RewardItemAmountJsonArray = JsonObject->GetArrayField(TEXT("RewardItemAmount"));
+        Quest->RewardItemAmount.Empty(RewardItemAmountJsonArray.Num());
+        for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemAmountJsonArray)
+        {
+            Quest->RewardItemAmount.Add(PreJsonValue->AsNumber());
+        }
+
+        const TArray<TSharedPtr<FJsonValue>>& RewardItemJsonArray = JsonObject->GetArrayField(TEXT("RewardItems"));
+        Quest->RewardItems.Empty(RewardItemJsonArray.Num());
         for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemJsonArray)
         {
             int RewardItemIndex = PreJsonValue->AsNumber();
             UItemData* PreQuest = UItemDataManager::GetInstance()->FindItemData(RewardItemIndex);
-            if(PreQuest)
+            if (PreQuest)
+            {
                 Quest->RewardItems.Add(PreQuest);
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Item data not found for index: %d"), RewardItemIndex);
+            }
         }
 
-        const TArray<TSharedPtr<FJsonValue>>& PreRequisiteJsonArray = JsonObject->GetArrayField("PreRequisiteQuests");
+
+        const TArray<TSharedPtr<FJsonValue>>& PreRequisiteJsonArray = JsonObject->GetArrayField(TEXT("PreRequisiteQuests"));
+        Quest->PreRequisiteQuests.Empty(PreRequisiteJsonArray.Num());
         for (const TSharedPtr<FJsonValue>& PreJsonValue : PreRequisiteJsonArray)
         {
             int PreQuestIndex = PreJsonValue->AsNumber();
             Quest->PreRequisiteQuests.Add(PreQuestIndex);
         }
     }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Invalid JSON object!"));
+    }
 }
+
 
 EQuestStatus UQuest_Base::GetQuestStatus()
 {

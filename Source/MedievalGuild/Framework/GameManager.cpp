@@ -12,12 +12,15 @@ AGameManager::AGameManager()
 void AGameManager::StartPlay()
 {
 	Super::StartPlay();
-
+	ItemDataManager = UItemDataManager::GetInstance();	
+	QuestDataManager = UQuestManager::GetInstance();
 }
 
 void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	UQuestManager::GetInstance()->SaveAllQuestDataToJson();
-
+	if (ItemDataManager)
+		ItemDataManager->ClearUp();
+	if (QuestDataManager)
+		QuestDataManager->CleanUp();
 	Super::EndPlay(EndPlayReason);
 }

@@ -13,11 +13,10 @@ class MEDIEVALGUILD_API UItemDataManager : public UObject
 	GENERATED_BODY()
 
 public:
-	UItemDataManager();
-
-public:
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	static UItemDataManager* GetInstance();
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	void ClearUp();
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	void AddItemData(UItemData* ItemData);

@@ -20,6 +20,9 @@ public:
 	static UQuestManager* GetInstance();
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
+	void CleanUp();
+
+	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
 	bool AddQuestData(UQuestData_Base* QuestData);
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
@@ -36,9 +39,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
 	void GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList);
-
 private:
-	UPROPERTY()
 	TArray<UQuest_Base*> QuestList;
 
 	static UQuestManager* Instance;

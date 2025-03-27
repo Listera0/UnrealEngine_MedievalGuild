@@ -9,15 +9,26 @@
 
 UQuestManager* UQuestManager::Instance = nullptr;
 
+
+
 UQuestManager* UQuestManager::GetInstance()
 {
     if (!Instance)
     {
         Instance = NewObject<UQuestManager>();
-        Instance->AddToRoot();
+		Instance->QuestList.Empty();
 		Instance->LoadAllQuestDataFromJson();
     }
     return Instance;;
+}
+
+void UQuestManager::CleanUp()
+{
+	if (Instance)
+	{
+		Instance->ConditionalBeginDestroy();
+		Instance = nullptr;
+	}
 }
 
 bool UQuestManager::AddQuestData(UQuestData_Base* QuestData)
@@ -48,6 +59,7 @@ bool UQuestManager::AddQuestData(UQuestData_Base* QuestData)
 			{
 				NewQuest = NewObject<UQuest_Kill>();
 			}
+
 			NewQuest->SetQuestData(QuestData);
 			QuestList.Add(NewQuest);
 		}
@@ -63,29 +75,32 @@ void UQuestManager::SaveAllQuestDataToJson()
 {
 	TArray<TSharedPtr<FJsonValue>> JsonArray;
 
-	for (UQuest_Base* Quest : QuestList)
+	if (!QuestList.IsEmpty())
 	{
-		TSharedPtr<FJsonObject> QuestJson = MakeShared<FJsonObject>();
+		for (UQuest_Base* Quest : QuestList)
+		{
+			TSharedPtr<FJsonObject> QuestJson = MakeShared<FJsonObject>();
 
-		Quest->SaveFromJson(QuestJson);
+			Quest->SaveFromJson(QuestJson);
 
-		JsonArray.Add(MakeShared<FJsonValueObject>(QuestJson));
-	}
+			JsonArray.Add(MakeShared<FJsonValueObject>(QuestJson));
+		}
 
-	TSharedPtr<FJsonObject> RootJsonObject = MakeShared<FJsonObject>();
-	RootJsonObject->SetArrayField("Quests", JsonArray);
+		TSharedPtr<FJsonObject> RootJsonObject = MakeShared<FJsonObject>();
+		RootJsonObject->SetArrayField("Quests", JsonArray);
 
-	FString OutputString;
-	TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
-	FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
+		FString OutputString;
+		TSharedRef<TJsonWriter<>> JsonWriter = TJsonWriterFactory<>::Create(&OutputString);
+		FJsonSerializer::Serialize(RootJsonObject.ToSharedRef(), JsonWriter);
 
-	if (FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8))
-	{
-		UE_LOG(LogTemp, Log, TEXT("Quest data saved successfully"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to save quest data"));
+		if (FFileHelper::SaveStringToFile(OutputString, *CurrentFilePath, FFileHelper::EEncodingOptions::ForceUTF8))
+		{
+			UE_LOG(LogTemp, Log, TEXT("Quest data saved successfully"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to save quest data"));
+		}
 	}
 }
 
@@ -109,15 +124,45 @@ void UQuestManager::LoadAllQuestDataFromJson()
 			{
 				TSharedPtr<FJsonObject> QuestJson = JsonValue->AsObject();
 
-				UQuest_Base* NewQuest = NewObject<UQuest_Base>();
+				EQuestType QuestType = static_cast<EQuestType>(QuestJson->GetIntegerField("QuestType"));
 
-				NewQuest->LoadFromJson(QuestJson);
+				UQuest_Base* NewQuest = nullptr;
 
-				QuestList.Add(NewQuest);
+				if (QuestType == EQuestType::Arrive)
+				{
+					NewQuest = NewObject<UQuest_Arrive>();
+				}
+				else if (QuestType == EQuestType::Item)
+				{
+					NewQuest = NewObject<UQuest_Item>();
+				}
+				else if (QuestType == EQuestType::KillCount)
+				{
+					NewQuest = NewObject<UQuest_Kill>();
+				}
+				else
+				{
+					NewQuest = NewObject<UQuest_Base>();
+				}
+
+				if (NewQuest)
+				{
+					NewQuest->LoadFromJson(QuestJson);
+					if (NewQuest->GetQuestData())
+					{
+						QuestList.Add(NewQuest);
+					}
+
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("Failed to create the quest object for type: %d"), QuestType);
+				}
 			}
 		}
 	}
 }
+
 
 UQuest_Base* UQuestManager::FindQuest(int QuestIndex)
 {
@@ -137,9 +182,27 @@ UQuest_Base* UQuestManager::FindQuest(int QuestIndex)
 
 void UQuestManager::GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList)
 {
-	for (UQuest_Base* quest : QuestList)
+	if (!QuestList.IsEmpty())
 	{
-		if (quest->GetQuestData()->HasPlayer)
-			PlayerQuestList.Add(quest);
+		for (UQuest_Base* quest : QuestList)
+		{
+			if (quest == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Quest is nullptr!"));
+				continue;
+			}
+
+			UQuestData_Base* questData = quest->GetQuestData();
+			if (questData == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("QuestData is nullptr for quest"));
+				continue;
+			}
+
+			if (questData->HasPlayer)
+			{
+				PlayerQuestList.Add(quest);
+			}
+		}
 	}
 }

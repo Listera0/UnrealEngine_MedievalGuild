@@ -1,3 +1,16 @@
 ﻿{
-	"Quests": []
+	"Quests": [
+		{
+			"QuestName": "test",
+			"Description": "test",
+			"QuestIndex": 0,
+			"QuestStatus": 0,
+			"QuestType": 3,
+			"RewardGold": 0,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": []
+		}
+	]
 }
