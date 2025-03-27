@@ -40,6 +40,15 @@ UBlueprintBindComponent::UBlueprintBindComponent()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> MerchantInventoryFinder(TEXT("/Game/Blueprint/UI/WB_MerchantInventory"));
 	if (MerchantInventoryFinder.Succeeded()) MerchantInventoryWidget = MerchantInventoryFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> QuestSlotFinder(TEXT("/Game/Blueprint/UI/WB_QuestSlot"));
+	if (QuestSlotFinder.Succeeded()) QuestSlotWidget = QuestSlotFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> QuestInfoFinder(TEXT("/Game/Blueprint/UI/WB_QuestInfoPanel"));
+	if (QuestInfoFinder.Succeeded()) QuestInfoWidget = QuestInfoFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> QuestPlayerFinder(TEXT("/Game/Blueprint/UI/WB_QuestPlayerPanel"));
+	if (QuestPlayerFinder.Succeeded()) QuestPlayerWidget = QuestPlayerFinder.Class;
 	
 }
 
@@ -49,17 +58,20 @@ void UBlueprintBindComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (!ItemSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load ItemSlotFinder"));
-	if (!ItemSlotImgClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load ItemSlotImgClass"));
-	if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load ItemBaseFinder"));
-	if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load ItemMoveSlotFinder"));
-	if (!ContainerWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load ContainerFinder"));
-	if (!InventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load InventoryFinder"));
-	if (!EquipmentWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load EquipmentFinder"));
-	if (!GearWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load GearFinder"));
-	if (!TradeWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load TradeWidget"));
-	if (!StorageWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load StorageWidget"));
-	if (!MerchantInventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Fail Load MerchantInventoryWidget"));
+	if (!ItemSlotClass) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load ItemSlotFinder"));
+	if (!ItemSlotImgClass) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load ItemSlotImgClass"));
+	if (!ItemBaseClass) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load ItemBaseFinder"));
+	if (!ItemMoveSlotClass) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load ItemMoveSlotFinder"));
+	if (!ContainerWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load ContainerFinder"));
+	if (!InventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load InventoryFinder"));
+	if (!EquipmentWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load EquipmentFinder"));
+	if (!GearWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load GearFinder"));
+	if (!TradeWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load TradeWidget"));
+	if (!StorageWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load StorageWidget"));
+	if (!MerchantInventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load MerchantInventoryWidget"));
+	if (!QuestSlotWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestSlotWidget"));
+	if (!QuestInfoWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestInfoWidget"));
+	if (!QuestPlayerWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestPlayerWidget"));
 }
 
 

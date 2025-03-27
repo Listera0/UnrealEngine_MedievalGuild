@@ -48,5 +48,10 @@ public:
 	TSubclassOf<UUserWidget> MerchantInventoryWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> GearWidget;
-		
+	UPROPERTY()
+	TSubclassOf<UUserWidget> QuestSlotWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> QuestInfoWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> QuestPlayerWidget;
 };

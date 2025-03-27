@@ -3,25 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Container_Base.h"
+#include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "Components/VerticalBox.h"
-#include "MerchantInventory.generated.h"
+#include "QuestPlayerPanel.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class MEDIEVALGUILD_API UMerchantInventory : public UContainer_Base
+class MEDIEVALGUILD_API UQuestPlayerPanel : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
 	class APlayerCharacterController* PlayerController = nullptr;
 
-	void MerchantPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size);
-	void MakeQuestListPanel();
-	UFUNCTION()
-	void SwitchPanelScreen();
+	void QuestPlayerPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass);
+	void ShowQuestList();
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> QuestSlotClass;
@@ -30,10 +29,7 @@ public:
 	UCanvasPanel* QuestSlot = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* QuestSlotGrid = nullptr;
-	UPROPERTY(meta = (BindWidget))
-	UButton* TradeAndQuest = nullptr;
 
 	UPROPERTY()
 	TArray<UUserWidget*> QuestList;
-	bool bIsSwitched;
 };

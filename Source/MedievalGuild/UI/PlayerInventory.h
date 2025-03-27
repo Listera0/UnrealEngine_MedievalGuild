@@ -10,13 +10,15 @@
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 
+#include "../Framework/GameManager.h"
 #include "EquipmentWidget.h"
 #include "PlayerContainerWidget.h"
 #include "ContainerWidget.h"
 #include "TradeWidget.h"
 #include "PlayerStorage.h"
 #include "MerchantInventory.h"
-#include "../Framework/GameManager.h"
+#include "QuestPlayerPanel.h"
+#include "QuestInfoPanel.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -38,9 +40,10 @@ public:
 	void PlayerInventoryInitSetting();
 
 	/// <summary>
-	/// 0 = equip, inv, empty / 1 = equip, inv, con / 2 = equip, inv, storage / 3 = merchant, trade, storage
+	/// 0 >> Normal Tab || 1 >> Container || 2 >> Storage || 3 >> Merchant || 4 >> Quest
 	/// </summary>
 	void PanelVisibleSetting(int value);
+	void AllPanelCollapsed();
 	void PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible);
 
 protected:
@@ -57,4 +60,6 @@ public:
 	UTradeWidget* Widget_Trade;
 	UPlayerStorage* Widget_Storage;
 	UMerchantInventory* Widget_Merchant;
+	UQuestPlayerPanel* Widget_QuestPlayerPanel;
+	UQuestInfoPanel* Widget_QuestInfoPanel;
 };

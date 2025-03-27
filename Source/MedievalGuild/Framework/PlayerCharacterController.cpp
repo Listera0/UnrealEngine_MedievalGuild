@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 
 
 APlayerCharacterController::APlayerCharacterController()
@@ -21,10 +22,8 @@ APlayerCharacterController::APlayerCharacterController()
 void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	PlayerCameraManager->ViewPitchMin = -40.0f;
-	PlayerCameraManager->ViewPitchMax = 40.0f;
+	
+	InitPlayerCameraLock();
 	InitSceenResolution();
 	InitMoveInput();
 	InitViewport();
@@ -35,6 +34,7 @@ void APlayerCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	InitViewportScale();
 	lineTraceCheckTag(FName("Interactable"));
 	CheckScreenUI();
 	CheckInteractDistance();
@@ -85,6 +85,12 @@ void APlayerCharacterController::OnUnPossess()
 	Super::OnUnPossess();
 }
 
+void APlayerCharacterController::InitPlayerCameraLock()
+{
+	PlayerCameraManager->ViewPitchMin = -40.0f;
+	PlayerCameraManager->ViewPitchMax = 40.0f;
+}
+
 void APlayerCharacterController::InitSceenResolution()
 {
 	FVector2D UserScreenResolution = FVector2D(1920, 1080);
@@ -112,10 +118,6 @@ void APlayerCharacterController::InitMoveInput()
 
 void APlayerCharacterController::InitViewport()
 {
-	int ViewportWidth; int ViewportHeight;
-	GetViewportSize(ViewportWidth, ViewportHeight);
-	ViewPortSize = FVector2D(ViewportWidth, ViewportHeight);
-
 	if (ScreenViewport) {
 		ScreenUI = CreateWidget<UScreenUI>(this, ScreenViewport);
 		ScreenUI->AddToViewport();
@@ -284,6 +286,18 @@ FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
 	return FHitResult();
 }
 
+void APlayerCharacterController::InitViewportScale()
+{
+	if (!bIsViewScaleInit && UWidgetLayoutLibrary::GetViewportSize(this).X != 0.0f) {
+		FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
+		//FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+		FVector2D ScreenResolution = UGameUserSettings::GetGameUserSettings()->GetScreenResolution();
+		FVector2D Scale = ViewportSize / ScreenResolution;
+		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::White, FString::Printf(TEXT("ViewPortScale : (%f, %f)"), Scale.X, Scale.Y));
+		bIsViewScaleInit = true;
+	}
+}
+
 void APlayerCharacterController::CheckScreenUI()
 {
 	if (bIsInteract) {
@@ -352,7 +366,12 @@ void APlayerCharacterController::OpenUISetting()
 
 void APlayerCharacterController::AllUIHidden()
 {
-	if (InteractObj && InteractObj->ActorHasTag("Merchant")) { InventoryUI->Widget_Trade->ResetContainer(); }
+	if (InteractObj && InteractObj->ActorHasTag("Merchant")) { 
+		InventoryUI->Widget_Trade->ResetContainer();
+		if (InventoryUI->Widget_Merchant->bIsSwitched) {
+			InventoryUI->Widget_Merchant->SwitchPanelScreen();
+		}
+	}
 
 	bIsUIOpened = false;
 	bIsInteractAction = false;

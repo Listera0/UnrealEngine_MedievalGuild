@@ -37,6 +37,7 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void OnUnPossess() override;
 
+	void InitPlayerCameraLock();
 	void InitSceenResolution();
 	void InitMoveInput();
 	void InitViewport();
@@ -52,6 +53,7 @@ protected:
 	void InputInteractAction(const FInputActionValue& Value);
 
 	FHitResult lineTraceCheckTag(FName tag);
+	void InitViewportScale();
 	void CheckScreenUI();
 	void CheckInteractDistance();
 	void CheckInteractUIDistance();
@@ -106,6 +108,7 @@ private:
 
 	FVector2D LastMousePosition;
 
+	bool bIsViewScaleInit;
 	bool bIsUIOpened;
 	bool bIsShiftPressed;
 	bool bIsInteract;
