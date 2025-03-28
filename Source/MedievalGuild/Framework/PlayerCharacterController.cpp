@@ -230,36 +230,22 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				hitResult.GetActor()->Destroy();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				InventoryUI->PanelVisibleSetting(1);
 				OpenUISetting();
-
-				bIsInteractAction = true;
-				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-				InteractObj->SetContainerUI();
-				InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
-				InventoryUI->Widget_Equipment->ShowContainer();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				InventoryUI->PanelVisibleSetting(2);
 				OpenUISetting();
-
-				bIsInteractAction = true;
-				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-				InventoryUI->Widget_Equipment->ShowContainer();
-				InventoryUI->Widget_Inventory->ShowContainer(PlayerData->PlayerInventory);
-				InventoryUI->Widget_Storage->ShowContainer(PlayerData->PlayerStorage);
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
-				InventoryUI->PanelVisibleSetting(3);
-				OpenUISetting();
-
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-
-				InteractObj->SetContainerUI();
-				InventoryUI->Widget_Trade->ShowContainer();
-				InventoryUI->Widget_Storage->ShowContainer(PlayerData->PlayerStorage);
-
+				InventoryUI->PanelVisibleSetting(3);
+				OpenUISetting();
 			}
 		}
 	}	
@@ -309,7 +295,7 @@ void APlayerCharacterController::CheckScreenUI()
 			ScreenUI->SetInteractText(true, "Talk"); 
 		}
 		else if(hitResult.GetActor()->ActorHasTag(FName("Container")) || hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
-			ScreenUI->SetInteractText(true, "Open");
+			ScreenUI->SetInteractText(true, "Search");
 		}
 	}
 	else {

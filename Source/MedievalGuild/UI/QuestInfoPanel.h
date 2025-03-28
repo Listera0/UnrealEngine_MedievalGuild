@@ -21,7 +21,7 @@ public:
 	class APlayerCharacterController* PlayerController = nullptr;
 
 	void QuestInfoInitSetting();
-	void ShowQuestDetail(); //QuestData* data
+	void ShowQuestDetail(UButton* Temp); //QuestData* data
 	void CheckQuestProgress();
 	void SetInteractButton();
 	bool CheckApplyQuest();

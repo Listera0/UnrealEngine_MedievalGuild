@@ -50,6 +50,8 @@ UBlueprintBindComponent::UBlueprintBindComponent()
 	static ConstructorHelpers::FClassFinder<UUserWidget> QuestPlayerFinder(TEXT("/Game/Blueprint/UI/WB_QuestPlayerPanel"));
 	if (QuestPlayerFinder.Succeeded()) QuestPlayerWidget = QuestPlayerFinder.Class;
 	
+	static ConstructorHelpers::FClassFinder<UUserWidget> OptionMenuFinder(TEXT("/Game/Blueprint/UI/WB_OptionMenu"));
+	if (OptionMenuFinder.Succeeded()) OptionMenuWidget = OptionMenuFinder.Class;
 }
 
 
@@ -72,6 +74,7 @@ void UBlueprintBindComponent::BeginPlay()
 	if (!QuestSlotWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestSlotWidget"));
 	if (!QuestInfoWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestInfoWidget"));
 	if (!QuestPlayerWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestPlayerWidget"));
+	if (!OptionMenuWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load OptionMenuWidget"));
 }
 
 

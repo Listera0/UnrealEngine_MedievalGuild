@@ -327,11 +327,12 @@ FVector2D UItemSlot::ShowInteractItemPanel()
 	//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Blue, FString::Printf(TEXT("%f, %f"), Scale.X, Scale.Y));
 
 	// Set SlotPosition to ViewportPostion
-	FVector2D SlotPosition = (TargetSlotColRow + FVector2D(0.5f, 0.5f)) * SlotSize;
-	FVector2D PositionOffset = FVector2D(30.0f, -30.0f);
+	FVector2D SlotPosition = (TargetSlotColRow + FVector2D(0.5f, 0.5f)) * (SlotSize * Scale);
+	FVector2D SlotOffset = FVector2D(-6.0f * TargetSlotColRow.X, 0.0f);
+	FVector2D PositionOffset = FVector2D(35.0f, -30.0f);
 
 	// Get ScreenPosition between window and container
-	FVector2D ScreenPosition = ContainerPanelPosition - WindowPosition + SlotPosition + PositionOffset;
+	FVector2D ScreenPosition = ContainerPanelPosition - WindowPosition + SlotPosition + SlotOffset + PositionOffset;
 
 	// Trans to Viewport from Screen
 	FVector2D ViewportPosition = ScreenPosition * Scale;
@@ -339,6 +340,7 @@ FVector2D UItemSlot::ShowInteractItemPanel()
 	FVector2D FinalViewportPosition = ViewportPosition;
 	PlayerController->ItemInteractUI->SetPositionInViewport(FinalViewportPosition);
 	PlayerController->ItemInteractUI->InteractItem = GetItemData();
+	PlayerController->ItemInteractUI->InteractContainer = ContainerPanel->ContainerCategory;
 	PlayerController->ItemInteractUI->ShowPanelSetting(Scale);
 	PlayerController->RecordMousePosition();
 

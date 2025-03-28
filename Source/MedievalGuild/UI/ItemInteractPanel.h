@@ -8,6 +8,7 @@
 #include "Components/Button.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Container_Base.h"
 #include "../Object/InventoryData.h"
 
 #include "ItemInteractPanel.generated.h"
@@ -35,6 +36,7 @@ protected:
 public:
 	class APlayerCharacterController* PlayerController = nullptr;
 	FInventoryData* InteractItem = nullptr;
+	EContainerCategory InteractContainer;
 
 	void ShowPanelSetting(FVector2D Scale);
 

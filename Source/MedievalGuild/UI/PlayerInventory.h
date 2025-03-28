@@ -19,6 +19,7 @@
 #include "MerchantInventory.h"
 #include "QuestPlayerPanel.h"
 #include "QuestInfoPanel.h"
+#include "OptionMenu.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -40,15 +41,12 @@ public:
 	void PlayerInventoryInitSetting();
 
 	/// <summary>
-	/// 0 >> Normal Tab || 1 >> Container || 2 >> Storage || 3 >> Merchant || 4 >> Quest
+	/// 0 >> Normal Tab || 1 >> Container || 2 >> Storage || 3 >> Merchant || 4 >> Quest-Mer || 5 >> Quest-Inv
 	/// </summary>
 	void PanelVisibleSetting(int value);
 	void AllPanelCollapsed();
 	void PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible);
-
-protected:
-	AGameManager* GameManager = nullptr;
-	UBlueprintBindComponent* Blueprints = nullptr;
+	void PanelOpenSetting(UUserWidget* widget);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -62,4 +60,10 @@ public:
 	UMerchantInventory* Widget_Merchant;
 	UQuestPlayerPanel* Widget_QuestPlayerPanel;
 	UQuestInfoPanel* Widget_QuestInfoPanel;
+	UOptionMenu* Widget_OptionMenu;
+
+protected:
+	class APlayerCharacterController* PlayerController = nullptr;
+	AGameManager* GameManager = nullptr;
+	UBlueprintBindComponent* Blueprints = nullptr;
 };

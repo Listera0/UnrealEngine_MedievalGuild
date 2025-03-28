@@ -2,6 +2,7 @@
 
 
 #include "PlayerInventory.h"
+#include "../Framework/PlayerCharacterController.h"
 
 UPlayerInventory::UPlayerInventory(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -12,6 +13,7 @@ void UPlayerInventory::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	GameManager = Cast<AGameManager>(UGameplayStatics::GetGameMode(GetWorld()));
 	Blueprints = GameManager->Blueprints;
 
@@ -71,6 +73,11 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	Widget_QuestPlayerPanel->QuestPlayerPanelInitSetting(InitWidgetClass);
 	InventorySlot->AddChildToHorizontalBox(Widget_QuestPlayerPanel);
 
+	// OptionMenu
+	Widget_OptionMenu = CreateWidget<UOptionMenu>(GetWorld(), Blueprints->OptionMenuWidget);
+	Widget_OptionMenu->OptionMenuInitSetting();
+	InventorySlot->AddChildToHorizontalBox(Widget_OptionMenu);
+
 	AllPanelCollapsed();
 }
 
@@ -81,7 +88,7 @@ void UPlayerInventory::PanelVisibleSetting(int value)
 	if (value == 0) {
 		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
 		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Visible);
-		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Hidden);
+		PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Visible);
 	}
 	else if (value == 1) {
 		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
@@ -103,6 +110,11 @@ void UPlayerInventory::PanelVisibleSetting(int value)
 		PanelVisibleSetting(Widget_QuestInfoPanel, ESlateVisibility::Visible);
 		PanelVisibleSetting(Widget_QuestPlayerPanel, ESlateVisibility::Visible);
 	}
+	else if (value == 5) {
+		PanelVisibleSetting(Widget_QuestPlayerPanel, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_QuestInfoPanel, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Visible);
+	}
 }
 
 void UPlayerInventory::AllPanelCollapsed()
@@ -115,13 +127,46 @@ void UPlayerInventory::AllPanelCollapsed()
 	PanelVisibleSetting(Widget_Container, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_Storage, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_QuestPlayerPanel, ESlateVisibility::Collapsed);
+	PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Collapsed);
 }
 
 void UPlayerInventory::PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible)
 {
 	widget->SetVisibility(visible);
-	UHorizontalBoxSlot* boxSlot = Cast<UHorizontalBoxSlot>(widget->Slot);
-	boxSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
-	boxSlot->SetHorizontalAlignment(HAlign_Fill);
-	boxSlot->SetVerticalAlignment(VAlign_Fill);
+
+	if (visible == ESlateVisibility::Visible) {
+		InventorySlot->RemoveChild(widget);
+		InventorySlot->AddChildToHorizontalBox(widget);
+		UHorizontalBoxSlot* boxSlot = Cast<UHorizontalBoxSlot>(widget->Slot);
+		boxSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
+		boxSlot->SetHorizontalAlignment(HAlign_Fill);
+		boxSlot->SetVerticalAlignment(VAlign_Fill);
+
+		PanelOpenSetting(widget);
+	}
+}
+
+void UPlayerInventory::PanelOpenSetting(UUserWidget* widget)
+{
+	if (widget == Widget_Inventory) {
+		Widget_Inventory->ShowContainer(PlayerController->PlayerData->GetTargetContainer(Widget_Inventory->ContainerCategory));
+	}
+	else if (widget == Widget_Equipment) {
+		Widget_Equipment->ShowContainer();
+	}
+	else if (widget == Widget_Storage) {
+		Widget_Storage->ShowContainer(PlayerController->PlayerData->GetTargetContainer(Widget_Storage->ContainerCategory));
+	}
+	else if (widget == Widget_Trade) {
+		Widget_Trade->ShowContainer();
+	}
+	else if (widget == Widget_Container || widget == Widget_Merchant) {
+		PlayerController->InteractObj->SetContainerUI();
+	}
+	else if (widget == Widget_QuestInfoPanel) {
+		Widget_QuestInfoPanel->ShowQuestDetail(nullptr);
+	}
+	else if (widget == Widget_QuestPlayerPanel) {
+		Widget_QuestPlayerPanel->ShowQuestList();
+	}
 }

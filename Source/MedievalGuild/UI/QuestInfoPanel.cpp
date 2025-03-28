@@ -10,9 +10,9 @@ void UQuestInfoPanel::QuestInfoInitSetting()
 	QuestInteractButton->OnClicked.AddDynamic(this, &UQuestInfoPanel::OnClickInteractButton);
 }
 
-void UQuestInfoPanel::ShowQuestDetail()
+void UQuestInfoPanel::ShowQuestDetail(UButton* Temp)
 {
-	if (nullptr) {
+	if (Temp == nullptr) {
 		QuestDetailPanel->SetVisibility(ESlateVisibility::Hidden);
 		return;
 	}
