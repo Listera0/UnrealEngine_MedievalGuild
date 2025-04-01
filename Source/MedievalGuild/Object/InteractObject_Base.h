@@ -30,10 +30,8 @@ public:
 
 protected:
 	USceneComponent* RootComponent = nullptr;
-
 	UPROPERTY(EditDefaultsOnly)
-	USphereComponent* InteractArea = nullptr;
-
+	UStaticMeshComponent* StaticMesh = nullptr;
 public:
 	TArray<FInventoryData*> ContainerInventory;
 	bool bIsInit;
@@ -43,6 +41,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Item")
 	FVector2D ContainerSize;
+	float InteractDistance;
 
 public:
 	void SetContainerUI();

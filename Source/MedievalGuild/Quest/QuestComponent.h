@@ -27,6 +27,8 @@ public:
 
 	void PrintMyQuests();
 
+	void GetMyQuestDatas(TArray<class UQuest_Base*>& datalist);
+
 	inline void PlayerComponent() { IsPlayer = true; }
 protected:
 	// Called when the game starts

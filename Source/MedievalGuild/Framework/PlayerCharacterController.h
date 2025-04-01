@@ -104,7 +104,6 @@ protected:
 	float CameraSensitive = 0.5f;
 
 private:
-	class APlayerCharacter* PlayerCharacter = nullptr;
 
 	FVector2D LastMousePosition;
 
@@ -131,4 +130,6 @@ public:
 	AInteractObject_Base* InteractObj = nullptr;
 
 	FVector2D ViewPortSize;
+
+	class APlayerCharacter* PlayerCharacter = nullptr;
 };

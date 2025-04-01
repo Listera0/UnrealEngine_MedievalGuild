@@ -57,6 +57,8 @@ public:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	MoveState PlayerMoveState;
+	UPROPERTY(EditDefaultsOnly)
+	UQuestComponent* QuestComponent = nullptr;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -65,8 +67,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* PlayerCamera = nullptr;
 
-	UPROPERTY(EditDefaultsOnly)
-	UQuestComponent* QuestComponent = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	float StealthMoveSpeed;
@@ -81,8 +81,7 @@ protected:
 	UAnimMontage* AttackMontage = nullptr;
 
 private:
-	bool bStealthToggle = false;
-
 	class USectionControlNotify* SectionNotify = nullptr;
+	bool bStealthToggle = false;
 	bool bEnableControlNotify = false;
 };

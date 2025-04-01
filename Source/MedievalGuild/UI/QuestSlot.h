@@ -18,4 +18,8 @@ class MEDIEVALGUILD_API UQuestSlot : public UUserWidget
 public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* QuestSlot;
+	int QuestIndex;
+
+	UFUNCTION()
+	void ShowQuestDetail();
 };

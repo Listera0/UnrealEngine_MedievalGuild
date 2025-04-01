@@ -7,7 +7,7 @@
 			"QuestStatus": 0,
 			"QuestType": 3,
 			"RewardGold": 0,
-			"HasPlayer": false,
+			"HasPlayer": true,
 			"RewardItems": [],
 			"RewardItemAmount": [],
 			"PreRequisiteQuests": []

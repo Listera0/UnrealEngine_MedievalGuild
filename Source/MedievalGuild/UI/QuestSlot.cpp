@@ -2,4 +2,10 @@
 
 
 #include "QuestSlot.h"
+#include "../Framework/PlayerCharacterController.h"
 
+void UQuestSlot::ShowQuestDetail()
+{
+	APlayerCharacterController* PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	PlayerController->InventoryUI->Widget_QuestInfoPanel->ShowQuestDetail(PlayerController->InventoryUI->Widget_QuestPlayerPanel->PlayerQuestList[QuestIndex]);
+}

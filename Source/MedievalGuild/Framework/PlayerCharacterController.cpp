@@ -232,18 +232,21 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
 				InventoryUI->PanelVisibleSetting(1);
 				OpenUISetting();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
 				InventoryUI->PanelVisibleSetting(2);
 				OpenUISetting();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
 				InventoryUI->PanelVisibleSetting(3);
 				OpenUISetting();
 			}
@@ -256,12 +259,16 @@ FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
 	bIsInteract = false;
 
 	FVector start = GetCharacter()->GetActorLocation() + FVector(0.0f, 0.0f, 50.0f);
+	if (PlayerCharacter->PlayerMoveState == MoveState::Stealth) { start -= FVector(0.0f, 0.0f, 50.0f); }
+	FVector boxSize = FVector(5.0f, 5.0f, 5.0f);
 	FRotator cameraRotation = GetControlRotation();
 	FVector end = start + cameraRotation.Vector() * 150.0f;
 
-	bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility);
+	bool bHit = GetWorld()->SweepSingleByChannel(hitResult, start, end, FQuat::Identity, ECC_Visibility, FCollisionShape::MakeBox(boxSize));
+	//bool bHit = GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility);
 
 	//FColor LineColor = bHit ? FColor::Red : FColor::Green;
+	//DrawDebugBox(GetWorld(), hitResult.Location, boxSize, FQuat::Identity, LineColor, false, 2.0f, 0, 2.0f);
 	//DrawDebugLine(GetWorld(), start, end, LineColor, false, 2.0f, 0, 2.0f);
 
 	if (bHit && hitResult.GetActor()->ActorHasTag(tag)) {
@@ -279,7 +286,7 @@ void APlayerCharacterController::InitViewportScale()
 		//FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
 		FVector2D ScreenResolution = UGameUserSettings::GetGameUserSettings()->GetScreenResolution();
 		FVector2D Scale = ViewportSize / ScreenResolution;
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::White, FString::Printf(TEXT("ViewPortScale : (%f, %f)"), Scale.X, Scale.Y));
+		//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::White, FString::Printf(TEXT("ViewPortScale : (%f, %f)"), Scale.X, Scale.Y));
 		bIsViewScaleInit = true;
 	}
 }
@@ -306,7 +313,7 @@ void APlayerCharacterController::CheckScreenUI()
 void APlayerCharacterController::CheckInteractDistance()
 {
 	if (bIsInteractAction && InteractObj) {
-		if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > 40000.0f) {
+		if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > InteractObj->InteractDistance + 15000.0f) {
 			AllUIHidden();
 		}
 	}

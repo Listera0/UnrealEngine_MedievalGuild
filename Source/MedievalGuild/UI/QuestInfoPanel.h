@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Components/CanvasPanel.h"
+#include "../Quest/Quest_Base.h"
 #include "QuestInfoPanel.generated.h"
 
 /**
@@ -21,11 +22,11 @@ public:
 	class APlayerCharacterController* PlayerController = nullptr;
 
 	void QuestInfoInitSetting();
-	void ShowQuestDetail(UButton* Temp); //QuestData* data
+	void ShowQuestDetail(UQuest_Base* data);
 	void CheckQuestProgress();
-	void SetInteractButton();
 	bool CheckApplyQuest();
 	bool CheckSuccessQuest();
+	void SetInteractButtonColor(FLinearColor color);
 
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* QuestDetailPanel;
@@ -42,7 +43,8 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* RewardValue;
 
-	// QuestData* SelectQuest;
+	UQuest_Base* SelectQuest;
+
 	FLinearColor BasicColor;
 	FLinearColor SuccessColor;
 	FLinearColor NotEnoughColor;

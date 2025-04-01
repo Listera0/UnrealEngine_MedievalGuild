@@ -128,3 +128,20 @@ void UQuestComponent::PrintMyQuests()
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Blue, p);
 	}
 }
+
+void UQuestComponent::GetMyQuestDatas(TArray<UQuest_Base*>& datalist)
+{
+	if (!MyQuestList.IsEmpty())
+	{
+		for (UQuest_Base* quest : MyQuestList)
+		{
+			if (quest == nullptr)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Quest is nullptr!"));
+				continue;
+			}
+
+			datalist.Add(quest);
+		}
+	}
+}

@@ -4,22 +4,26 @@
 #include "QuestPlayerPanel.h"
 #include "Components/VerticalBoxSlot.h"
 #include "Components/CanvasPanelSlot.h"
+#include "../Framework/PlayerCharacterController.h"
+#include "../Character/PlayerCharacter.h"
+#include "QuestInfoPanel.h"
 #include "QuestSlot.h"
 
 void UQuestPlayerPanel::QuestPlayerPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass)
 {
 	QuestSlotClass = InitWidgetClass[0];
-
-	QuestList.Add(this);
-	ShowQuestList();
+	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 }
 
 void UQuestPlayerPanel::ShowQuestList()
 {
 	QuestSlotGrid->ClearChildren();
 
+	PlayerQuestList.Empty();
+	PlayerController->PlayerCharacter->QuestComponent->GetMyQuestDatas(PlayerQuestList);
+
 	int TotalQuestCount = 0;
-	for (UUserWidget* quest : QuestList) {
+	for (UQuest_Base* quest : PlayerQuestList) {
 		UQuestSlot* newQuestSlot = CreateWidget<UQuestSlot>(GetWorld(), QuestSlotClass);
 		FButtonStyle buttonStyle;
 		FSlateBrush borderBrush;
@@ -37,6 +41,9 @@ void UQuestPlayerPanel::ShowQuestList()
 		GridSlot->SetSize(FSlateChildSize(ESlateSizeRule::Fill));
 		GridSlot->SetHorizontalAlignment(HAlign_Fill);
 		GridSlot->SetVerticalAlignment(VAlign_Fill);
+
+		newQuestSlot->QuestIndex = TotalQuestCount;
+		newQuestSlot->QuestSlot->OnClicked.AddDynamic(newQuestSlot, &UQuestSlot::ShowQuestDetail);
 
 		TotalQuestCount++;
 	}

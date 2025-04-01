@@ -13,8 +13,8 @@ AInteractObject_Base::AInteractObject_Base()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(FName("RootComponent"));
 	SetRootComponent(RootComponent);
 
-	InteractArea = CreateDefaultSubobject<USphereComponent>(FName("InteractArea"));
-	InteractArea->SetupAttachment(RootComponent);
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("StaticMesh"));
+	StaticMesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned

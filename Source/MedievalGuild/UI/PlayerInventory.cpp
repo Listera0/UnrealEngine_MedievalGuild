@@ -50,6 +50,7 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 
 	// QuestPlayerSlot
 	Widget_QuestInfoPanel = CreateWidget<UQuestInfoPanel>(GetWorld(), Blueprints->QuestInfoWidget);
+	Widget_QuestInfoPanel->QuestInfoInitSetting();
 	InventorySlot->AddChildToHorizontalBox(Widget_QuestInfoPanel);
 
 

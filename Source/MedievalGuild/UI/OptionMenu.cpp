@@ -2,7 +2,11 @@
 
 
 #include "OptionMenu.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Quest/QuestManager.h"
+#include "../Framework/GameManager.h"
 
 void UOptionMenu::OptionMenuInitSetting()
 {
@@ -10,6 +14,7 @@ void UOptionMenu::OptionMenuInitSetting()
 
 	ShowInventory->OnClicked.AddDynamic(this, &UOptionMenu::OnClickShowInventory);
 	ShowQuest->OnClicked.AddDynamic(this, &UOptionMenu::OnClickShowQuest);
+	ExitGame->OnClicked.AddDynamic(this, &UOptionMenu::OnClickExitGame);
 }
 
 void UOptionMenu::OnClickShowInventory()
@@ -28,4 +33,6 @@ void UOptionMenu::OnClickShowOption()
 
 void UOptionMenu::OnClickExitGame()
 {
+	Cast<AGameManager>(GetWorld()->GetAuthGameMode())->GameEndSequence();
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }

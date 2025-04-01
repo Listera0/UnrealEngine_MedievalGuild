@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanel.h"
+#include "../Item/ItemData.h"
+#include "../Quest/Quest_Base.h"
 #include "Components/VerticalBox.h"
 #include "QuestPlayerPanel.generated.h"
 
@@ -30,6 +32,5 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* QuestSlotGrid = nullptr;
 
-	UPROPERTY()
-	TArray<UUserWidget*> QuestList;
+	TArray<UQuest_Base*> PlayerQuestList;
 };
