@@ -69,32 +69,35 @@ void UQuestComponent::GiveQuestToPlayer_Internal(AActor* PlayerActor)
 
 void UQuestComponent::InitQuest()
 {
-	for (UQuestData_Base* quest : SetQuestList)
+	if (!SetQuestList.IsEmpty())
 	{
-		UQuest_Base* InQuest = UQuestManager::GetInstance()->FindQuest(quest->QuestIndex);
-		if (InQuest)
-		{
-			MyQuestList.Add(InQuest);
+		for (UQuestData_Base* quest : SetQuestList)
 
-			if (InQuest->GetQuestStatus() == EQuestStatus::InProgress)
-				StartQuestList.Add(InQuest);
-		}
-		else
 		{
-			bool IsAddQuest = UQuestManager::GetInstance()->AddQuestData(quest);
-			if (IsAddQuest)
+			UQuest_Base* InQuest = UQuestManager::GetInstance()->FindQuest(quest->QuestIndex);
+			if (InQuest)
 			{
-				InQuest = UQuestManager::GetInstance()->FindQuest(quest->QuestIndex);
 				MyQuestList.Add(InQuest);
 
 				if (InQuest->GetQuestStatus() == EQuestStatus::InProgress)
 					StartQuestList.Add(InQuest);
-
 			}
 			else
 			{
-				FString p = FString::Printf(TEXT("Error!! Not Add Quest [%d] "), quest->QuestIndex) + quest->QuestName;
-				GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
+				bool IsAddQuest = UQuestManager::GetInstance()->AddQuestData(quest);
+				if (IsAddQuest)
+				{
+					InQuest = UQuestManager::GetInstance()->FindQuest(quest->QuestIndex);
+					MyQuestList.Add(InQuest);
+
+					if (InQuest->GetQuestStatus() == EQuestStatus::InProgress)
+						StartQuestList.Add(InQuest);
+				}
+				else
+				{
+					FString p = FString::Printf(TEXT("Error!! Not Add Quest [%d] "), quest->QuestIndex) + quest->QuestName;
+					GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
+				}
 			}
 		}
 	}

@@ -22,10 +22,18 @@ void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		ItemDataManager->ClearUp();
 	if (QuestDataManager)
 		QuestDataManager->CleanUp();
+	
 	Super::EndPlay(EndPlayReason);
 }
 
 void AGameManager::GameEndSequence()
 {
-	QuestDataManager->SaveAllQuestDataToJson();
+
+	if (ItemDataManager)
+		ItemDataManager->ClearUp();
+	if (QuestDataManager)
+	{
+		QuestDataManager->SaveAllQuestDataToJson();
+		QuestDataManager->CleanUp();
+	}
 }

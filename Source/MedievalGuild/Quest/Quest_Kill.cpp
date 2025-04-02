@@ -11,11 +11,12 @@ void UQuest_Kill::StartQuest(UWorld* World)
 
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
 {
-    Quest = InQuest;
+	Super::SetQuestData(InQuest);
 	Quest_Kill = static_cast<UQuestData_Kill*>(InQuest);
+	Quest_Kill->AddToRoot();
 }
 
-bool UQuest_Kill::CheckQuest(int index)
+void UQuest_Kill::CheckQuest(int index)
 {
 	if (Quest_Kill->ObjectIndex == index)
 	{
@@ -25,10 +26,17 @@ bool UQuest_Kill::CheckQuest(int index)
 	if (Quest_Kill->Amount >= Quest_Kill->RequiredAmount)
 	{
 		CompleteQuest();
-		return true;
 	}
+}
 
-	return false;
+void UQuest_Kill::ClearQuest()
+{
+	Super::ClearQuest();
+	if (Quest_Kill)
+	{
+		Quest_Kill->RemoveFromRoot();
+		Quest_Kill = nullptr;
+	}
 }
 
 void UQuest_Kill::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)

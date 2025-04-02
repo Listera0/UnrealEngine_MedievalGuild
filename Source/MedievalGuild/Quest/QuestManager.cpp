@@ -16,6 +16,7 @@ UQuestManager* UQuestManager::GetInstance()
     if (!Instance)
     {
         Instance = NewObject<UQuestManager>();
+		Instance->AddToRoot();
 		Instance->QuestList.Empty();
 		Instance->LoadAllQuestDataFromJson();
     }
@@ -26,7 +27,15 @@ void UQuestManager::CleanUp()
 {
 	if (Instance)
 	{
-		Instance->ConditionalBeginDestroy();
+		for (UQuest_Base* Quest : QuestList)
+		{
+			Quest->ClearQuest();
+			Quest->RemoveFromRoot();
+			Quest = nullptr;
+		}
+		QuestList.Empty();
+		OnPlayerArrived.Clear();
+		Instance->RemoveFromRoot();
 		Instance = nullptr;
 	}
 }
@@ -116,7 +125,7 @@ void UQuestManager::LoadAllQuestDataFromJson()
 
 		if (FJsonSerializer::Deserialize(JsonReader, RootJsonObject) && RootJsonObject.IsValid())
 		{
-			const TArray<TSharedPtr<FJsonValue>>& JsonArray = RootJsonObject->GetArrayField("Quests");
+			const TArray<TSharedPtr<FJsonValue>>& JsonArray = RootJsonObject->GetArrayField(TEXT("Quests"));
 
 			QuestList.Empty();
 
@@ -124,7 +133,7 @@ void UQuestManager::LoadAllQuestDataFromJson()
 			{
 				TSharedPtr<FJsonObject> QuestJson = JsonValue->AsObject();
 
-				EQuestType QuestType = static_cast<EQuestType>(QuestJson->GetIntegerField("QuestType"));
+				EQuestType QuestType = static_cast<EQuestType>(QuestJson->GetIntegerField(TEXT("QuestType")));
 
 				UQuest_Base* NewQuest = nullptr;
 
@@ -150,6 +159,7 @@ void UQuestManager::LoadAllQuestDataFromJson()
 					NewQuest->LoadFromJson(QuestJson);
 					if (NewQuest->GetQuestData())
 					{
+						NewQuest->AddToRoot();
 						QuestList.Add(NewQuest);
 					}
 

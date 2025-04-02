@@ -14,6 +14,8 @@ class MEDIEVALGUILD_API UQuest_Base : public UDataAsset
 
 public:
 	UFUNCTION()
+	virtual void CheckQuest(int index = 0);
+
 	void CompleteQuest();
 
 	bool CanStartQuest();
@@ -21,7 +23,7 @@ public:
 	void CancleQuest();
 	void QuestReward();
 	virtual void SetQuestData(UQuestData_Base* InQuest);
-	virtual bool CheckQuest(int index = 0);
+	virtual void ClearQuest();
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject);
 	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
 	EQuestStatus GetQuestStatus();

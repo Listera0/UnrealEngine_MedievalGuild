@@ -48,21 +48,30 @@ void UQuest_Base::CompleteQuest()
 
 void UQuest_Base::QuestReward()
 {   
-    if (Quest->RewardGold != 0)
-    {
-        APlayerController* PC = GetWorld()->GetFirstPlayerController();
-    }
 }
 
 void UQuest_Base::SetQuestData(UQuestData_Base* InQuest)
 {
     Quest = InQuest;
+    Quest->AddToRoot();
+}
+
+void UQuest_Base::ClearQuest()
+{
+	if (Quest)
+	{
+		Quest->RemoveFromRoot();
+		Quest = nullptr;
+	}
 }
 
 
-bool UQuest_Base::CheckQuest(int index)
+void UQuest_Base::CheckQuest(int index)
 {
-	return false;
+    if (Quest->QuestIndex == index)
+    {
+        CompleteQuest();
+    }
 }
 
 void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)

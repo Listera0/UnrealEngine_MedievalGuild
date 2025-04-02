@@ -18,6 +18,6 @@ public:
 	FVector TargetLocation;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	float AcceptableRadius = 100.0f;
+	float CapsuleRadius = 100.0f;
 	
 };

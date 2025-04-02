@@ -4,30 +4,35 @@
 #include "ArrivalTriggerActor.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "../QuestManager.h"
 // Sets default values
 AArrivalTriggerActor::AArrivalTriggerActor()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComponent"));
-	SetRootComponent(CollisionComponent);
-
-	CollisionComponent->SetCapsuleRadius(AcceptableRadius);
+	CollisionComponent->SetupAttachment(RootComponent);
 }
 
-void AArrivalTriggerActor::SetRadius(float Radius)
+void AArrivalTriggerActor::StartQuest(const float Radius,const int index)
 {
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AArrivalTriggerActor::OnOverlapBegin);
-	AcceptableRadius = Radius;
-	CollisionComponent->SetCapsuleRadius(AcceptableRadius);
+	CollisionComponent->SetCapsuleRadius(Radius);
+
+	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CollisionComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
+	QuestIndex = index;
 }
+
 
 void AArrivalTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor->IsA(APlayerController::StaticClass()))
+	if (OtherActor)
 	{
-		OnPlayerArrived.Broadcast();
+		UQuestManager::GetInstance()->OnPlayerArrived.Broadcast(QuestIndex);
+		Destroy();
 	}
 }
 

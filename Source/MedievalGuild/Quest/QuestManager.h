@@ -10,6 +10,8 @@
 /**
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerArrived, int, QuestIndex);
 UCLASS()
 class MEDIEVALGUILD_API UQuestManager : public UObject
 {
@@ -39,6 +41,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Quest Data Manager")
 	void GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList);
+
+public:
+	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
+	FOnPlayerArrived OnPlayerArrived;
 private:
 	TArray<UQuest_Base*> QuestList;
 

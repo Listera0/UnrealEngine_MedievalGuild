@@ -8,13 +8,15 @@ void UQuest_Item::StartQuest(UWorld* World)
 
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 {
-    Quest = InQuest;
+	Super::SetQuestData(InQuest);
 	Quest_Item = static_cast<UQuestData_Item*>(InQuest);
+	Quest_Item->AddToRoot();
 }
 
-bool UQuest_Item::CheckQuest(int ItemID)
+void UQuest_Item::CheckQuest(int ItemID)
 {
-	if (!Quest_Item->QuestItem) return false;
+    if (!Quest_Item->QuestItem)
+        return;
 
 	if (Quest_Item->QuestItem->index == ItemID)
 	{
@@ -24,10 +26,18 @@ bool UQuest_Item::CheckQuest(int ItemID)
 	if (Quest_Item->Amount >= Quest_Item->RequiredAmount)
 	{
 		CompleteQuest();
-		return true;
 	}
 
-	return false;
+}
+
+void UQuest_Item::ClearQuest()
+{
+	Super::ClearQuest();
+	if (Quest_Item)
+	{
+		Quest_Item->RemoveFromRoot();
+		Quest_Item = nullptr;
+	}
 }
 
 void UQuest_Item::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
