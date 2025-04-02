@@ -79,6 +79,10 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	Widget_OptionMenu->OptionMenuInitSetting();
 	InventorySlot->AddChildToHorizontalBox(Widget_OptionMenu);
 
+	// >> Other ----------------------------------------------------------------------------------------
+	// StageMap
+	Widget_StageMap = CreateWidget<UStageMap>(GetWorld(), Blueprints->StageMapWidget);
+
 	AllPanelCollapsed();
 }
 
@@ -116,6 +120,9 @@ void UPlayerInventory::PanelVisibleSetting(int value)
 		PanelVisibleSetting(Widget_QuestInfoPanel, ESlateVisibility::Visible);
 		PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Visible);
 	}
+	else if (value == 11) {
+		PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Visible);
+	}
 }
 
 void UPlayerInventory::AllPanelCollapsed()
@@ -129,6 +136,7 @@ void UPlayerInventory::AllPanelCollapsed()
 	PanelVisibleSetting(Widget_Storage, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_QuestPlayerPanel, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Collapsed);
+	PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Collapsed);
 }
 
 void UPlayerInventory::PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible)

@@ -20,6 +20,7 @@
 #include "QuestPlayerPanel.h"
 #include "QuestInfoPanel.h"
 #include "OptionMenu.h"
+#include "StageMap.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -61,6 +62,7 @@ public:
 	UQuestPlayerPanel* Widget_QuestPlayerPanel;
 	UQuestInfoPanel* Widget_QuestInfoPanel;
 	UOptionMenu* Widget_OptionMenu;
+	UStageMap* Widget_StageMap;
 
 protected:
 	class APlayerCharacterController* PlayerController = nullptr;

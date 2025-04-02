@@ -52,6 +52,9 @@ UBlueprintBindComponent::UBlueprintBindComponent()
 	
 	static ConstructorHelpers::FClassFinder<UUserWidget> OptionMenuFinder(TEXT("/Game/Blueprint/UI/WB_OptionMenu"));
 	if (OptionMenuFinder.Succeeded()) OptionMenuWidget = OptionMenuFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> StageMapFinder(TEXT("/Game/Blueprint/UI/WB_StageMap"));
+	if (StageMapFinder.Succeeded()) StageMapWidget = StageMapFinder.Class;
 }
 
 
@@ -75,6 +78,7 @@ void UBlueprintBindComponent::BeginPlay()
 	if (!QuestInfoWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestInfoWidget"));
 	if (!QuestPlayerWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestPlayerWidget"));
 	if (!OptionMenuWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load OptionMenuWidget"));
+	if (!StageMapWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load StageMapWidget"));
 }
 
 

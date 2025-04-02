@@ -250,6 +250,13 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				InventoryUI->PanelVisibleSetting(3);
 				OpenUISetting();
 			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
+				InventoryUI->PanelVisibleSetting(11);
+				OpenUISetting();
+			}
 		}
 	}	
 }
@@ -298,11 +305,20 @@ void APlayerCharacterController::CheckScreenUI()
 		if (hitResult.GetActor()->ActorHasTag(FName("Item"))) { 
 			ScreenUI->SetInteractText(true, Cast<AInteractObject_Base>(hitResult.GetActor())->ContainerInventory[0]->ItemData->name);
 		}
-		else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
-			ScreenUI->SetInteractText(true, "Talk"); 
-		}
-		else if(hitResult.GetActor()->ActorHasTag(FName("Container")) || hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
+		else if(hitResult.GetActor()->ActorHasTag(FName("Container"))) {
 			ScreenUI->SetInteractText(true, "Search");
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
+			ScreenUI->SetInteractText(true, "Storage");
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
+			ScreenUI->SetInteractText(true, "Leave");
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
+			ScreenUI->SetInteractText(true, "Talk");
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Anvil"))) {
+			ScreenUI->SetInteractText(true, "Work");
 		}
 	}
 	else {

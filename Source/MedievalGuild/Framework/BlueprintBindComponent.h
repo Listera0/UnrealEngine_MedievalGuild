@@ -56,4 +56,6 @@ public:
 	TSubclassOf<UUserWidget> QuestPlayerWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> OptionMenuWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> StageMapWidget;
 };
