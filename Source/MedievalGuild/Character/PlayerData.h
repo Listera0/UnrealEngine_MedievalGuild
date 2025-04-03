@@ -40,15 +40,14 @@ public:
 	int GetPlayerCurrency();
 
 public:
+	class APlayerCharacterController* PlayerController = nullptr;
+
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
 	FString PlayerName;
-
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
 	float PlayerHealth;
-
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
 	float PlayerStemina;
-
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
 	float PlayerEnergy;
 

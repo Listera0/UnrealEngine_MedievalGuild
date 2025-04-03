@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 
 #include "BlueprintBindComponent.h"
+#include "MoveLocationComponent.h"
 #include "../Item/ItemDataManager.h"
 #include "GameManager.generated.h"
 
@@ -27,6 +28,8 @@ public:
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBlueprintBindComponent* Blueprints = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UMoveLocationComponent* MoveLocation = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UItemDataManager* ItemDataManager = nullptr;

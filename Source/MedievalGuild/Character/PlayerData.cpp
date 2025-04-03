@@ -207,16 +207,16 @@ bool APlayerData::ContainsTArray(TArray<FVector2D> slot, FVector2D target)
 
 TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory category)
 {
+    if (PlayerController == nullptr) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
     switch (category)
     {
         case EContainerCategory::Inventory: return PlayerInventory; break;
         case EContainerCategory::Storage: return PlayerStorage; break;
         case EContainerCategory::Trade: return PlayerTrade; break;
         case EContainerCategory::Container:
-            return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory; break;
         case EContainerCategory::Merchant:
-            //return Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->InteractObj->ContainerInventory;
-            break;
+        case EContainerCategory::CraftInventory: return PlayerController->InteractObj->ContainerInventory; break;
         case EContainerCategory::Helmet:
         case EContainerCategory::Cloth:
         case EContainerCategory::Shoes:

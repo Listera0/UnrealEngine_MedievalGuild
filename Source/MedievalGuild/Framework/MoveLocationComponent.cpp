@@ -2,6 +2,7 @@
 
 
 #include "MoveLocationComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UMoveLocationComponent::UMoveLocationComponent()
@@ -19,8 +20,11 @@ void UMoveLocationComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALocationActor::StaticClass(), FoundActors);
+	for (AActor* actor : FoundActors) {
+		MoveLocations.Add(Cast<ALocationActor>(actor));
+	}
 }
 
 
@@ -30,5 +34,14 @@ void UMoveLocationComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+ALocationActor* UMoveLocationComponent::GetLocationWithTag(FName tag)
+{
+	for (ALocationActor* location : MoveLocations) {
+		if (location->ActorHasTag(tag)) return location;
+	}
+
+	return nullptr;
 }
 

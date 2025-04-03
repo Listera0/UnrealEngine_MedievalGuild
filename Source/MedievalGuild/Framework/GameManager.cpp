@@ -7,6 +7,7 @@
 AGameManager::AGameManager()
 {
 	Blueprints = CreateDefaultSubobject<UBlueprintBindComponent>(FName("BlueprintBind"));
+	MoveLocation = CreateDefaultSubobject<UMoveLocationComponent>(FName("MoveLocation"));
 }
 
 void AGameManager::StartPlay()

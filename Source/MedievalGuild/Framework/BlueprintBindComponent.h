@@ -58,4 +58,10 @@ public:
 	TSubclassOf<UUserWidget> OptionMenuWidget;
 	UPROPERTY()
 	TSubclassOf<UUserWidget> StageMapWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> CraftInventoryWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> CraftRequireWidget;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> CraftRequireItemWidget;
 };

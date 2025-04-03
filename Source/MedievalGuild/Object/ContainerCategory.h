@@ -15,5 +15,6 @@ enum class EContainerCategory : uint8
 	Weapon,
 	Container,
 	Trade,
-	Merchant
+	Merchant,
+	CraftInventory
 };

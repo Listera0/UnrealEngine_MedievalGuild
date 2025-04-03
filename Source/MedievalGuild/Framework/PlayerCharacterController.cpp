@@ -257,6 +257,13 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				InventoryUI->PanelVisibleSetting(11);
 				OpenUISetting();
 			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Anvil"))) {
+				bIsInteractAction = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
+				InventoryUI->PanelVisibleSetting(6);
+				OpenUISetting();
+			}
 		}
 	}	
 }
@@ -375,10 +382,15 @@ void APlayerCharacterController::OpenUISetting()
 
 void APlayerCharacterController::AllUIHidden()
 {
-	if (InteractObj && InteractObj->ActorHasTag("Merchant")) { 
-		InventoryUI->Widget_Trade->ResetContainer();
-		if (InventoryUI->Widget_Merchant->bIsSwitched) {
-			InventoryUI->Widget_Merchant->SwitchPanelScreen();
+	if (InteractObj) {
+		if (InteractObj->ActorHasTag("Merchant")) {
+			InventoryUI->Widget_Trade->ResetContainer();
+			if (InventoryUI->Widget_Merchant->bIsSwitched) {
+				InventoryUI->Widget_Merchant->SwitchPanelScreen();
+			}
+		}
+		else if (InteractObj->ActorHasTag("Anvil")) {
+			InventoryUI->Widget_CraftRequire->ResetRequireList();
 		}
 	}
 
@@ -400,6 +412,7 @@ UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCatego
 		case EContainerCategory::Trade: return InventoryUI->Widget_Trade->Widget_Trade; break;
 		case EContainerCategory::Container: return InventoryUI->Widget_Container; break;
 		case EContainerCategory::Merchant: return  InventoryUI->Widget_Merchant; break;
+		case EContainerCategory::CraftInventory: return  InventoryUI->Widget_CraftInventory; break;
 		case EContainerCategory::Helmet: return InventoryUI->Widget_Equipment->Widget_Helmet; break;
 		case EContainerCategory::Cloth: return InventoryUI->Widget_Equipment->Widget_Cloth; break;
 		case EContainerCategory::Shoes: return InventoryUI->Widget_Equipment->Widget_Shoes; break;

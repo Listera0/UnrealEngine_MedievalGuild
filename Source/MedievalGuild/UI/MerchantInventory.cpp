@@ -12,8 +12,6 @@ void UMerchantInventory::MerchantPanelInitSetting(TArray<TSubclassOf<UUserWidget
 	QuestSlotClass = InitWidgetClass[4];
 
 	TradeAndQuest->OnClicked.AddDynamic(this, &UMerchantInventory::SwitchPanelScreen);
-
-	QuestList.Add(this);
 }
 
 void UMerchantInventory::MakeQuestListPanel()

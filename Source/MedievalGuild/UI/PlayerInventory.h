@@ -21,6 +21,8 @@
 #include "QuestInfoPanel.h"
 #include "OptionMenu.h"
 #include "StageMap.h"
+#include "CraftInventory.h"
+#include "CraftRequire.h"
 
 #include "PlayerInventory.generated.h"
 
@@ -63,6 +65,8 @@ public:
 	UQuestInfoPanel* Widget_QuestInfoPanel;
 	UOptionMenu* Widget_OptionMenu;
 	UStageMap* Widget_StageMap;
+	UCraftInventory* Widget_CraftInventory;
+	UCraftRequire* Widget_CraftRequire;
 
 protected:
 	class APlayerCharacterController* PlayerController = nullptr;

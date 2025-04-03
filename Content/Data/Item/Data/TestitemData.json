@@ -58,5 +58,41 @@
 		"ItemMaxStack": 2,
 		"ItemStackable": true,
 		"ItemType": 0
+	},
+	{
+		"ItemName": "RedGem",
+		"ItemDescription": "RedGem",
+		"ItemIndex": 5,
+		"ItemPrice": 10,
+		"ItemWidth": 1,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 2,
+		"ItemStackable": true,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "WhiteGem",
+		"ItemDescription": "WhiteGem",
+		"ItemIndex": 6,
+		"ItemPrice": 30,
+		"ItemWidth": 1,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 2,
+		"ItemStackable": true,
+		"ItemType": 0
+	},
+	{
+		"ItemName": "BlueGem",
+		"ItemDescription": "BlueGem",
+		"ItemIndex": 7,
+		"ItemPrice": 20,
+		"ItemWidth": 1,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 2,
+		"ItemStackable": true,
+		"ItemType": 0
 	}
 ]

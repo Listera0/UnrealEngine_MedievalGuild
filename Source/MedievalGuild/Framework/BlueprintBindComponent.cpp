@@ -55,6 +55,15 @@ UBlueprintBindComponent::UBlueprintBindComponent()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> StageMapFinder(TEXT("/Game/Blueprint/UI/WB_StageMap"));
 	if (StageMapFinder.Succeeded()) StageMapWidget = StageMapFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> CraftInventoryFinder(TEXT("/Game/Blueprint/UI/WB_CraftInventory"));
+	if (CraftInventoryFinder.Succeeded()) CraftInventoryWidget = CraftInventoryFinder.Class;
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> CraftRequireFinder(TEXT("/Game/Blueprint/UI/WB_CraftRequire"));
+	if (CraftRequireFinder.Succeeded()) CraftRequireWidget = CraftRequireFinder.Class;
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget> CraftRequireItemFinder(TEXT("/Game/Blueprint/UI/WB_CraftRequireItem"));
+	if (CraftRequireItemFinder.Succeeded()) CraftRequireItemWidget = CraftRequireItemFinder.Class;
 }
 
 
@@ -79,6 +88,9 @@ void UBlueprintBindComponent::BeginPlay()
 	if (!QuestPlayerWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load QuestPlayerWidget"));
 	if (!OptionMenuWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load OptionMenuWidget"));
 	if (!StageMapWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load StageMapWidget"));
+	if (!CraftInventoryWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load CraftInventoryWidget"));
+	if (!CraftRequireWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load CraftRequireWidget"));
+	if (!CraftRequireItemWidget) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Fail Load CraftRequireItemWidget"));
 }
 
 

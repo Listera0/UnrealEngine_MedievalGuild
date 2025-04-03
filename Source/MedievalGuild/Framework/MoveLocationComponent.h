@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "../Object/LocationActor.h"
 #include "MoveLocationComponent.generated.h"
 
 
@@ -23,6 +24,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	ALocationActor* GetLocationWithTag(FName tag);
 
-		
+	TArray<ALocationActor*> MoveLocations;
 };

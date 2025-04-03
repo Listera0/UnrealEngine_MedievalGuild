@@ -33,8 +33,13 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 
 	// MerchantWidget
 	Widget_Merchant = CreateWidget<UMerchantInventory>(GetWorld(), Blueprints->MerchantInventoryWidget);
-	Widget_Merchant->MerchantPanelInitSetting(InitWidgetClass, EContainerCategory::Merchant, FVector2D(6, 4));
+	Widget_Merchant->MerchantPanelInitSetting(InitWidgetClass, EContainerCategory::Merchant, FVector2D(6, 8));
 	InventorySlot->AddChildToHorizontalBox(Widget_Merchant);
+
+	// CraftListWidget
+	Widget_CraftInventory = CreateWidget<UCraftInventory>(GetWorld(), Blueprints->CraftInventoryWidget);
+	Widget_CraftInventory->CraftInventoryInitSetting(InitWidgetClass, EContainerCategory::CraftInventory, FVector2D(6, 8));
+	InventorySlot->AddChildToHorizontalBox(Widget_CraftInventory);
 
 	// >> MiddleSide ------------------------------------------------------------------------------------
 	// InventorySlot
@@ -53,6 +58,10 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	Widget_QuestInfoPanel->QuestInfoInitSetting();
 	InventorySlot->AddChildToHorizontalBox(Widget_QuestInfoPanel);
 
+	// CraftRequire
+	Widget_CraftRequire = CreateWidget<UCraftRequire>(GetWorld(), Blueprints->CraftRequireWidget);
+	Widget_CraftRequire->CraftRequireInitSetting(Blueprints->CraftRequireItemWidget);
+	InventorySlot->AddChildToHorizontalBox(Widget_CraftRequire);
 
 	// >> RightSide ------------------------------------------------------------------------------------
 	// ContainerSlot
@@ -82,6 +91,8 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 	// >> Other ----------------------------------------------------------------------------------------
 	// StageMap
 	Widget_StageMap = CreateWidget<UStageMap>(GetWorld(), Blueprints->StageMapWidget);
+	Widget_StageMap->StageMapInitSetting();
+	InventorySlot->AddChildToHorizontalBox(Widget_StageMap);
 
 	AllPanelCollapsed();
 }
@@ -120,6 +131,11 @@ void UPlayerInventory::PanelVisibleSetting(int value)
 		PanelVisibleSetting(Widget_QuestInfoPanel, ESlateVisibility::Visible);
 		PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Visible);
 	}
+	else if (value == 6) {
+		PanelVisibleSetting(Widget_CraftInventory, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_CraftRequire, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Visible);
+	}
 	else if (value == 11) {
 		PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Visible);
 	}
@@ -137,6 +153,8 @@ void UPlayerInventory::AllPanelCollapsed()
 	PanelVisibleSetting(Widget_QuestPlayerPanel, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_OptionMenu, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Collapsed);
+	PanelVisibleSetting(Widget_CraftInventory, ESlateVisibility::Collapsed);
+	PanelVisibleSetting(Widget_CraftRequire, ESlateVisibility::Collapsed);
 }
 
 void UPlayerInventory::PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible)
@@ -169,7 +187,7 @@ void UPlayerInventory::PanelOpenSetting(UUserWidget* widget)
 	else if (widget == Widget_Trade) {
 		Widget_Trade->ShowContainer();
 	}
-	else if (widget == Widget_Container || widget == Widget_Merchant) {
+	else if (widget == Widget_Container || widget == Widget_Merchant || widget == Widget_CraftInventory) {
 		PlayerController->InteractObj->SetContainerUI();
 	}
 	else if (widget == Widget_QuestInfoPanel) {

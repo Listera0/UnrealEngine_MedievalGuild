@@ -3,6 +3,8 @@
 
 #include "InteractObject_Base.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../ItemScaleDataAsset.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 AInteractObject_Base::AInteractObject_Base()
@@ -27,6 +29,19 @@ void AInteractObject_Base::BeginPlay()
 		ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
 	}
 
+	if (ActorHasTag("Item")) {
+		if (UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData) != nullptr) {
+			StaticMesh->SetStaticMesh(UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData));
+			StaticMesh->SetMaterial(0, UItemDataManager::GetInstance()->GetMaterialForItem(ContainerInventory[0]->ItemData));
+		}
+
+		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ScaleData"), ContainerInventory[0]->ItemData->index));
+		UItemScaleDataAsset* ItemDataAsset = Cast<UItemScaleDataAsset>(AssetRef.TryLoad());
+		if (ItemDataAsset) {
+			StaticMesh->SetRelativeScale3D(FVector(ItemDataAsset->Scale, ItemDataAsset->Scale, ItemDataAsset->Scale));
+		}
+	}
+
 	bIsInit = false;
 }
 
@@ -44,6 +59,7 @@ void AInteractObject_Base::SetContainerUI()
 
 	if (Controller->InteractObj->ActorHasTag("Container")) { targetCategory = EContainerCategory::Container; }
 	else if (Controller->InteractObj->ActorHasTag("Merchant")) { targetCategory = EContainerCategory::Merchant; }
+	else if (Controller->InteractObj->ActorHasTag("Anvil")) { targetCategory = EContainerCategory::CraftInventory; }
 
 	UContainer_Base* targetContainerPanel = Controller->GetTargetContainer(targetCategory);
 

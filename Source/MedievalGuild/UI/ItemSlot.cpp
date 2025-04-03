@@ -30,6 +30,9 @@ FReply UItemSlot::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPo
 					PlayerController->InventoryUI->Widget_Trade->SelectBuyItem(GetItemData());
 				}
 			}
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::CraftInventory) {
+				PlayerController->InventoryUI->Widget_CraftRequire->ShowRequireList(GetItemData());
+			}
 			else if (ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
 				if (PlayerController->InventoryUI->Widget_Trade->bIsBuy) {
 					PlayerController->InventoryUI->Widget_Trade->SelectBuyItem(nullptr);
