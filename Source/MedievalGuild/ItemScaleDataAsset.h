@@ -18,6 +18,8 @@ protected:
 	UItemScaleDataAsset();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Scale")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Option")
 	float Scale;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Option")
+	FRotator Rotation;
 };

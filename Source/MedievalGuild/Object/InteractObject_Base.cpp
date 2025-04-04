@@ -29,18 +29,7 @@ void AInteractObject_Base::BeginPlay()
 		ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
 	}
 
-	if (ActorHasTag("Item")) {
-		if (UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData) != nullptr) {
-			StaticMesh->SetStaticMesh(UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData));
-			StaticMesh->SetMaterial(0, UItemDataManager::GetInstance()->GetMaterialForItem(ContainerInventory[0]->ItemData));
-		}
-
-		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ScaleData"), ContainerInventory[0]->ItemData->index));
-		UItemScaleDataAsset* ItemDataAsset = Cast<UItemScaleDataAsset>(AssetRef.TryLoad());
-		if (ItemDataAsset) {
-			StaticMesh->SetRelativeScale3D(FVector(ItemDataAsset->Scale, ItemDataAsset->Scale, ItemDataAsset->Scale));
-		}
-	}
+	InteractableItemSetting();
 
 	bIsInit = false;
 }
@@ -72,6 +61,26 @@ void AInteractObject_Base::SetContainerUI()
 		}
 	}
 	targetContainerPanel->ShowContainer(ContainerInventory);
+}
+
+void AInteractObject_Base::InteractableItemSetting()
+{
+	if (ActorHasTag("Item")) {
+		if (UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData) != nullptr) {
+			StaticMesh->SetStaticMesh(UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData));
+			StaticMesh->SetMaterial(0, UItemDataManager::GetInstance()->GetMaterialForItem(ContainerInventory[0]->ItemData));
+		}
+
+		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ScaleData"), ContainerInventory[0]->ItemData->index));
+		UItemScaleDataAsset* ItemDataAsset = Cast<UItemScaleDataAsset>(AssetRef.TryLoad());
+		if (ItemDataAsset) {
+			StaticMesh->SetRelativeScale3D(FVector(ItemDataAsset->Scale, ItemDataAsset->Scale, ItemDataAsset->Scale));
+			StaticMesh->SetRelativeRotation(ItemDataAsset->Rotation);
+		}
+
+		StaticMesh->SetSimulatePhysics(true);
+		StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
+	}
 }
 
 void AInteractObject_Base::AddItemToInv(FInventoryData* data)

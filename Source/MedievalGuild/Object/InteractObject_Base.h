@@ -33,6 +33,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* StaticMesh = nullptr;
 public:
+
 	TArray<FInventoryData*> ContainerInventory;
 	bool bIsInit;
 
@@ -45,6 +46,7 @@ public:
 
 public:
 	void SetContainerUI();
+	void InteractableItemSetting();
 
 	void AddItemToInv(FInventoryData* data);
 	void RemoveItemToInv(FVector2D location, int count, bool withDelete);

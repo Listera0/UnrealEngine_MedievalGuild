@@ -2,6 +2,9 @@
 
 
 #include "GameManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/DirectionalLight.h"
+#include "Components/DirectionalLightComponent.h"
 #include "../Quest/QuestManager.h"
 
 AGameManager::AGameManager()
@@ -15,6 +18,9 @@ void AGameManager::StartPlay()
 	Super::StartPlay();
 	ItemDataManager = UItemDataManager::GetInstance();	
 	QuestDataManager = UQuestManager::GetInstance();
+
+	ADirectionalLight* DirectionalLight = Cast<ADirectionalLight>(UGameplayStatics::GetActorOfClass(GetWorld(), ADirectionalLight::StaticClass()));
+	DirectionalLight->GetLightComponent()->SetIntensity(0.0f);
 }
 
 void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
