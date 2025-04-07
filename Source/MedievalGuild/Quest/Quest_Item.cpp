@@ -37,7 +37,10 @@ void UQuest_Item::CheckQuest(int ItemID, bool IsUpdate)
 	{
 		CompleteQuest();
 	}
-
+    else 
+    {
+		Quest->QuestStatus = EQuestStatus::InProgress;
+    }
 }
 
 void UQuest_Item::ClearQuest()
@@ -57,7 +60,6 @@ void UQuest_Item::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
     if (Quest_Item)
     {
         JsonObject->SetNumberField(TEXT("QuestItemIndex"), Quest_Item->QuestItemIndex);
-        JsonObject->SetNumberField(TEXT("QuestItemAmount"), Quest_Item->Amount);
         JsonObject->SetNumberField(TEXT("QuestItemRequiredAmount"), Quest_Item->RequiredAmount);
     }
     else
@@ -75,11 +77,6 @@ void UQuest_Item::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
 
         if (Quest_Item)
         {
-            if (JsonObject->HasField(TEXT("QuestItemAmount")))
-                Quest_Item->Amount = JsonObject->GetIntegerField(TEXT("QuestItemAmount"));
-            else
-                UE_LOG(LogTemp, Warning, TEXT("QuestItemAmount field missing in JSON"));
-
             if (JsonObject->HasField(TEXT("QuestItemRequiredAmount")))
                 Quest_Item->RequiredAmount = JsonObject->GetIntegerField(TEXT("QuestItemRequiredAmount"));
             else

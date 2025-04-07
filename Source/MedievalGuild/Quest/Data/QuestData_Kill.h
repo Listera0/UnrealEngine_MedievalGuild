@@ -23,5 +23,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Kill")
 	int Amount = 0;
-	
 };

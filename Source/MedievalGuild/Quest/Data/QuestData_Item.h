@@ -20,7 +20,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
 	int RequiredAmount = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
-	int Amount = 0;
 };
