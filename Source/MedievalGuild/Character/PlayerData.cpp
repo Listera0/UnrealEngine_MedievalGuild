@@ -291,6 +291,25 @@ int APlayerData::GetPlayerCurrency()
     return value;
 }
 
+int APlayerData::GetItemCount(int index)
+{
+    int totalCount = 0;
+
+    for (FInventoryData* data : PlayerInventory) {
+        if (data->ItemData->index == index) {
+            totalCount += data->ItemCount;
+        }
+    }
+
+    for (FInventoryData* data : PlayerStorage) {
+        if (data->ItemData->index == index) {
+            totalCount += data->ItemCount;
+        }
+    }
+
+    return totalCount;
+}
+
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)
 {
     FInventoryData* targetData = FindItemWithLocation(target, from);

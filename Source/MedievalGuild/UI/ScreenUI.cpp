@@ -50,4 +50,12 @@ void UScreenUI::SetSystemMessage(bool visible, FString text)
 	SystemMessage->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	SystemMessage->SetText(FText::FromString(text));
 	CheckAnyTextVisible();
+
+	FTimerHandle timerHandle;
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, [this]()
+	{
+		SystemMessage->SetVisibility(ESlateVisibility::Collapsed);
+		SystemMessage->SetText(FText::FromString(""));
+		CheckAnyTextVisible();
+	}, 2.0f, false);
 }

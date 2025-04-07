@@ -39,6 +39,7 @@ public:
 	int GetEquipmentIndex(EContainerCategory category);
 	int GetEquipmentIndex(EItemType category);
 	int GetPlayerCurrency();
+	int GetItemCount(int index);
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;

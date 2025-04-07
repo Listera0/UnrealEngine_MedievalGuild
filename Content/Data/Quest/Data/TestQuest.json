@@ -13,7 +13,7 @@
 			"QuestName": "도착",
 			"Description": "도착",
 			"QuestIndex": 1,
-			"QuestStatus": 2,
+			"QuestStatus": 0,
 			"QuestType": 0,
 			"RewardGold": 100,
 			"HasPlayer": true,
@@ -23,15 +23,16 @@
 			"CapsuleRadius": 100
 		},
 		{
-			"QuestName": "아이템 획득",
-			"Description": "아이템 획득",
+			"QuestName": "I Need Book!",
+			"Description": "I want one book for study!",
 			"QuestIndex": 2,
-			"QuestStatus": 2,
+			"QuestStatus": 1,
 			"QuestType": 1,
 			"RewardGold": 0,
 			"HasPlayer": true,
-			"QuestItemIndex": 0,
-			"QuestItemAmount": 1,
+			"RewardItems": [],
+			"RewardItemAmount": [ 40 ],
+			"QuestItemIndex": 3,
 			"QuestItemRequiredAmount": 1
 		}
 	]

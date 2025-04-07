@@ -192,7 +192,13 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory && before == EContainerCategory::Container) {
-				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index,true);
+				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index, true);
+			}
+			if (before == EContainerCategory::Inventory && ContainerPanel->ContainerCategory != EContainerCategory::Storage) {
+				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index, false);
+			}
+			if (before == EContainerCategory::Storage && ContainerPanel->ContainerCategory != EContainerCategory::Inventory) {
+				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index, false);
 			}
 
 			Operation->bMoveSuccessed = true;
@@ -317,6 +323,12 @@ void UItemSlot::SlotButtonShiftClick()
 		}
 		if (ContainerPanel->ContainerCategory == EContainerCategory::Container && otherCategory == EContainerCategory::Inventory) {
 			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index,true);
+		}
+		if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory && ContainerPanel->ContainerCategory != EContainerCategory::Storage) {
+			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index, false);
+		}
+		if (ContainerPanel->ContainerCategory == EContainerCategory::Storage && ContainerPanel->ContainerCategory != EContainerCategory::Inventory) {
+			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index, false);
 		}
 	}
 }

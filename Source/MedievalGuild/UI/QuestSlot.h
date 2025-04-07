@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "QuestSlot.generated.h"
 
 /**
@@ -18,8 +19,12 @@ class MEDIEVALGUILD_API UQuestSlot : public UUserWidget
 public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* QuestSlot;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QuestName;
+
 	int QuestIndex;
 
+	void SetQuestInfo(FText name);
 	UFUNCTION()
 	void ShowQuestDetail();
 };

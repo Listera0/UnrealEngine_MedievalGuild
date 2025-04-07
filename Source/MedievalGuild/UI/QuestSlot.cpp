@@ -4,6 +4,11 @@
 #include "QuestSlot.h"
 #include "../Framework/PlayerCharacterController.h"
 
+void UQuestSlot::SetQuestInfo(FText name)
+{
+	QuestName->SetText(name);
+}
+
 void UQuestSlot::ShowQuestDetail()
 {
 	APlayerCharacterController* PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
