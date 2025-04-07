@@ -101,10 +101,7 @@ void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
         TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
         for (int PreQuest : Quest->RewardItems)
         {
-            if (PreQuest)
-            {
-                RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
-            }
+            RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
         }
         JsonObject->SetArrayField(TEXT("RewardItems"), RewardItemJsonArray);
     }
