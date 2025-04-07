@@ -19,7 +19,7 @@
 
 #include "PlayerCharacterController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetItem, int, ItemIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnGetItem, int, ItemIndex, bool , IsUpate);
 
 UCLASS()
 class MEDIEVALGUILD_API APlayerCharacterController : public APlayerController

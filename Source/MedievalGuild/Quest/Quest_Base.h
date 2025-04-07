@@ -14,7 +14,7 @@ class MEDIEVALGUILD_API UQuest_Base : public UDataAsset
 
 public:
 	UFUNCTION()
-	virtual void CheckQuest(int index = 0);
+	virtual void CheckQuest(int index, bool IsUpate);
 
 	void CompleteQuest();
 
@@ -32,5 +32,6 @@ public:
 	inline void PlayerGetQuest() { Quest->HasPlayer = true; };
 	inline bool IsPlayerGet()const { return Quest->HasPlayer; };
 protected:
+	UPROPERTY()
 	UQuestData_Base* Quest = nullptr;
 };

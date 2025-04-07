@@ -15,13 +15,20 @@ void UQuest_Item::StartQuest(UWorld* World)
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 {
 	Super::SetQuestData(InQuest);
-	Quest_Item = NewObject<UQuestData_Item>();
-	Quest_Item->SetData(InQuest);
+	if (InQuest->IsA(UQuestData_Item::StaticClass()))
+	{
+        Quest_Item = Cast<UQuestData_Item>(InQuest);
+	}
+	else
+	{
+	    Quest_Item = NewObject<UQuestData_Item>();
+    	Quest_Item->SetData(InQuest);
+	}
 
 	Quest_Item->AddToRoot();
 }
 
-void UQuest_Item::CheckQuest(int ItemID)
+void UQuest_Item::CheckQuest(int ItemID, bool IsUpdate)
 {
     if (Quest_Item->QuestItemIndex != ItemID)
         return;
@@ -49,7 +56,6 @@ void UQuest_Item::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 
     if (Quest_Item)
     {
-		
         JsonObject->SetNumberField(TEXT("QuestItemIndex"), Quest_Item->QuestItemIndex);
         JsonObject->SetNumberField(TEXT("QuestItemAmount"), Quest_Item->Amount);
         JsonObject->SetNumberField(TEXT("QuestItemRequiredAmount"), Quest_Item->RequiredAmount);

@@ -16,10 +16,10 @@ class MEDIEVALGUILD_API UQuestData_Item : public UQuestData_Base
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
-	int QuestItemIndex;
+	int QuestItemIndex = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
-	int RequiredAmount;
+	int RequiredAmount = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
 	int Amount = 0;

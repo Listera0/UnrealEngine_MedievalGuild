@@ -192,7 +192,7 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory && before == EContainerCategory::Container) {
-				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index);
+				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index,true);
 			}
 
 			Operation->bMoveSuccessed = true;
@@ -316,7 +316,7 @@ void UItemSlot::SlotButtonShiftClick()
 			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 		}
 		if (ContainerPanel->ContainerCategory == EContainerCategory::Container && otherCategory == EContainerCategory::Inventory) {
-			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index);
+			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index,true);
 		}
 	}
 }

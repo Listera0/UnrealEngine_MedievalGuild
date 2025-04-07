@@ -11,14 +11,21 @@ void UQuest_Kill::StartQuest(UWorld* World)
 
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
 {
-	Super::SetQuestData(InQuest);
-	Quest_Kill = NewObject<UQuestData_Kill>();
-	Quest_Kill->SetData(InQuest);
+    Super::SetQuestData(InQuest);
+    if (InQuest->IsA(UQuestData_Kill::StaticClass()))
+    {
+        Quest_Kill = Cast<UQuestData_Kill>(InQuest);
+    }
+    else
+    {
+        Quest_Kill = NewObject<UQuestData_Kill>();
+        Quest_Kill->SetData(InQuest);
+    }
 
-	Quest_Kill->AddToRoot();
+    Quest_Kill->AddToRoot();
 }
 
-void UQuest_Kill::CheckQuest(int index)
+void UQuest_Kill::CheckQuest(int index, bool IsUpate)
 {
 	if (Quest_Kill->ObjectIndex == index)
 	{

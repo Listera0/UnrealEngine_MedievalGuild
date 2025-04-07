@@ -20,7 +20,7 @@ void UQuest_Arrive::StartQuest(UWorld* World)
 
     if (ArrivalTrigger)
     {
-        ArrivalTrigger->StartQuest(Quest_Arrive->CapsuleRadius, Quest->QuestIndex);
+        ArrivalTrigger->StartQuest(Quest_Arrive->CapsuleRadius, Quest_Arrive->QuestIndex);
         UQuestManager::GetInstance()->OnPlayerArrived.AddDynamic(this, &UQuest_Arrive::CheckQuest);
     }
     else
@@ -32,28 +32,23 @@ void UQuest_Arrive::StartQuest(UWorld* World)
 
 void UQuest_Arrive::SetQuestData(UQuestData_Base* InQuest)
 {
-    if (!InQuest)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid Quest data passed to SetQuestData."));
-        return;
-    }
-
     Super::SetQuestData(InQuest);
-    Quest_Arrive = NewObject<UQuestData_Arrive>();
-	Quest_Arrive->SetData(InQuest);
-
-    if (!Quest_Arrive)
+    if (InQuest->IsA(UQuestData_Arrive::StaticClass()))
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to cast InQuest to UQuestData_Arrive in SetQuestData."));
-        return;
+        Quest_Arrive = Cast<UQuestData_Arrive>(InQuest);
+    }
+    else
+    {
+        Quest_Arrive = NewObject<UQuestData_Arrive>();
+        Quest_Arrive->SetData(InQuest);
     }
 
     Quest_Arrive->AddToRoot();
 }
 
-void UQuest_Arrive::CheckQuest(int index)
+void UQuest_Arrive::CheckQuest(int index, bool isUpdate)
 {
-    if (Quest && Quest->QuestIndex == index)
+    if (Quest_Arrive && Quest_Arrive->QuestIndex == index)
     {
         CompleteQuest();
         UQuestManager::GetInstance()->OnPlayerArrived.RemoveDynamic(this, &UQuest_Arrive::CheckQuest);

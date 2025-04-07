@@ -6,12 +6,15 @@
 #include "../Quest/QuestManager.h"
 bool UQuest_Base::CanStartQuest()
 {
-    for (int PreQuestIndex : Quest->PreRequisiteQuests)
+    if (!Quest->PreRequisiteQuests.IsEmpty())
     {
-        UQuest_Base* PreQuest = UQuestManager::GetInstance()->FindQuest(PreQuestIndex);
-        if (PreQuest && PreQuest->GetQuestStatus() != EQuestStatus::Completed)
+        for (int PreQuestIndex : Quest->PreRequisiteQuests)
         {
-            return false;
+            UQuest_Base* PreQuest = UQuestManager::GetInstance()->FindQuest(PreQuestIndex);
+            if (PreQuest && PreQuest->GetQuestStatus() != EQuestStatus::Completed)
+            {
+                return false;
+            }
         }
     }
 
@@ -68,7 +71,7 @@ void UQuest_Base::ClearQuest()
 }
 
 
-void UQuest_Base::CheckQuest(int index)
+void UQuest_Base::CheckQuest(int index, bool IsUpdate)
 {
     if (Quest->QuestIndex == index)
     {
@@ -93,29 +96,38 @@ void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
     JsonObject->SetBoolField(TEXT("HasPlayer"), Quest->HasPlayer);
 
 
-    TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
-    for (UItemData* PreQuest : Quest->RewardItems)
+    if (!Quest->RewardItems.IsEmpty())
     {
-        if (PreQuest)
+        TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
+        for (UItemData* PreQuest : Quest->RewardItems)
         {
-            RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+            if (PreQuest)
+            {
+                RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+            }
         }
+        JsonObject->SetArrayField(TEXT("RewardItems"), RewardItemJsonArray);
     }
-    JsonObject->SetArrayField(TEXT("RewardItems"), RewardItemJsonArray);
 
+	if (!Quest->RewardItemAmount.IsEmpty())
+	{
     TArray<TSharedPtr<FJsonValue>> RewardItemAmountJsonArray;
     for (int PreAmount : Quest->RewardItemAmount)
     {
         RewardItemAmountJsonArray.Add(MakeShared<FJsonValueNumber>(PreAmount));
     }
     JsonObject->SetArrayField(TEXT("RewardItemAmount"), RewardItemAmountJsonArray);
+	}
 
-    TArray<TSharedPtr<FJsonValue>> PreRequisiteJsonArray;
-    for (int PreQuest : Quest->PreRequisiteQuests)
+    if (!Quest->PreRequisiteQuests.IsEmpty())
     {
-        PreRequisiteJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
+        TArray<TSharedPtr<FJsonValue>> PreRequisiteJsonArray;
+        for (int PreQuest : Quest->PreRequisiteQuests)
+        {
+            PreRequisiteJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
+        }
+        JsonObject->SetArrayField(TEXT("PreRequisiteQuests"), PreRequisiteJsonArray);
     }
-    JsonObject->SetArrayField(TEXT("PreRequisiteQuests"), PreRequisiteJsonArray);
 }
 
 void UQuest_Base::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
