@@ -15,12 +15,12 @@ class MEDIEVALGUILD_API UQuestData_Item : public UQuestData_Base
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
-	UItemData* QuestItem;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
+	int QuestItemIndex;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
 	int RequiredAmount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Item")
 	int Amount = 0;
 };

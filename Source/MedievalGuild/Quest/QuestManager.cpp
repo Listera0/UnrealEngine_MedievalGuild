@@ -66,6 +66,7 @@ bool UQuestManager::AddQuestData(UQuestData_Base* QuestData)
 			else if (QuestData->QuestType == EQuestType::Item)
 			{
 				NewQuest = NewObject<UQuest_Item>();
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, NewQuest->GetQuestData()->QuestName);
 			}
 			else if (QuestData->QuestType == EQuestType::KillCount)
 			{

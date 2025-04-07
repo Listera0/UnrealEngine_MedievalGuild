@@ -14,6 +14,7 @@ void UOptionMenu::OptionMenuInitSetting()
 
 	ShowInventory->OnClicked.AddDynamic(this, &UOptionMenu::OnClickShowInventory);
 	ShowQuest->OnClicked.AddDynamic(this, &UOptionMenu::OnClickShowQuest);
+	ShowOption->OnClicked.AddDynamic(this, &UOptionMenu::OnClickShowOption);
 	ExitGame->OnClicked.AddDynamic(this, &UOptionMenu::OnClickExitGame);
 }
 
@@ -29,6 +30,7 @@ void UOptionMenu::OnClickShowQuest()
 
 void UOptionMenu::OnClickShowOption()
 {
+	UQuestManager::GetInstance()->SaveAllQuestDataToJson();
 }
 
 void UOptionMenu::OnClickExitGame()

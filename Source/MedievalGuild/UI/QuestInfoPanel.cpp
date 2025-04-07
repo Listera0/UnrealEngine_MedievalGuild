@@ -57,17 +57,18 @@ void UQuestInfoPanel::CheckQuestProgress()
 
 bool UQuestInfoPanel::CheckApplyQuest()
 {
-	return SelectQuest->GetQuestData()->HasPlayer;
+	return SelectQuest->GetQuestData()->QuestStatus == EQuestStatus::InProgress;
+	//return SelectQuest->GetQuestData()->HasPlayer;
 }
 
 bool UQuestInfoPanel::CheckSuccessQuest()
 {
 	// RewardPending
-	if (SelectQuest->GetQuestStatus() == EQuestStatus::Completed) {
+	if (SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending) {
 		return true;
 	}
 
-	return true; // temp
+	return false; // temp
 }
 
 void UQuestInfoPanel::SetInteractButtonColor(FLinearColor color)

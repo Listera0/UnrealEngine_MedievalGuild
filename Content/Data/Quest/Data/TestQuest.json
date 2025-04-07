@@ -16,7 +16,7 @@
 			"QuestName": "도착",
 			"Description": "도착",
 			"QuestIndex": 1,
-			"QuestStatus": 2,
+			"QuestStatus": 1,
 			"QuestType": 0,
 			"RewardGold": 100,
 			"HasPlayer": true,
@@ -27,6 +27,21 @@
 			"TargetLocation_Y": 0,
 			"TargetLocation_Z": 0,
 			"CapsuleRadius": 100
+		},
+		{
+			"QuestName": "아이템 획득",
+			"Description": "아이템 획득",
+			"QuestIndex": 2,
+			"QuestStatus": 2,
+			"QuestType": 1,
+			"RewardGold": 0,
+			"HasPlayer": true,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": [],
+			"QuestItemIndex": 0,
+			"QuestItemAmount": 0,
+			"QuestItemRequiredAmount": 0
 		}
 	]
 }

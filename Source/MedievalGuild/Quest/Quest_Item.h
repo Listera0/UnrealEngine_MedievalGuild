@@ -24,5 +24,7 @@ public:
 	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
 
 private:
+	class APlayerCharacterController* PlayerController;
+
 	UQuestData_Item* Quest_Item;
 };

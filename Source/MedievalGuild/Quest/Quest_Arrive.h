@@ -22,7 +22,7 @@ public:
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
 	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
 private:
-	UQuestData_Arrive* Quest_Arrive;
+	UQuestData_Arrive* Quest_Arrive = nullptr;
 	APlayerController* PlayerController = nullptr;
 
 };

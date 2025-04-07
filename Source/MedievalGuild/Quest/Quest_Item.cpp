@@ -1,9 +1,15 @@
 #include "Quest_Item.h"
 #include "../Item/ItemDataManager.h"
+#include "../Framework/PlayerCharacterController.h"
 
 void UQuest_Item::StartQuest(UWorld* World)
 {
 	Super::StartQuest(World);
+
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(World->GetFirstPlayerController());
+
+	PlayerController->OnGetItem.AddDynamic(this, &UQuest_Item::CheckQuest);
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("QuestItem Start"));
 }
 
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
@@ -17,15 +23,10 @@ void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 
 void UQuest_Item::CheckQuest(int ItemID)
 {
-    if (!Quest_Item->QuestItem)
+    if (Quest_Item->QuestItemIndex != ItemID)
         return;
 
-	if (Quest_Item->QuestItem->index == ItemID)
-	{
-		Quest_Item->Amount++;
-	}
-
-	if (Quest_Item->Amount >= Quest_Item->RequiredAmount)
+	if (PlayerController->PlayerData->CheckHasItem(Quest_Item->QuestItemIndex, Quest_Item->RequiredAmount))
 	{
 		CompleteQuest();
 	}
@@ -48,7 +49,8 @@ void UQuest_Item::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 
     if (Quest_Item)
     {
-        JsonObject->SetNumberField(TEXT("QuestItemIndex"), Quest_Item->QuestIndex);
+		
+        JsonObject->SetNumberField(TEXT("QuestItemIndex"), Quest_Item->QuestItemIndex);
         JsonObject->SetNumberField(TEXT("QuestItemAmount"), Quest_Item->Amount);
         JsonObject->SetNumberField(TEXT("QuestItemRequiredAmount"), Quest_Item->RequiredAmount);
     }
@@ -80,9 +82,16 @@ void UQuest_Item::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
             if (JsonObject->HasField(TEXT("QuestItemIndex")))
             {
                 int ItemIndex = JsonObject->GetIntegerField(TEXT("QuestItemIndex"));
-                Quest_Item->QuestItem = UItemDataManager::GetInstance()->FindItemData(ItemIndex);
 
-                if (!Quest_Item->QuestItem)
+                if(UItemDataManager::GetInstance()->FindItemData(ItemIndex))
+                    Quest_Item->QuestItemIndex = ItemIndex;
+                else
+                {
+					UE_LOG(LogTemp, Warning, TEXT("Item data not found for index: %d"), ItemIndex);
+					Quest_Item->QuestItemIndex = -1;
+                }
+
+                if (!Quest_Item->QuestItemIndex)
                 {
                     UE_LOG(LogTemp, Warning, TEXT("QuestItem not found for index %d"), ItemIndex);
                 }

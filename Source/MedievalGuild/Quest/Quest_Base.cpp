@@ -39,8 +39,7 @@ void UQuest_Base::CompleteQuest()
 {
     if (Quest->QuestStatus == EQuestStatus::InProgress)
     {
-        FString p = Quest->QuestName + FString::Printf(TEXT(" - Quest Is Completed!!"));
-        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Quest Completed!"));
         Quest->QuestStatus = EQuestStatus::RewardPending;
     }
 }
