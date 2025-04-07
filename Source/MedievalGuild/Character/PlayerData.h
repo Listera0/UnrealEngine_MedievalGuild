@@ -21,6 +21,7 @@ class MEDIEVALGUILD_API APlayerData : public APlayerState
 public:
 	APlayerData(const FObjectInitializer& ObjectInitializer);
 
+	bool CheckHasItem(int index, int count);
 	void AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryData* item, UContainer_Base* targetContainer);
 	void AddItemTo(TArray<FInventoryData*>& target, FInventoryData* item);
 	void RemoveItemTo(TArray<FInventoryData*>& target, FVector2D location, int count, bool withDelete);

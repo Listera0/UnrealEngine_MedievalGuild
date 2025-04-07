@@ -27,3 +27,11 @@ void UStageMap::MoveToCastle()
 		PlayerController->PlayerCharacter->SetActorLocation(location->GetActorLocation());
 	}
 }
+
+void UStageMap::MoveToArea(FName toArea)
+{
+	ALocationActor* location = MoveLocation->GetLocationWithTag(toArea);
+	if (location) {
+		PlayerController->PlayerCharacter->SetActorLocation(location->GetActorLocation());
+	}
+}

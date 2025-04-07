@@ -62,6 +62,7 @@ bool UQuestInfoPanel::CheckApplyQuest()
 
 bool UQuestInfoPanel::CheckSuccessQuest()
 {
+	// RewardPending
 	if (SelectQuest->GetQuestStatus() == EQuestStatus::Completed) {
 		return true;
 	}
@@ -99,5 +100,6 @@ void UQuestInfoPanel::OnClickInteractButton()
 		FInventoryData* newItem = new FInventoryData(FVector2D(-1.0f), SelectQuest->GetQuestData()->RewardItems[i], SelectQuest->GetQuestData()->RewardItemAmount[i]);
 		PlayerController->PlayerData->AddItemToAllWork(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Storage),
 			newItem, PlayerController->GetTargetContainer(EContainerCategory::Storage));
+		SelectQuest->QuestReward();
 	}
 }

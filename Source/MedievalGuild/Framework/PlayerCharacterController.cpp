@@ -227,6 +227,7 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
 				targetItem->SlotIndex = FVector2D(-1.0f);
 				PlayerData->AddItemToAllWork(PlayerData->PlayerInventory, targetItem, InventoryUI->Widget_Inventory);
+				OnGetItem.Broadcast(targetItem->ItemData->index);
 				hitResult.GetActor()->Destroy();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {
@@ -308,7 +309,6 @@ void APlayerCharacterController::InitViewportScale()
 void APlayerCharacterController::CheckScreenUI()
 {
 	if (bIsInteract) {
-		ScreenUI->SetVisibility(ESlateVisibility::Visible);
 		if (hitResult.GetActor()->ActorHasTag(FName("Item"))) { 
 			ScreenUI->SetInteractText(true, Cast<AInteractObject_Base>(hitResult.GetActor())->ContainerInventory[0]->ItemData->name);
 		}
@@ -329,7 +329,7 @@ void APlayerCharacterController::CheckScreenUI()
 		}
 	}
 	else {
-		ScreenUI->SetVisibility(ESlateVisibility::Hidden);
+		ScreenUI->SetInteractText(false, "");
 	}
 }
 

@@ -178,19 +178,21 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 				PlayerController->InventoryUI->Widget_Trade->bIsSell = true;
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
-			else if (ContainerPanel->ContainerCategory == EContainerCategory::Storage && before == EContainerCategory::Trade) {
+			if (ContainerPanel->ContainerCategory == EContainerCategory::Storage && before == EContainerCategory::Trade) {
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 			}
-			else if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(before) != -1) {
+			if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(before) != -1) {
 				PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 			}
-			else if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || before == EContainerCategory::Inventory) {
+			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || before == EContainerCategory::Inventory) {
 				PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 			}
-
 			if (PlayerController->InteractObj && PlayerController->InteractObj->ActorHasTag("Merchant") && 
 				ContainerPanel->ContainerCategory == EContainerCategory::Storage) {
 				PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
+			}
+			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory && before == EContainerCategory::Container) {
+				PlayerController->OnGetItem.Broadcast(ownerItem->ItemData->ItemData->index);
 			}
 
 			Operation->bMoveSuccessed = true;
@@ -304,14 +306,17 @@ void UItemSlot::SlotButtonShiftClick()
 			PlayerController->InventoryUI->Widget_Trade->bIsSell = true;
 			PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 		}
-		else if (otherCategory == EContainerCategory::Storage && ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
+		if (otherCategory == EContainerCategory::Storage && ContainerPanel->ContainerCategory == EContainerCategory::Trade) {
 			PlayerController->InventoryUI->Widget_Trade->ShowTotalPrice();
 		}
-		else if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(otherCategory) != -1) {
+		if (GetEquipmentIndex(ContainerPanel->ContainerCategory) != -1 || GetEquipmentIndex(otherCategory) != -1) {
 			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 		}
-		else if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || otherCategory == EContainerCategory::Inventory) {
+		if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || otherCategory == EContainerCategory::Inventory) {
 			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+		}
+		if (ContainerPanel->ContainerCategory == EContainerCategory::Container && otherCategory == EContainerCategory::Inventory) {
+			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index);
 		}
 	}
 }

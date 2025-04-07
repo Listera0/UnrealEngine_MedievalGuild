@@ -19,9 +19,8 @@
 
 #include "PlayerCharacterController.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetItem, int, ItemIndex);
+
 UCLASS()
 class MEDIEVALGUILD_API APlayerCharacterController : public APlayerController
 {
@@ -59,6 +58,12 @@ protected:
 	void CheckInteractUIDistance();
 	void OpenUISetting();
 	void AllUIHidden();
+
+public:
+	UContainer_Base* GetTargetContainer(EContainerCategory category);
+	void RecordMousePosition();
+	inline bool IsShiftPressed() { return bIsShiftPressed; }
+	inline bool IsInteractAction() { return bIsInteractAction; }
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
@@ -115,13 +120,8 @@ private:
 	bool bIsInteractItem;
 
 public:
-	UContainer_Base* GetTargetContainer(EContainerCategory category);
-	void RecordMousePosition();
-	inline bool IsShiftPressed() { return bIsShiftPressed; }
-	inline bool IsInteractAction() { return bIsInteractAction; }
-	bool bIsMovingItem;
-
-	FHitResult hitResult;
+	class APlayerCharacter* PlayerCharacter = nullptr;
+	
 	UPlayerInventory* InventoryUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
 	UItemInfoPanel* ItemInfoUI = nullptr;
@@ -129,7 +129,8 @@ public:
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
 
+	FOnGetItem OnGetItem;
+	FHitResult hitResult;
 	FVector2D ViewPortSize;
-
-	class APlayerCharacter* PlayerCharacter = nullptr;
+	bool bIsMovingItem;
 };

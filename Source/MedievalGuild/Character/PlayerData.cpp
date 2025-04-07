@@ -9,6 +9,27 @@ APlayerData::APlayerData(const FObjectInitializer& ObjectInitializer) : Super(Ob
     QuestCompo = CreateDefaultSubobject<UQuestComponent>(FName("Quest Component"));
 }
 
+bool APlayerData::CheckHasItem(int index, int count)
+{
+    int hasCount = 0;
+
+    for (FInventoryData* data : PlayerInventory) {
+        if (data->ItemData->index == index) {
+            hasCount += data->ItemCount;
+            if (hasCount >= count) return true;
+        }
+    }
+
+    for (FInventoryData* data : PlayerStorage) {
+        if (data->ItemData->index == index) {
+            hasCount += data->ItemCount;
+            if (hasCount >= count) return true;
+        }
+    }
+
+    return false;
+}
+
 void APlayerData::AddItemToAllWork(TArray<FInventoryData*>& target, FInventoryData* item, UContainer_Base* targetContainer)
 {
     FInventoryData* hasitem = HasItem(target, item->ItemData->index, true);

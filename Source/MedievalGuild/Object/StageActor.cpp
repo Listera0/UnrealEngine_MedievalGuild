@@ -2,6 +2,7 @@
 
 
 #include "StageActor.h"
+#include "../Framework/PlayerCharacterController.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
 
@@ -28,6 +29,8 @@ AStageActor::AStageActor()
 void AStageActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	
 	FActorSpawnParameters SpawnParameters;
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -38,9 +41,9 @@ void AStageActor::BeginPlay()
 	SpawnPoints = SpawnPointOwner->GetAttachChildren();
 	TArray<UStaticMeshComponent*> SpawnAreas;
 
-	for (USceneComponent* Child : SpawnAreaOwner->GetAttachChildren())
+	for (USceneComponent* child : SpawnAreaOwner->GetAttachChildren())
 	{
-		UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(Child);
+		UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(child);
 		if (StaticMeshComp) { SpawnAreas.Add(StaticMeshComp); }
 	}
 
@@ -61,6 +64,26 @@ void AStageActor::BeginPlay()
 		newItem->ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemData, 1));
 		newItem->InteractableItemSetting();
 	}
+
+	for (USceneComponent* child : ExtractAreaOwner->GetAttachChildren()) {
+		UBoxComponent* extractArea = Cast<UBoxComponent>(child);
+		extractArea->OnComponentBeginOverlap.AddDynamic(this, &AStageActor::OnBoxOverlapBegin);
+		extractArea->OnComponentEndOverlap.AddDynamic(this, &AStageActor::OnBoxOverlapEnd);
+	}
+}
+
+void AStageActor::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	extractTimer = 0.0f;
+	PlayerController->ScreenUI->SetExtractText(false, 0.0f);
+	bIsInteractExtractionArea = true;
+}
+
+void AStageActor::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	extractTimer = 0.0f;
+	PlayerController->ScreenUI->SetExtractText(false, 0.0f);
+	bIsInteractExtractionArea = false;
 }
 
 // Called every frame
@@ -68,5 +91,18 @@ void AStageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float extractNeed = 2.0f;
+
+	if (bIsInteractExtractionArea) {
+		extractTimer += DeltaTime;
+
+		PlayerController->ScreenUI->SetExtractText(true, extractNeed - extractTimer);
+		if (extractTimer > extractNeed) {
+			extractTimer = 0.0f;
+			bIsInteractExtractionArea = false;
+			PlayerController->ScreenUI->SetExtractText(false, 0.0f);
+			PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
+		}
+	}
 }
 

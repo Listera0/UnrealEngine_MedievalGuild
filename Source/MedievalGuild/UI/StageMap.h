@@ -30,6 +30,7 @@ public:
 
 	UFUNCTION()
 	void MoveToCastle();
+	void MoveToArea(FName toArea);
 
 	class APlayerCharacterController* PlayerController = nullptr;
 	AGameManager* GameManager = nullptr;
