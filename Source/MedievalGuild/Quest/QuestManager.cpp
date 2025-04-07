@@ -29,8 +29,11 @@ void UQuestManager::CleanUp()
 	{
 		for (UQuest_Base* Quest : QuestList)
 		{
-			Quest->ClearQuest();
-			Quest->RemoveFromRoot();
+			if (Quest)
+			{
+				Quest->ClearQuest();
+				Quest->RemoveFromRoot();
+			}
 			Quest = nullptr;
 		}
 		QuestList.Empty();

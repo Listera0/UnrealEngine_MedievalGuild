@@ -1,0 +1,32 @@
+﻿{
+	"Quests": [
+		{
+			"QuestName": "test",
+			"Description": "test",
+			"QuestIndex": 0,
+			"QuestStatus": 0,
+			"QuestType": 3,
+			"RewardGold": 0,
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": []
+		},
+		{
+			"QuestName": "도착",
+			"Description": "도착",
+			"QuestIndex": 1,
+			"QuestStatus": 2,
+			"QuestType": 0,
+			"RewardGold": 100,
+			"HasPlayer": true,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": [],
+			"TargetLocation_X": 0,
+			"TargetLocation_Y": 0,
+			"TargetLocation_Z": 0,
+			"CapsuleRadius": 100
+		}
+	]
+}

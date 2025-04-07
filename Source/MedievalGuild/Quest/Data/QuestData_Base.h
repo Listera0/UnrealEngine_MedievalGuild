@@ -46,4 +46,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
 	int RewardGold = 0;
+
+	void SetData(UQuestData_Base* QuestData)
+	{
+		QuestIndex = QuestData->QuestIndex;
+		QuestType = QuestData->QuestType;
+		QuestName = QuestData->QuestName;
+		Description = QuestData->Description;
+		PreRequisiteQuests = QuestData->PreRequisiteQuests;
+		HasPlayer = QuestData->HasPlayer;
+		RewardItems = QuestData->RewardItems;
+		RewardItemAmount = QuestData->RewardItemAmount;
+		RewardGold = QuestData->RewardGold;
+		QuestStatus = QuestData->QuestStatus;
+	}
 };

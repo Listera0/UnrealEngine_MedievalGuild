@@ -9,6 +9,7 @@ enum class EQuestStatus : uint8
 {
 	NotStarted UMETA(DisplayName = "NotStarted"),
 	InProgress UMETA(DisplayName = "InProgress"),
+	RewardPending UMETA(DisplayName = "Reward Pending"),
 	Completed UMETA(DisplayName = "Completed")
 };
 

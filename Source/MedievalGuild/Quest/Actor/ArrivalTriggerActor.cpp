@@ -12,6 +12,7 @@ AArrivalTriggerActor::AArrivalTriggerActor()
 	PrimaryActorTick.bCanEverTick = false;
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComponent"));
 	CollisionComponent->SetupAttachment(RootComponent);
+
 }
 
 void AArrivalTriggerActor::StartQuest(const float Radius,const int index)

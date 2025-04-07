@@ -16,9 +16,12 @@ void UQuestComponent::BeginPlay()
 	Super::BeginPlay();
 	MyQuestList.Empty();
 	StartQuestList.Empty();
+	SetQuestList.Empty();
+
 	if (IsPlayer)
 	{
 		UQuestManager::GetInstance()->GetPlayerQuset(MyQuestList);
+
 		if (!MyQuestList.IsEmpty())
 		{
 			for (UQuest_Base* quest : MyQuestList)
@@ -26,7 +29,9 @@ void UQuestComponent::BeginPlay()
 				quest->StartQuest(GetWorld());
 			}
 		}
+
 	}
+
 	InitQuest();
 }
 

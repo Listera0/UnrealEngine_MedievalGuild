@@ -9,7 +9,9 @@ void UQuest_Item::StartQuest(UWorld* World)
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 {
 	Super::SetQuestData(InQuest);
-	Quest_Item = static_cast<UQuestData_Item*>(InQuest);
+	Quest_Item = NewObject<UQuestData_Item>();
+	Quest_Item->SetData(InQuest);
+
 	Quest_Item->AddToRoot();
 }
 

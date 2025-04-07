@@ -12,6 +12,8 @@
  */
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerArrived, int, QuestIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerKill, int, AcotrIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerAddItem, int, ItemIndex);
 UCLASS()
 class MEDIEVALGUILD_API UQuestManager : public UObject
 {
@@ -45,6 +47,12 @@ public:
 public:
 	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
 	FOnPlayerArrived OnPlayerArrived;
+
+	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
+	FOnPlayerKill OnPlayerKill;
+
+	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
+	FOnPlayerAddItem OnPlayerAddItem;
 private:
 	TArray<UQuest_Base*> QuestList;
 

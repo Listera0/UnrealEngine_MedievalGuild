@@ -41,13 +41,16 @@ void UQuest_Base::CompleteQuest()
     {
         FString p = Quest->QuestName + FString::Printf(TEXT(" - Quest Is Completed!!"));
         GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, p);
-        Quest->QuestStatus = EQuestStatus::Completed;
-        QuestReward();
+        Quest->QuestStatus = EQuestStatus::RewardPending;
     }
 }
 
 void UQuest_Base::QuestReward()
-{   
+{
+	if (Quest->QuestStatus == EQuestStatus::RewardPending)
+	{
+		Quest->QuestStatus = EQuestStatus::Completed;
+	}
 }
 
 void UQuest_Base::SetQuestData(UQuestData_Base* InQuest)
@@ -61,8 +64,8 @@ void UQuest_Base::ClearQuest()
 	if (Quest)
 	{
 		Quest->RemoveFromRoot();
-		Quest = nullptr;
 	}
+	Quest = nullptr;
 }
 
 

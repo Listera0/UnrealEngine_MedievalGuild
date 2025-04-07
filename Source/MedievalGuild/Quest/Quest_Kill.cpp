@@ -12,7 +12,9 @@ void UQuest_Kill::StartQuest(UWorld* World)
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
 {
 	Super::SetQuestData(InQuest);
-	Quest_Kill = static_cast<UQuestData_Kill*>(InQuest);
+	Quest_Kill = NewObject<UQuestData_Kill>();
+	Quest_Kill->SetData(InQuest);
+
 	Quest_Kill->AddToRoot();
 }
 
