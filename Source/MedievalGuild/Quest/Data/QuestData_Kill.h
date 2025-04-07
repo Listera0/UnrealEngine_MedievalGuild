@@ -15,13 +15,13 @@ class MEDIEVALGUILD_API UQuestData_Kill : public UQuestData_Base
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Kill")
 	int ObjectIndex;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Kill")
 	int RequiredAmount;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Kill")
 	int Amount = 0;
 	
 };

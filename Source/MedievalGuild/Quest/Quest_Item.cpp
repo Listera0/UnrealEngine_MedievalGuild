@@ -111,3 +111,8 @@ void UQuest_Item::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
         UE_LOG(LogTemp, Error, TEXT("Invalid JSON object passed to LoadFromJson"));
     }
 }
+
+UQuestData_Base* UQuest_Item::GetQuestData() const
+{
+    return Quest_Item;
+}

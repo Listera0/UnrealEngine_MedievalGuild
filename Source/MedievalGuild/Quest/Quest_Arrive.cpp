@@ -119,3 +119,8 @@ void UQuest_Arrive::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
     if (!JsonObject->HasField(TEXT("TargetLocation_Z"))) UE_LOG(LogTemp, Warning, TEXT("TargetLocation_Z field missing in JSON."));
     if (!JsonObject->HasField(TEXT("CapsuleRadius"))) UE_LOG(LogTemp, Warning, TEXT("CapsuleRadius field missing in JSON."));
 }
+
+UQuestData_Base* UQuest_Arrive::GetQuestData() const
+{
+    return Quest_Arrive;
+}

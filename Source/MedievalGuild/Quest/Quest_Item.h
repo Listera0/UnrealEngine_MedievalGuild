@@ -22,7 +22,7 @@ public:
 	virtual void ClearQuest() override;
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
 	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
-
+	virtual UQuestData_Base* GetQuestData()const override;
 private:
 	class APlayerCharacterController* PlayerController;
 

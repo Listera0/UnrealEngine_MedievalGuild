@@ -14,10 +14,10 @@ class MEDIEVALGUILD_API UQuestData_Arrive : public UQuestData_Base
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Arrive")
 	FVector TargetLocation;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest|Arrive")
 	float CapsuleRadius = 100.0f;
 	
 };

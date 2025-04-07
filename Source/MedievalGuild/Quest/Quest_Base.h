@@ -26,9 +26,9 @@ public:
 	virtual void ClearQuest();
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject);
 	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
+	virtual UQuestData_Base* GetQuestData()const;
 	EQuestStatus GetQuestStatus();
 	int GetQuestIndex();
-	inline UQuestData_Base* GetQuestData()const { return Quest; };
 	inline void PlayerGetQuest() { Quest->HasPlayer = true; };
 	inline bool IsPlayerGet()const { return Quest->HasPlayer; };
 protected:

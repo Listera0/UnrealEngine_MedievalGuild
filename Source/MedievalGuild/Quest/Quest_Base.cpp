@@ -183,3 +183,8 @@ int UQuest_Base::GetQuestIndex()
 {
     return Quest->QuestIndex;
 }
+
+UQuestData_Base* UQuest_Base::GetQuestData() const
+{
+    return Quest;
+}
