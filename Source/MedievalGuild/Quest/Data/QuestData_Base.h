@@ -39,7 +39,7 @@ public:
 	bool HasPlayer = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
-	TArray<UItemData*> RewardItems;
+	TArray<int> RewardItems;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Quest Reward")
 	TArray<int>RewardItemAmount;

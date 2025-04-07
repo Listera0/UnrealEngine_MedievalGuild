@@ -99,11 +99,11 @@ void UQuest_Base::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
     if (!Quest->RewardItems.IsEmpty())
     {
         TArray<TSharedPtr<FJsonValue>> RewardItemJsonArray;
-        for (UItemData* PreQuest : Quest->RewardItems)
+        for (int PreQuest : Quest->RewardItems)
         {
             if (PreQuest)
             {
-                RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest->index));
+                RewardItemJsonArray.Add(MakeShared<FJsonValueNumber>(PreQuest));
             }
         }
         JsonObject->SetArrayField(TEXT("RewardItems"), RewardItemJsonArray);
@@ -159,10 +159,9 @@ void UQuest_Base::LoadFromJson(TSharedPtr<FJsonObject>& JsonObject)
         for (const TSharedPtr<FJsonValue>& PreJsonValue : RewardItemJsonArray)
         {
             int RewardItemIndex = PreJsonValue->AsNumber();
-            UItemData* PreQuest = UItemDataManager::GetInstance()->FindItemData(RewardItemIndex);
-            if (PreQuest)
+            if (UItemDataManager::GetInstance()->FindItemData(RewardItemIndex))
             {
-                Quest->RewardItems.Add(PreQuest);
+                Quest->RewardItems.Add(RewardItemIndex);
             }
             else
             {
