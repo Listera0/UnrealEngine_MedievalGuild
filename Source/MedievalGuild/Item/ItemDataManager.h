@@ -37,7 +37,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	void LoadAllItemRecipeFromJson(const FString& FilePath);
 
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	UItemData* FindItemData(int ItemIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	TArray<UItemRecipe*> FindItemRecipe(int ItemIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	TArray<UItemData*> GetItemDataList() const { return ItemDataList; }

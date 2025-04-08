@@ -241,6 +241,19 @@ UItemData* UItemDataManager::FindItemData(int ItemIndex)
     return FindItem;
 }
 
+TArray<UItemRecipe*> UItemDataManager::FindItemRecipe(int ItemIndex)
+{
+	TArray<UItemRecipe*> FindItemRecipeList;
+	for (UItemRecipe* ItemRecipe : ItemRecipeList)
+	{
+		if (ItemRecipe->MakeItemIndex == ItemIndex)
+		{
+			FindItemRecipeList.Add(ItemRecipe);
+		}
+	}
+	return FindItemRecipeList;
+}
+
 UStaticMesh* UItemDataManager::GetMeshForItem(const UItemData* item)
 {
     if (!item)
