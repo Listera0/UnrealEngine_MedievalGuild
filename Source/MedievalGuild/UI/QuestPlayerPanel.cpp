@@ -28,7 +28,10 @@ void UQuestPlayerPanel::ShowQuestList()
 
 	int TotalQuestCount = 0;
 	for (UQuest_Base* quest : PlayerQuestList) {
-		if (quest->GetQuestStatus() == EQuestStatus::Completed) { continue; }
+		if (quest->GetQuestStatus() == EQuestStatus::Completed) {
+			TotalQuestCount++;
+			continue; 
+		}
 
 		UQuestSlot* newQuestSlot = CreateWidget<UQuestSlot>(GetWorld(), QuestSlotClass);
 		FButtonStyle buttonStyle;
