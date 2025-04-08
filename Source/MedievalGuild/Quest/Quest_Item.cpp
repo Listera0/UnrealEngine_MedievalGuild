@@ -9,7 +9,6 @@ void UQuest_Item::StartQuest(UWorld* World)
 	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(World->GetFirstPlayerController());
 
 	PlayerController->OnGetItem.AddDynamic(this, &UQuest_Item::CheckQuest);
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("QuestItem Start"));
 }
 
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
@@ -37,10 +36,17 @@ void UQuest_Item::CheckQuest(int ItemID, bool IsUpdate)
 	{
 		CompleteQuest();
 	}
-    else 
+    else
     {
-		Quest->QuestStatus = EQuestStatus::InProgress;
+        if(Quest->QuestStatus == EQuestStatus::Completed)
+		    Quest->QuestStatus = EQuestStatus::InProgress;
     }
+}
+
+void UQuest_Item::CancleQuest()
+{
+	Super::CancleQuest();
+	PlayerController->OnGetItem.RemoveDynamic(this, &UQuest_Item::CheckQuest);
 }
 
 void UQuest_Item::ClearQuest()

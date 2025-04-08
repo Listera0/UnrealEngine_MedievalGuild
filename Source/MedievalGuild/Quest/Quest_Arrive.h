@@ -19,6 +19,7 @@ public:
 	virtual void SetQuestData(UQuestData_Base* InQuest) override;
 	virtual void CheckQuest(int index, bool isUpdate) override;
 	virtual void ClearQuest() override;
+	virtual void CancleQuest() override;
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject) override;
 	virtual	void LoadFromJson(TSharedPtr<FJsonObject>& JsonObject) override;
 	virtual UQuestData_Base* GetQuestData()const override;

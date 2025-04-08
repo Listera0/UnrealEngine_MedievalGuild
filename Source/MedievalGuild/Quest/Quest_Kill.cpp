@@ -48,6 +48,11 @@ void UQuest_Kill::ClearQuest()
 	}
 }
 
+void UQuest_Kill::CancleQuest()
+{
+	Super::CancleQuest();
+}
+
 void UQuest_Kill::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
     Super::SaveFromJson(JsonObject);

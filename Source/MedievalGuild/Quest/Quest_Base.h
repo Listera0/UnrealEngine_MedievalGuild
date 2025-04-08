@@ -20,13 +20,14 @@ public:
 
 	bool CanStartQuest();
 	virtual void StartQuest(UWorld* World);
-	void CancleQuest();
-	void QuestReward();
+	virtual void CancleQuest();
 	virtual void SetQuestData(UQuestData_Base* InQuest);
 	virtual void ClearQuest();
 	virtual	void SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject);
 	virtual	void LoadFromJson( TSharedPtr<FJsonObject>& JsonObject);
 	virtual UQuestData_Base* GetQuestData()const;
+
+	void QuestReward();
 	EQuestStatus GetQuestStatus();
 	int GetQuestIndex();
 	inline void PlayerGetQuest() { Quest->HasPlayer = true; };

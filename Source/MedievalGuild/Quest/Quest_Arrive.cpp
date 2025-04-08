@@ -70,6 +70,12 @@ void UQuest_Arrive::ClearQuest()
     }
 }
 
+void UQuest_Arrive::CancleQuest()
+{
+	Super::CancleQuest();
+    UQuestManager::GetInstance()->OnPlayerArrived.RemoveDynamic(this, &UQuest_Arrive::CheckQuest);
+}
+
 void UQuest_Arrive::SaveFromJson(const TSharedPtr<FJsonObject>& JsonObject)
 {
     Super::SaveFromJson(JsonObject);
