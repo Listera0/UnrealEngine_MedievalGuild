@@ -35,4 +35,5 @@ public:
 protected:
 	UPROPERTY()
 	UQuestData_Base* Quest = nullptr;
+	class APlayerCharacterController* PlayerController = nullptr;
 };

@@ -16,4 +16,5 @@ class MEDIEVALGUILD_API UCraftInventory : public UContainer_Base
 	
 public:
 	void CraftInventoryInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size);
+	void GetCraftItemList();
 };

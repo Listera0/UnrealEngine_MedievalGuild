@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
 #include "../Object/InventoryData.h"
+#include "../Item/ItemDataManager.h"
 #include "CraftRequire.generated.h"
 
 /**
@@ -29,11 +30,15 @@ public:
 	TSubclassOf<UUserWidget> CraftRequireItemClass;
 
 	UPROPERTY(meta = (BindWidget))
-	UVerticalBox* ItemList = nullptr;
+	UVerticalBox* ItemListWidget = nullptr;
 	UPROPERTY(meta=(BindWidget))
 	UButton* CraftButton = nullptr;
 
 	FInventoryData* SelectItemData;
+	UItemRecipe* selectRecipe;
 	FLinearColor NotEnoughColor;
 	FLinearColor EnoughColor;
+
+private:
+	class APlayerCharacterController* PlayerController = nullptr;
 };

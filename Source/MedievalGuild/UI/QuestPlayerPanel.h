@@ -23,6 +23,7 @@ public:
 
 	void QuestPlayerPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass);
 	void ShowQuestList();
+	FLinearColor GetQuestSlotColor(EQuestStatus status);
 
 	UPROPERTY()
 	TSubclassOf<UUserWidget> QuestSlotClass;
@@ -33,4 +34,8 @@ public:
 	UVerticalBox* QuestSlotGrid = nullptr;
 
 	TArray<UQuest_Base*> PlayerQuestList;
+
+	FLinearColor BasicColor;
+	FLinearColor SuccessColor;
+	FLinearColor NotEnoughColor;
 };

@@ -13,6 +13,10 @@ void UQuestPlayerPanel::QuestPlayerPanelInitSetting(TArray<TSubclassOf<UUserWidg
 {
 	QuestSlotClass = InitWidgetClass[0];
 	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	BasicColor = FLinearColor(0.8f, 0.8f, 0.8f, 1.0f);
+	SuccessColor = FLinearColor(0.3f, 0.8f, 0.3f, 1.0f);
+	NotEnoughColor = FLinearColor(0.8f, 0.2f, 0.2f, 1.0f);
 }
 
 void UQuestPlayerPanel::ShowQuestList()
@@ -29,7 +33,7 @@ void UQuestPlayerPanel::ShowQuestList()
 		UQuestSlot* newQuestSlot = CreateWidget<UQuestSlot>(GetWorld(), QuestSlotClass);
 		FButtonStyle buttonStyle;
 		FSlateBrush borderBrush;
-		borderBrush.TintColor = FLinearColor(0.8f, 0.8f, 0.8f, 1.0f);
+		borderBrush.TintColor = GetQuestSlotColor(quest->GetQuestStatus());
 		borderBrush.DrawAs = ESlateBrushDrawType::Box;
 		buttonStyle.SetNormal(borderBrush);
 		buttonStyle.SetHovered(borderBrush);
@@ -52,4 +56,24 @@ void UQuestPlayerPanel::ShowQuestList()
 	}
 
 	Cast<UCanvasPanelSlot>(QuestSlot->Slot)->SetSize(FVector2D(500.0f, (float)(TotalQuestCount) * 50.0f));
+}
+
+FLinearColor UQuestPlayerPanel::GetQuestSlotColor(EQuestStatus status)
+{
+	FLinearColor returnColor = BasicColor;
+	switch (status)
+	{
+	case EQuestStatus::NotStarted:
+		break;
+	case EQuestStatus::InProgress:
+		break;
+	case EQuestStatus::RewardPending:
+		returnColor = SuccessColor;
+		break;
+	case EQuestStatus::Completed:
+	default:
+		break;
+	}
+
+	return returnColor;
 }

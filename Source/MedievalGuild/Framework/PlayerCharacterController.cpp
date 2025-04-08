@@ -148,6 +148,7 @@ void APlayerCharacterController::InitPlayerData()
 	PlayerData = GetPlayerState<APlayerData>();
 	PlayerData->PlayerInventoryUI = InventoryUI;
 	PlayerData->PlayerEquipment.Init(nullptr, 5);
+	CurrentPlayerLocation = "Hideout";
 }
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)

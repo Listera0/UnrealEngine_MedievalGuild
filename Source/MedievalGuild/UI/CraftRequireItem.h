@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "CraftRequireItem.generated.h"
 
 /**
@@ -15,5 +17,12 @@ class MEDIEVALGUILD_API UCraftRequireItem : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void SetItemInfo();
+	UPROPERTY(meta = (BindWidget))
+	UImage* Image;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Name;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Count;
+
+	void SetItemInfo(int index, int ownCount, int requireCount);
 };

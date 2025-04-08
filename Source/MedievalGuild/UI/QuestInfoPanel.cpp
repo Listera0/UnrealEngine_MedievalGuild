@@ -6,6 +6,8 @@
 #include "../Framework/PlayerCharacterController.h"
 #include "../Quest/Quest_Item.h"
 #include "../Quest/Data/QuestData_Item.h"
+#include "../Quest/Data/QuestData_Arrive.h"
+#include "../Quest/Data/QuestData_Kill.h"
 
 void UQuestInfoPanel::QuestInfoInitSetting()
 {
@@ -32,60 +34,54 @@ void UQuestInfoPanel::ShowQuestDetail(UQuest_Base* data)
 	QuestInfo->SetText(FText::FromString(data->GetQuestData()->Description));
 	CheckQuestProgress();
 
-	RewardValue->SetText(FText::FromString(FString::Printf(TEXT("Reward"))));
+	if (SelectQuest->GetQuestData()->RewardItemAmount.Num() == 0) {
+		RewardValue->SetText(FText::FromString(FString::Printf(TEXT("X"))));
+	}
+	else { 
+		RewardValue->SetText(FText::FromString(FString::Printf(TEXT("%s  X %d"), 
+			*UItemDataManager::GetInstance()->FindItemData(SelectQuest->GetQuestData()->RewardItems[0])->name, SelectQuest->GetQuestData()->RewardItemAmount[0])));
+	}
 }
 
 void UQuestInfoPanel::CheckQuestProgress()
 {
-	if (CheckApplyQuest()) {
-		if (CheckSuccessQuest()) {
-			TargetValue->SetColorAndOpacity(SuccessColor);
-			SetInteractButtonColor(SuccessColor);
-			ButtonText->SetText(FText::FromString("Success"));
-		}
-		else {
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("%d"), SelectQuest->GetQuestData()->QuestStatus));
+
+	switch (SelectQuest->GetQuestStatus())
+	{
+		case EQuestStatus::NotStarted:
+			TargetValue->SetColorAndOpacity(BasicColor);
+			SetInteractButtonColor(BasicColor);
+			ButtonText->SetText(FText::FromString("Accept"));
+			break;
+		case EQuestStatus::InProgress:
 			TargetValue->SetColorAndOpacity(NotEnoughColor);
 			SetInteractButtonColor(NotEnoughColor);
 			ButtonText->SetText(FText::FromString("Cancel"));
-		}
-	}
-	else {
-		TargetValue->SetColorAndOpacity(BasicColor);
-		SetInteractButtonColor(BasicColor);
-		ButtonText->SetText(FText::FromString("Accept"));
+			break;
+		case EQuestStatus::RewardPending:
+			TargetValue->SetColorAndOpacity(SuccessColor);
+			SetInteractButtonColor(SuccessColor);
+			ButtonText->SetText(FText::FromString("Success"));
+			break;
+		default:
+			break;
 	}
 
 	if (SelectQuest->GetQuestData()->QuestType == EQuestType::Item) {
 		UQuestData_Item* targetQuest = Cast<UQuestData_Item>(SelectQuest->GetQuestData());
-		if (!targetQuest) {
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Error1");
-			return;
-		}
-
 		UItemData* itemData = UItemDataManager::GetInstance()->FindItemData(targetQuest->QuestItemIndex);
-
-		if (!itemData) {
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Error2");
-			return;
-		}
-
-		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / %d )"), *itemData->name, PlayerController->PlayerData->GetItemCount(itemData->index), targetQuest->RequiredAmount)));
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / %d )"), *itemData->name, 
+			PlayerController->PlayerData->GetItemCount(itemData->index), targetQuest->RequiredAmount)));
 	}
-}
-
-bool UQuestInfoPanel::CheckApplyQuest()
-{
-	//return SelectQuest->GetQuestData()->QuestStatus == EQuestStatus::InProgress;
-	return SelectQuest->GetQuestData()->HasPlayer;
-}
-
-bool UQuestInfoPanel::CheckSuccessQuest()
-{
-	if (SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending) {
-		return true;
+	else if (SelectQuest->GetQuestData()->QuestType == EQuestType::Arrive) {
+		UQuestData_Arrive* targetQuest = Cast<UQuestData_Arrive>(SelectQuest->GetQuestData());
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("Locate location ( %d / 1 )"), SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
 	}
-
-	return false;
+	else if (SelectQuest->GetQuestData()->QuestType == EQuestType::KillCount) {
+		UQuestData_Kill* targetQuest = Cast<UQuestData_Kill>(SelectQuest->GetQuestData());
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("Eliminate Target ( %d / 1 )"), SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
+	}
 }
 
 void UQuestInfoPanel::SetInteractButtonColor(FLinearColor color)
@@ -112,20 +108,38 @@ void UQuestInfoPanel::SetInteractButtonColor(FLinearColor color)
 
 void UQuestInfoPanel::OnClickInteractButton()
 {
-	if (!CheckSuccessQuest()) { return; }
-
-	for (int i = 0; i < SelectQuest->GetQuestData()->RewardItems.Num(); i++) {
-		FInventoryData* newItem = new FInventoryData(FVector2D(-1.0f), UItemDataManager::GetInstance()->FindItemData(SelectQuest->GetQuestData()->RewardItems[i]), SelectQuest->GetQuestData()->RewardItemAmount[i]);
-		PlayerController->PlayerData->AddItemToAllWork(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Storage),
-			newItem, PlayerController->GetTargetContainer(EContainerCategory::Storage));
-	}
-
-	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, "Finish Quest");
-
-	// quest item remove
 	// 버튼을 하이드아웃에서만 누를수 있게
+	if (PlayerController->CurrentPlayerLocation != "Hideout") return;
 
-	SelectQuest->QuestReward();
-	ShowQuestDetail(nullptr);
-	PlayerController->InventoryUI->Widget_QuestPlayerPanel->ShowQuestList();
+	switch (SelectQuest->GetQuestStatus())
+	{
+		case EQuestStatus::NotStarted:
+			// 수락
+			SelectQuest->StartQuest(GetWorld());
+			break;
+		case EQuestStatus::InProgress:
+			// 취소
+
+			break;
+		case EQuestStatus::RewardPending:
+			for (int i = 0; i < SelectQuest->GetQuestData()->RewardItems.Num(); i++) {
+				FInventoryData* newItem = new FInventoryData(FVector2D(-1.0f), UItemDataManager::GetInstance()->FindItemData(SelectQuest->GetQuestData()->RewardItems[i]), SelectQuest->GetQuestData()->RewardItemAmount[i]);
+				PlayerController->PlayerData->AddItemToAllWork(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Storage),
+					newItem, PlayerController->GetTargetContainer(EContainerCategory::Storage));
+				PlayerController->ScreenUI->SetSystemMessage(true, FString::Printf(TEXT("Get %d %s"), newItem->ItemCount, *newItem->ItemData->name));
+			}
+
+			if (SelectQuest->GetQuestData()->QuestType == EQuestType::Item) {
+				UQuestData_Item* targetQuest = Cast<UQuestData_Item>(SelectQuest->GetQuestData());
+				UItemData* itemData = UItemDataManager::GetInstance()->FindItemData(targetQuest->QuestItemIndex);
+				int leftCount = PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Inventory), itemData, targetQuest->RequiredAmount, true);
+				if (leftCount != 0) { PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Storage), itemData, targetQuest->RequiredAmount, true); }
+			}
+			SelectQuest->QuestReward();
+			ShowQuestDetail(nullptr);
+			PlayerController->InventoryUI->Widget_QuestPlayerPanel->ShowQuestList();
+			break;
+		default:
+			break;
+	}
 }

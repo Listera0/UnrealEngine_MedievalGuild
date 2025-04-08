@@ -22,10 +22,7 @@ void UStageMap::StageMapInitSetting()
 
 void UStageMap::MoveToCastle()
 {
-	ALocationActor* location = MoveLocation->GetLocationWithTag("Castle");
-	if (location) {
-		PlayerController->PlayerCharacter->SetActorLocation(location->GetActorLocation());
-	}
+	MoveToArea("Castle");
 }
 
 void UStageMap::MoveToArea(FName toArea)
@@ -33,5 +30,6 @@ void UStageMap::MoveToArea(FName toArea)
 	ALocationActor* location = MoveLocation->GetLocationWithTag(toArea);
 	if (location) {
 		PlayerController->PlayerCharacter->SetActorLocation(location->GetActorLocation());
+		PlayerController->CurrentPlayerLocation = toArea;
 	}
 }

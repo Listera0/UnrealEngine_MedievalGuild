@@ -109,7 +109,6 @@ protected:
 	float CameraSensitive = 0.5f;
 
 private:
-
 	FVector2D LastMousePosition;
 
 	bool bIsViewScaleInit;
@@ -133,4 +132,5 @@ public:
 	FHitResult hitResult;
 	FVector2D ViewPortSize;
 	bool bIsMovingItem;
+	FName CurrentPlayerLocation;
 };

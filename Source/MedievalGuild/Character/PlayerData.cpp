@@ -134,15 +134,16 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, FVector2D locati
     }
 }
 
-void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item, int count, bool withDelete)
+int APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item, int count, bool withDelete)
 {
     FInventoryData* targetData = HasItem(target, item->index, false);
     if (targetData) {
+        int leftCount = 0;
         if (targetData->ItemCount < count) {
-            int tempCount = count - targetData->ItemCount;
+            leftCount = count - targetData->ItemCount;
             target.Remove(targetData);
             if (withDelete) delete targetData;
-            RemoveItemTo(target, item, tempCount, withDelete);
+            leftCount = RemoveItemTo(target, item, leftCount, withDelete);
         }
         else {
             targetData->ItemCount -= count;
@@ -151,6 +152,10 @@ void APlayerData::RemoveItemTo(TArray<FInventoryData*>& target, UItemData* item,
                 if (withDelete) delete targetData;
             }
         }
+        return leftCount;
+    }
+    else {
+        return count;
     }
 }
 

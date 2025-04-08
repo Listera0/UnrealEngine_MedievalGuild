@@ -4,6 +4,8 @@
 #include "Quest_Base.h"
 #include "../Item/ItemDataManager.h"
 #include "../Quest/QuestManager.h"
+#include "../Framework/PlayerCharacterController.h"
+
 bool UQuest_Base::CanStartQuest()
 {
     if (!Quest->PreRequisiteQuests.IsEmpty())
@@ -23,6 +25,8 @@ bool UQuest_Base::CanStartQuest()
 
 void UQuest_Base::StartQuest(UWorld* World)
 {
+    if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(World->GetFirstPlayerController());
+
     if (CanStartQuest())
     {
         if (Quest->QuestStatus == EQuestStatus::NotStarted)
@@ -42,7 +46,8 @@ void UQuest_Base::CompleteQuest()
 {
     if (Quest->QuestStatus == EQuestStatus::InProgress)
     {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Quest Completed!"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Quest Completed!"));
+        PlayerController->ScreenUI->SetSystemMessage(true, "Quest Completed!");
         Quest->QuestStatus = EQuestStatus::RewardPending;
     }
 }
