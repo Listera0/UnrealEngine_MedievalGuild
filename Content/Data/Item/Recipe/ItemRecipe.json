@@ -1,0 +1,14 @@
+﻿[
+	{
+		"MakeItemIndex": 3,
+		"MakeItemAmount": 1,
+		"IngredientsIndex": [ 0 ],
+		"IngredientsAmount": [ 10 ]
+	},
+	{
+		"MakeItemIndex": 0,
+		"MakeItemAmount": 5,
+		"IngredientsIndex": [ 3 ],
+		"IngredientsAmount": [ 1 ]
+	}
+]

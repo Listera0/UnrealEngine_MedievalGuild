@@ -12,6 +12,9 @@ UItemDataManager* UItemDataManager::GetInstance()
         Instance->AddToRoot();
         FString FilePath = TEXT("TestitemData.json");
         Instance->LoadAllItemDataFromJson(FilePath);
+
+		FilePath = TEXT("ItemRecipe.json");
+		Instance->LoadAllItemRecipeFromJson(FilePath);
     }
     return Instance;
 }
@@ -47,7 +50,15 @@ void UItemDataManager::AddItemData(UItemData* ItemData)
     }
 }
 
-void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
+void UItemDataManager::AddItemRecipe(UItemRecipe* ItemRecipe)
+{
+    if (ItemRecipe)
+    {
+        ItemRecipeList.Add(ItemRecipe);
+    }
+}
+
+void UItemDataManager::SaveAllItemDataToJson()
 {
     TArray<TSharedPtr<FJsonValue>> JsonArray;
 
@@ -74,7 +85,7 @@ void UItemDataManager::SaveAllItemDataToJson(const FString& FilePath)
 
     if (FJsonSerializer::Serialize(JsonArray, Writer))
     {
-        FString Path = CurrentFilePath + FilePath;
+        FString Path = CurrentFilePath + TEXT("TestitemData.json");
 
         FFileHelper::SaveStringToFile(OutputString, *Path, FFileHelper::EEncodingOptions::ForceUTF8);
     }
@@ -128,6 +139,92 @@ void UItemDataManager::LoadAllItemDataFromJson(const FString& FilePath)
             }
         }
     }
+}
+
+void UItemDataManager::SaveAllItemRecipeToJson()
+{
+	TArray<TSharedPtr<FJsonValue>> JsonArray;
+	for (UItemRecipe* ItemRecipe : ItemRecipeList)
+	{
+		TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject());
+		JsonObject->SetNumberField(TEXT("MakeItemIndex"), ItemRecipe->MakeItemIndex);
+		JsonObject->SetNumberField(TEXT("MakeItemAmount"), ItemRecipe->MakeItemAmount);
+
+		TArray<TSharedPtr<FJsonValue>> IngredientsIndexArray;
+		for (int Index : ItemRecipe->IngredientsIndex)
+		{
+			IngredientsIndexArray.Add(MakeShareable(new FJsonValueNumber(Index)));
+		}
+		JsonObject->SetArrayField(TEXT("IngredientsIndex"), IngredientsIndexArray);
+
+		TArray<TSharedPtr<FJsonValue>> IngredientsAmountArray;
+		for (int Amount : ItemRecipe->IngredientsAmount)
+		{
+			IngredientsAmountArray.Add(MakeShareable(new FJsonValueNumber(Amount)));
+		}
+		JsonObject->SetArrayField(TEXT("IngredientsAmount"), IngredientsAmountArray);
+		JsonArray.Add(MakeShareable(new FJsonValueObject(JsonObject)));
+	}
+	FString OutputString;
+	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
+	if (FJsonSerializer::Serialize(JsonArray, Writer))
+	{
+		FString Path = CurrentRecipeFilePath + TEXT("ItemRecipe.json");
+		FFileHelper::SaveStringToFile(OutputString, *Path, FFileHelper::EEncodingOptions::ForceUTF8);
+	}
+}
+
+void UItemDataManager::LoadAllItemRecipeFromJson(const FString& FilePath)
+{
+	FString FileContents;
+	FString Path = CurrentRecipeFilePath + FilePath;
+
+    bool IsNotFoundItem = false;
+
+	if (FFileHelper::LoadFileToString(FileContents, *Path))
+	{
+		TArray<TSharedPtr<FJsonValue>> JsonArray;
+		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(FileContents);
+		if (FJsonSerializer::Deserialize(Reader, JsonArray))
+		{
+			ItemRecipeList.Empty();
+			for (TSharedPtr<FJsonValue> JsonValue : JsonArray)
+			{
+				IsNotFoundItem = false;
+				if (JsonValue->Type == EJson::Object)
+				{
+					TSharedPtr<FJsonObject> JsonObject = JsonValue->AsObject();
+					UItemRecipe* LoadedItemRecipe = NewObject<UItemRecipe>();
+					LoadedItemRecipe->MakeItemIndex = JsonObject->GetNumberField(TEXT("MakeItemIndex"));
+					LoadedItemRecipe->MakeItemAmount = JsonObject->GetNumberField(TEXT("MakeItemAmount"));
+
+                    if (!FindItemData(LoadedItemRecipe->MakeItemIndex))
+                        continue;
+
+					const TArray<TSharedPtr<FJsonValue>>& IngredientsIndexArray = JsonObject->GetArrayField(TEXT("IngredientsIndex"));
+					for (const TSharedPtr<FJsonValue>& Value : IngredientsIndexArray)
+					{
+                        if (!FindItemData(Value->AsNumber()))
+                        {
+							IsNotFoundItem = true;
+                            break;
+                        }
+						LoadedItemRecipe->IngredientsIndex.Add(Value->AsNumber());
+					}
+
+                    if (IsNotFoundItem)
+                        continue;
+
+					const TArray<TSharedPtr<FJsonValue>>& IngredientsAmountArray = JsonObject->GetArrayField(TEXT("IngredientsAmount"));
+					for (const TSharedPtr<FJsonValue>& Value : IngredientsAmountArray)
+					{
+						LoadedItemRecipe->IngredientsAmount.Add(Value->AsNumber());
+					}
+					ItemRecipeList.Add(LoadedItemRecipe);
+				}
+			}
+		}
+	}
 }
 
 UItemData* UItemDataManager::FindItemData(int ItemIndex)

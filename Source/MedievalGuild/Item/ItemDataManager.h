@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "ItemData.h"
+#include "Recipe/ItemRecipe.h"
 
 #include "ItemDataManager.generated.h"
 
@@ -22,15 +23,27 @@ public:
 	void AddItemData(UItemData* ItemData);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
-	void SaveAllItemDataToJson(const FString& FilePath);
+	void AddItemRecipe(UItemRecipe* ItemRecipe);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	void SaveAllItemDataToJson();
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	void LoadAllItemDataFromJson(const FString& FilePath);
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	void SaveAllItemRecipeToJson();
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	void LoadAllItemRecipeFromJson(const FString& FilePath);
 
 	UItemData* FindItemData(int ItemIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	TArray<UItemData*> GetItemDataList() const { return ItemDataList; }
+
+	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
+	TArray<UItemRecipe*> GetItemRecipeList() const { return ItemRecipeList; }
 
 	UFUNCTION(BlueprintCallable, Category = "Item Data Manager")
 	UStaticMesh* GetMeshForItem(const UItemData* item);
@@ -47,5 +60,10 @@ private:
 	UPROPERTY()
 	TArray<UItemData*> ItemDataList;
 
+	UPROPERTY()
+	TArray<UItemRecipe*> ItemRecipeList;
+
 	FString CurrentFilePath = FPaths::ProjectContentDir() + TEXT("Data/Item/Data/");
+
+	FString CurrentRecipeFilePath = FPaths::ProjectContentDir() + TEXT("Data/Item/Recipe/");
 };
