@@ -1,0 +1,42 @@
+﻿[
+	{
+		"DialogueIndex": 0,
+		"DialogueText": "시작",
+		"bIsEndOfDialogue": false,
+		"bIsDialogueOption": false,
+		"NextDialogueIndex": 1,
+		"CompleteQuestIndex": [],
+		"Responses": [
+			"1",
+			"2",
+			"3"
+		]
+	},
+	{
+		"DialogueIndex": 1,
+		"DialogueText": "여행",
+		"bIsEndOfDialogue": false,
+		"bIsDialogueOption": true,
+		"NextDialogueIndex": 0,
+		"DialogueOptions": [
+			{
+				"OptionText": "수락",
+				"NextDialogueID": 2,
+				"bGiveQuest": true,
+				"QuestIndex": 1
+			},
+			{
+				"OptionText": "거절",
+				"NextDialogueID": 1,
+				"bGiveQuest": false,
+				"QuestIndex": 0
+			}
+		],
+		"CompleteQuestIndex": [],
+		"Responses": [
+			"ㅁㄴㅇㄹㅇㅁ",
+			"ㄷㅈㅁㄻㅈㄷㄻㄹ",
+			"ㅁㄴㅇㄻㄵㅇㄷㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹ"
+		]
+	}
+]
