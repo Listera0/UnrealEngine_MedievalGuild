@@ -5,6 +5,7 @@
 #include "../Framework/PlayerCharacterController.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
+#include "../DataAssets/ItemDropDataAsset.h"
 
 // Sets default values
 AStageActor::AStageActor()
@@ -55,7 +56,22 @@ void AStageActor::BeginPlay()
 	}
 
 	for (USceneComponent* spawnPoint : SpawnPoints) {
-		UItemData* itemData = UItemDataManager::GetInstance()->GetItemDataList()[0];
+		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_DropData"), 0));
+		UItemDropDataAsset* dropData = Cast<UItemDropDataAsset>(spawnRef.TryLoad());
+
+		int targetItemIndex = 0;
+		int totalValue = 0; for (const TPair<int, int>& Pair : dropData->DropItemInfo) { totalValue += Pair.Value; }
+		int randValue = FMath::RandRange(1, totalValue); int currentValue = 0;
+
+		for (const TPair<int, int>& Pair : dropData->DropItemInfo) {
+			currentValue += Pair.Value;
+			if (randValue <= currentValue) {
+				targetItemIndex = Pair.Key;
+				break;
+			}
+		}
+
+		UItemData* itemData = UItemDataManager::GetInstance()->GetItemDataList()[targetItemIndex];
 
 		AInteractObject_Base* newItem = GetWorld()->SpawnActor<AInteractObject_Base>(AInteractObject_Base::StaticClass(),
 			GetActorLocation() + spawnPoint->GetRelativeLocation(), spawnPoint->GetRelativeRotation(), SpawnParameters);

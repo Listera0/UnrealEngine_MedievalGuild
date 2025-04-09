@@ -28,7 +28,7 @@
 			"QuestName": "I Need Book!",
 			"Description": "I want one book for study!",
 			"QuestIndex": 2,
-			"QuestStatus": 1,
+			"QuestStatus": 0,
 			"QuestType": 1,
 			"RewardGold": 0,
 			"HasPlayer": true,

@@ -3,8 +3,9 @@
 
 #include "InteractObject_Base.h"
 #include "../Framework/PlayerCharacterController.h"
-#include "../ItemScaleDataAsset.h"
+#include "../DataAssets/ItemScaleDataAsset.h"
 #include "UObject/ConstructorHelpers.h"
+#include "../DataAssets/ItemContainerDataAsset.h"
 
 // Sets default values
 AInteractObject_Base::AInteractObject_Base()
@@ -25,8 +26,23 @@ void AInteractObject_Base::BeginPlay()
 	Super::BeginPlay();
 
 	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
-	for (const TPair<int, int>& Pair : ContainerIndex) {
-		ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
+	
+
+	if (bFollowDataSet) {
+		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ContainerData"), DataSetIndex));
+		UItemContainerDataAsset* containerData = Cast<UItemContainerDataAsset>(spawnRef.TryLoad());
+
+		for (const TPair<int, int>& Pair : containerData->ItemInfo) {
+			if (FMath::RandRange(1, 100) <= Pair.Value) {
+				int count = FMath::RandRange(*containerData->ItemMinCount.Find(Pair.Key), *containerData->ItemMaxCount.Find(Pair.Key));
+				ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], count));
+			}
+		}
+	}
+	else {
+		for (const TPair<int, int>& Pair : ContainerIndex) {
+			ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
+		}
 	}
 
 	InteractableItemSetting();

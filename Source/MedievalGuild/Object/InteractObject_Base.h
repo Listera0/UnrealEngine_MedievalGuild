@@ -38,10 +38,14 @@ public:
 	bool bIsInit;
 
 	UPROPERTY(EditAnywhere, Category = "Item")
+	bool bFollowDataSet;
+	UPROPERTY(EditAnywhere, Category = "Item")
+	int DataSetIndex;
+	UPROPERTY(EditAnywhere, Category = "Item")
 	TMap<int, int> ContainerIndex;
-
 	UPROPERTY(EditAnywhere, Category = "Item")
 	FVector2D ContainerSize;
+
 	float InteractDistance;
 
 public:

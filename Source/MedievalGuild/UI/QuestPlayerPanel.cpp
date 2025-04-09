@@ -27,6 +27,7 @@ void UQuestPlayerPanel::ShowQuestList()
 	PlayerController->PlayerCharacter->QuestComponent->GetMyQuestDatas(PlayerQuestList);
 
 	int TotalQuestCount = 0;
+	int CurrentQuestCount = 0;
 	for (UQuest_Base* quest : PlayerQuestList) {
 		if (quest->GetQuestStatus() == EQuestStatus::Completed) {
 			TotalQuestCount++;
@@ -56,9 +57,10 @@ void UQuestPlayerPanel::ShowQuestList()
 		newQuestSlot->QuestSlot->OnClicked.AddDynamic(newQuestSlot, &UQuestSlot::ShowQuestDetail);
 
 		TotalQuestCount++;
+		CurrentQuestCount++;
 	}
 
-	Cast<UCanvasPanelSlot>(QuestSlot->Slot)->SetSize(FVector2D(500.0f, (float)(TotalQuestCount) * 50.0f));
+	Cast<UCanvasPanelSlot>(QuestSlot->Slot)->SetSize(FVector2D(500.0f, (float)(CurrentQuestCount) * 50.0f));
 }
 
 FLinearColor UQuestPlayerPanel::GetQuestSlotColor(EQuestStatus status)

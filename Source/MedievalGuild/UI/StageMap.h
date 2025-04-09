@@ -21,8 +21,6 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
-	UButton* Hideout = nullptr;
-	UPROPERTY(meta = (BindWidget))
 	UButton* Castle = nullptr;
 
 public:
