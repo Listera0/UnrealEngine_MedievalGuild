@@ -16,6 +16,7 @@
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
+#include "../Character/Enemy_1.h"
 
 #include "PlayerCharacterController.generated.h"
 
@@ -48,6 +49,7 @@ protected:
 	void InputRealeaseRunKey(const FInputActionValue& Value);
 	void InputStealthToggle(const FInputActionValue& Value);
 	void InputAttackAction(const FInputActionValue& Value);
+	void InputAttack2Action(const FInputActionValue& Value);
 	void InputInventoryToggle(const FInputActionValue& Value);
 	void InputInteractAction(const FInputActionValue& Value);
 
@@ -68,40 +70,31 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenUI> ScreenViewport = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UItemInfoPanel> ItemInfoViewport = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UItemInteractPanel> ItemInteractPanel = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> testwidget = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* MoveCamera = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* MoveAction = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* RunAction = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* StealthAction = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* AttackAction = nullptr;
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
+	class UInputAction* AttackAction2 = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* InventoryToggle = nullptr;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* InteractAction = nullptr;
 
@@ -127,6 +120,7 @@ public:
 	UItemInteractPanel* ItemInteractUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
+	AEnemy_1* InteractCharacter = nullptr;
 
 	FOnGetItem OnGetItem;
 	FHitResult hitResult;

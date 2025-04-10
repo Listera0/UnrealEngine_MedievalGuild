@@ -258,7 +258,11 @@ void UItemSlot::SlotButtonShiftClick()
 		UContainer_Base* otherContainer = nullptr;
 		EContainerCategory otherCategory = EContainerCategory::None;
 
-		if (PlayerController->InteractObj->ActorHasTag(FName("Container"))) {
+		if (PlayerController->InteractCharacter && PlayerController->InteractCharacter->ActorHasTag(FName("Enemy"))) {
+			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) { otherCategory = EContainerCategory::EnemyInventory; }
+			else if (ContainerPanel->ContainerCategory == EContainerCategory::EnemyInventory) { otherCategory = EContainerCategory::Inventory; }
+		}
+		else if (PlayerController->InteractObj && PlayerController->InteractObj->ActorHasTag(FName("Container"))) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) { otherCategory = EContainerCategory::Container; }
 			else if (ContainerPanel->ContainerCategory == EContainerCategory::Container) { otherCategory = EContainerCategory::Inventory; }
 		}
@@ -324,6 +328,7 @@ void UItemSlot::SlotButtonShiftClick()
 		if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory || otherCategory == EContainerCategory::Inventory) {
 			PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 		}
+
 		if (ContainerPanel->ContainerCategory == EContainerCategory::Container && otherCategory == EContainerCategory::Inventory) {
 			PlayerController->OnGetItem.Broadcast(itemInfo->ItemData->index,true);
 		}

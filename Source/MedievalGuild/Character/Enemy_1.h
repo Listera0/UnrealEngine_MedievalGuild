@@ -4,26 +4,46 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
+#include "../Object/IInteractInterface.h"
+#include "../UI/PlayerInventory.h"
 #include "Enemy_1.generated.h"
 
 UCLASS()
-class MEDIEVALGUILD_API AEnemy_1 : public ACharacter
+class MEDIEVALGUILD_API AEnemy_1 : public ACharacter, public IInteractInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AEnemy_1();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void SetInteractDistance(float distance) override { InteractDistance = distance; };
+	virtual float GetInteractDistance() override { return InteractDistance; };
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void InventoryInitSetting();
+	void SetContainerUI();
+	void RecieveHit(float Damage);
+	void Die();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Weapon")
+	UStaticMeshComponent* EnemyWeapon = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Weapon")
+	UCapsuleComponent* EnemyWeaponCollision = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Anim")
+	UAnimMontage* DeathMontage = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Inventory")
+	TMap<int, int> EnemyInventoryInit;
+	TArray<FInventoryData*> EnemyInventory;
+
+	UPROPERTY(EditAnywhere, Category = "Enemy|Weapon")
+	int WeaponIndex = 12;
+	bool bIsInit = false;
+	float MaxHealth = 100.0f;
+	float CurrentHealth = 0.0f;
+	float InteractDistance;
 };

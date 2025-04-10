@@ -67,6 +67,7 @@ public:
 	UStageMap* Widget_StageMap;
 	UCraftInventory* Widget_CraftInventory;
 	UCraftRequire* Widget_CraftRequire;
+	UContainerWidget* Widget_EnemyContainer;
 
 protected:
 	class APlayerCharacterController* PlayerController = nullptr;

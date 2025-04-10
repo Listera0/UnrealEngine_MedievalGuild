@@ -8,11 +8,12 @@
 #include "Components/SphereComponent.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InventoryData.h"
+#include "../Object/IInteractInterface.h"
 
 #include "InteractObject_Base.generated.h"
 
 UCLASS()
-class MEDIEVALGUILD_API AInteractObject_Base : public AActor
+class MEDIEVALGUILD_API AInteractObject_Base : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -57,6 +58,8 @@ public:
 	void RemoveItemToInv(UItemData* item, int count, bool withDelete);
 	void MoveItemIndex(FVector2D to, FInventoryData* data); // 외부용
 	void MoveItemIndex(FVector2D from, FVector2D to); // 내부용
+	virtual void SetInteractDistance(float distance) override { InteractDistance = distance; };
+	virtual float GetInteractDistance() override { return InteractDistance; };
 
 	FInventoryData* HasItem(int itemIndex, bool checkMaxStack);
 	FInventoryData* FindItemWithLocation(FVector2D location);

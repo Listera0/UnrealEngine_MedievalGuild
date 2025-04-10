@@ -24,4 +24,8 @@ public:
 	UStaticMesh* mesh;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	FTransform transfrom;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FTransform collisionTransform;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float collisionShape;
 };

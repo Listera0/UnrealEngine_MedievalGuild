@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "Components/CapsuleComponent.h"
 #include "../Quest/QuestComponent.h"
 
 #include "PlayerCharacter.generated.h"
@@ -40,13 +41,16 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION()
+	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, 
+								AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:
 	void InputMove(const FVector& Direction, float Scale);
 	void InputRunning(bool IsRun);
 	void InputStealthToggle();
 	void InputSpeedControl();
-	void InputAttack();
+	void InputAttack(int index = 0);
 	void SetPlayerWeapon(int index);
 	bool CheckAttackAnim();
 
@@ -69,6 +73,8 @@ protected:
 	UCameraComponent* PlayerCamera = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* PlayerWeapon = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UCapsuleComponent* PlayerWeaponCollsion = nullptr;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
@@ -82,9 +88,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
 	UAnimMontage* AttackMontage = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
+	UAnimMontage* AttackMontage2 = nullptr;
 
 private:
 	class USectionControlNotify* SectionNotify = nullptr;
+
+	TArray<AActor*> AlreadyHitActor;
 	bool bStealthToggle = false;
 	bool bEnableControlNotify = false;
 

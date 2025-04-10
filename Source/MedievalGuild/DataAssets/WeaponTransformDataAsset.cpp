@@ -7,4 +7,6 @@ UWeaponTransformDataAsset::UWeaponTransformDataAsset()
 {
 	index = 0;
 	transfrom = FTransform();
+	collisionTransform = FTransform();
+	collisionShape = 0.0f;
 }

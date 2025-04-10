@@ -5,8 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Framework/SectionControlNotify.h"
 #include "../DataAssets/WeaponTransformDataAsset.h"
+#include "../Character/Enemy_1.h"
 
-// Sets default values
 APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -29,6 +29,10 @@ APlayerCharacter::APlayerCharacter()
 
 	PlayerWeapon = CreateDefaultSubobject<UStaticMeshComponent>(FName("Weapon"));
 	PlayerWeapon->SetupAttachment(GetMesh());
+	PlayerWeapon->SetCollisionProfileName(TEXT("NoCollision"));
+
+	PlayerWeaponCollsion = CreateDefaultSubobject<UCapsuleComponent>(FName("WeaponCollision"));
+	PlayerWeaponCollsion->SetupAttachment(PlayerWeapon);
 
 	QuestComponent = CreateDefaultSubobject<UQuestComponent>(TEXT("QuestComponent"));
 	QuestComponent->PlayerComponent();
@@ -40,6 +44,7 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHand_Socket"));
+	PlayerWeaponCollsion->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnAttackBeginOverlap);
 
 	StealthMoveSpeed = 300.0f;
 	NormalMoveSpeed = 450.0f;
@@ -57,6 +62,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void APlayerCharacter::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (CheckAttackAnim()) {
+		if (OtherActor->ActorHasTag("Enemy") && !AlreadyHitActor.Contains(OtherActor)) {
+			AlreadyHitActor.Add(OtherActor);
+			AEnemy_1* hitEnemy = Cast<AEnemy_1>(OtherActor);
+			hitEnemy->RecieveHit(100.0f);
+
+		}
+	}
 }
 
 void APlayerCharacter::InputMove(const FVector& Direction, float Scale)
@@ -105,17 +122,26 @@ void APlayerCharacter::InputSpeedControl()
 	}
 }
 
-void APlayerCharacter::InputAttack()
+void APlayerCharacter::InputAttack(int index)
 {
-	if (!CheckAttackAnim() && bHasWeapon) { PlayAnimMontage(AttackMontage); }
+	if (!CheckAttackAnim() && bHasWeapon) {
+		AlreadyHitActor.Empty();
+		if (index == 0) {
+			PlayAnimMontage(AttackMontage); 
+		}
+		else {
+			PlayAnimMontage(AttackMontage2);
+		}
+
+	}
 }
 
 void APlayerCharacter::SetPlayerWeapon(int index)
 {
 	if (index == -1) {
 		PlayerWeapon->SetStaticMesh(nullptr);
-		PlayerWeapon->SetCollisionProfileName(TEXT("NoCollision"));
 		bHasWeapon = false;
+		PlayerWeaponCollsion->SetCollisionProfileName(TEXT("NoCollision"));
 		return;
 	}
 
@@ -124,13 +150,15 @@ void APlayerCharacter::SetPlayerWeapon(int index)
 
 	PlayerWeapon->SetStaticMesh(weaponData->mesh);
 	PlayerWeapon->SetRelativeTransform(weaponData->transfrom);
-	PlayerWeapon->SetCollisionProfileName(TEXT("OverlapAll"));
+	PlayerWeaponCollsion->SetRelativeTransform(weaponData->collisionTransform);
+	PlayerWeaponCollsion->SetCapsuleHalfHeight(weaponData->collisionShape);
+	PlayerWeaponCollsion->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	bHasWeapon = true;
 }
 
 bool APlayerCharacter::CheckAttackAnim()
 {
-	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage);
+	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage) || GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage2);
 }
 
 void APlayerCharacter::OnSectionJumpReady(USectionControlNotify* SectionControl)

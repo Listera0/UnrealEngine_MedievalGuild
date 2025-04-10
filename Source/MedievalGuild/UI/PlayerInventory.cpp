@@ -70,6 +70,11 @@ void UPlayerInventory::PlayerInventoryInitSetting()
 											EContainerCategory::Container, FVector2D(6, 4));
 	InventorySlot->AddChildToHorizontalBox(Widget_Container);
 
+	Widget_EnemyContainer = CreateWidget<UContainerWidget>(GetWorld(), Blueprints->ContainerWidget);
+	Widget_EnemyContainer->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass,
+		EContainerCategory::EnemyInventory, FVector2D(6, 4));
+	InventorySlot->AddChildToHorizontalBox(Widget_EnemyContainer);
+
 	// StorageSlot
 	Widget_Storage = CreateWidget<UPlayerStorage>(GetWorld(), Blueprints->StorageWidget);
 	Widget_Storage->ContainerInitSetting(Blueprints->ItemSlotClass, Blueprints->ItemBaseClass, Blueprints->ItemMoveSlotClass, Blueprints->ItemSlotImgClass, 
@@ -136,6 +141,11 @@ void UPlayerInventory::PanelVisibleSetting(int value)
 		PanelVisibleSetting(Widget_CraftRequire, ESlateVisibility::Visible);
 		PanelVisibleSetting(Widget_Storage, ESlateVisibility::Visible);
 	}
+	else if (value == 7) {
+		PanelVisibleSetting(Widget_Equipment, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_Inventory, ESlateVisibility::Visible);
+		PanelVisibleSetting(Widget_EnemyContainer, ESlateVisibility::Visible);
+	}
 	else if (value == 11) {
 		PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Visible);
 	}
@@ -155,6 +165,7 @@ void UPlayerInventory::AllPanelCollapsed()
 	PanelVisibleSetting(Widget_StageMap, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_CraftInventory, ESlateVisibility::Collapsed);
 	PanelVisibleSetting(Widget_CraftRequire, ESlateVisibility::Collapsed);
+	PanelVisibleSetting(Widget_EnemyContainer, ESlateVisibility::Collapsed);
 }
 
 void UPlayerInventory::PanelVisibleSetting(UUserWidget* widget, ESlateVisibility visible)
@@ -189,6 +200,9 @@ void UPlayerInventory::PanelOpenSetting(UUserWidget* widget)
 	}
 	else if (widget == Widget_Container || widget == Widget_Merchant || widget == Widget_CraftInventory) {
 		PlayerController->InteractObj->SetContainerUI();
+	}
+	else if (widget == Widget_EnemyContainer) {
+		PlayerController->InteractCharacter->SetContainerUI();
 	}
 	else if (widget == Widget_QuestInfoPanel) {
 		Widget_QuestInfoPanel->ShowQuestDetail(nullptr);

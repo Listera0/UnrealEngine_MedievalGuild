@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameUserSettings.h"
+#include "../Object/IInteractInterface.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 
 
@@ -64,6 +65,9 @@ void APlayerCharacterController::SetupInputComponent()
 
 		if (AttackAction)
 			input->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttackAction);
+		
+		if (AttackAction2)
+			input->BindAction(AttackAction2, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttack2Action);
 
 		if(InventoryToggle)
 			input->BindAction(InventoryToggle, ETriggerEvent::Started, this, &APlayerCharacterController::InputInventoryToggle);
@@ -199,7 +203,12 @@ void APlayerCharacterController::InputStealthToggle(const FInputActionValue& Val
 
 void APlayerCharacterController::InputAttackAction(const FInputActionValue& Value)
 {
-	if (!bIsUIOpened) PlayerCharacter->InputAttack();
+	if (!bIsUIOpened) PlayerCharacter->InputAttack(0);
+}
+
+void APlayerCharacterController::InputAttack2Action(const FInputActionValue& Value)
+{
+	if (!bIsUIOpened) PlayerCharacter->InputAttack(1);
 }
 
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
@@ -223,7 +232,14 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 	}
 	else {
 		if (bIsInteract) {
-			if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
+			if (hitResult.GetActor()->ActorHasTag(FName("Dead"))) {
+				bIsInteractAction = true;
+				InteractCharacter = Cast<AEnemy_1>(hitResult.GetActor());
+				Cast<IInteractInterface>(InteractCharacter)->SetInteractDistance(FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractCharacter->GetActorLocation()));
+				InventoryUI->PanelVisibleSetting(7);
+				OpenUISetting();
+			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("Item"))) {
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
 				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
 				targetItem->SlotIndex = FVector2D(-1.0f);
@@ -328,6 +344,9 @@ void APlayerCharacterController::CheckScreenUI()
 		else if (hitResult.GetActor()->ActorHasTag(FName("Anvil"))) {
 			ScreenUI->SetInteractText(true, "Work");
 		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("Enemy"))) {
+			ScreenUI->SetInteractText(true, "Search");
+		}
 	}
 	else {
 		ScreenUI->SetInteractText(false, "");
@@ -336,9 +355,18 @@ void APlayerCharacterController::CheckScreenUI()
 
 void APlayerCharacterController::CheckInteractDistance()
 {
-	if (bIsInteractAction && InteractObj) {
-		if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > InteractObj->InteractDistance + 15000.0f) {
-			AllUIHidden();
+	if (bIsInteractAction) {
+		if (InteractObj) {
+			if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation()) > 
+					Cast<IInteractInterface>(InteractObj)->GetInteractDistance() + 15000.0f) {
+				AllUIHidden();
+			}
+		}
+		else if (InteractCharacter) {
+			if (FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractCharacter->GetActorLocation()) > 
+					Cast<IInteractInterface>(InteractCharacter)->GetInteractDistance() + 15000.0f) {
+				AllUIHidden();
+			}
 		}
 	}
 }
@@ -399,6 +427,7 @@ void APlayerCharacterController::AllUIHidden()
 	bIsInteractAction = false;
 	bShowMouseCursor = false;
 	InteractObj = nullptr;
+	InteractCharacter = nullptr;
 	InventoryUI->SetVisibility(ESlateVisibility::Hidden);
 
 	FInputModeGameOnly InputMode;
@@ -414,6 +443,7 @@ UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCatego
 		case EContainerCategory::Container: return InventoryUI->Widget_Container; break;
 		case EContainerCategory::Merchant: return  InventoryUI->Widget_Merchant; break;
 		case EContainerCategory::CraftInventory: return  InventoryUI->Widget_CraftInventory; break;
+		case EContainerCategory::EnemyInventory: return  InventoryUI->Widget_EnemyContainer; break;
 		case EContainerCategory::Helmet: return InventoryUI->Widget_Equipment->Widget_Helmet; break;
 		case EContainerCategory::Cloth: return InventoryUI->Widget_Equipment->Widget_Cloth; break;
 		case EContainerCategory::Shoes: return InventoryUI->Widget_Equipment->Widget_Shoes; break;

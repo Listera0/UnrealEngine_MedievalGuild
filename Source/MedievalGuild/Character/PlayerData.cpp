@@ -243,6 +243,7 @@ TArray<FInventoryData*>& APlayerData::GetTargetContainer(EContainerCategory cate
         case EContainerCategory::Container:
         case EContainerCategory::Merchant:
         case EContainerCategory::CraftInventory: return PlayerController->InteractObj->ContainerInventory; break;
+        case EContainerCategory::EnemyInventory: return PlayerController->InteractCharacter->EnemyInventory; break;
         case EContainerCategory::Helmet:
         case EContainerCategory::Cloth:
         case EContainerCategory::Shoes:
