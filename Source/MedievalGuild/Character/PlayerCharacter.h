@@ -47,6 +47,8 @@ public:
 	void InputStealthToggle();
 	void InputSpeedControl();
 	void InputAttack();
+	void SetPlayerWeapon(int index);
+	bool CheckAttackAnim();
 
 	UFUNCTION()
 	void OnSectionJumpReady(class USectionControlNotify* SectionControl);
@@ -63,9 +65,10 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArm = nullptr;
-
 	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* PlayerCamera = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UStaticMeshComponent* PlayerWeapon = nullptr;
 
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
@@ -84,4 +87,7 @@ private:
 	class USectionControlNotify* SectionNotify = nullptr;
 	bool bStealthToggle = false;
 	bool bEnableControlNotify = false;
+
+public:
+	bool bHasWeapon = false;
 };

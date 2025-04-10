@@ -4,6 +4,7 @@
 #include "PlayerCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Framework/SectionControlNotify.h"
+#include "../DataAssets/WeaponTransformDataAsset.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -26,6 +27,9 @@ APlayerCharacter::APlayerCharacter()
 	PlayerCamera->SetupAttachment(SpringArm);
 	PlayerCamera->SetRelativeRotation(FRotator(-20.0f, 0.0f, 0.0f));
 
+	PlayerWeapon = CreateDefaultSubobject<UStaticMeshComponent>(FName("Weapon"));
+	PlayerWeapon->SetupAttachment(GetMesh());
+
 	QuestComponent = CreateDefaultSubobject<UQuestComponent>(TEXT("QuestComponent"));
 	QuestComponent->PlayerComponent();
 }
@@ -34,6 +38,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PlayerWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, TEXT("RightHand_Socket"));
 
 	StealthMoveSpeed = 300.0f;
 	NormalMoveSpeed = 450.0f;
@@ -44,7 +50,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -102,10 +107,30 @@ void APlayerCharacter::InputSpeedControl()
 
 void APlayerCharacter::InputAttack()
 {
-	if (!GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage))
-	{
-		PlayAnimMontage(AttackMontage);
+	if (!CheckAttackAnim() && bHasWeapon) { PlayAnimMontage(AttackMontage); }
+}
+
+void APlayerCharacter::SetPlayerWeapon(int index)
+{
+	if (index == -1) {
+		PlayerWeapon->SetStaticMesh(nullptr);
+		PlayerWeapon->SetCollisionProfileName(TEXT("NoCollision"));
+		bHasWeapon = false;
+		return;
 	}
+
+	FStringAssetReference weaponRef(FString::Printf(TEXT("/Game/CPP/DataAsset/WeaponData_%d"), index));
+	UWeaponTransformDataAsset* weaponData = Cast<UWeaponTransformDataAsset>(weaponRef.TryLoad());
+
+	PlayerWeapon->SetStaticMesh(weaponData->mesh);
+	PlayerWeapon->SetRelativeTransform(weaponData->transfrom);
+	PlayerWeapon->SetCollisionProfileName(TEXT("OverlapAll"));
+	bHasWeapon = true;
+}
+
+bool APlayerCharacter::CheckAttackAnim()
+{
+	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage);
 }
 
 void APlayerCharacter::OnSectionJumpReady(USectionControlNotify* SectionControl)

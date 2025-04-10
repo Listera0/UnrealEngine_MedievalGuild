@@ -153,7 +153,7 @@ void APlayerCharacterController::InitPlayerData()
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 {
-	if (PlayerCharacter) {
+	if (PlayerCharacter && !PlayerCharacter->CheckAttackAnim()) {
 		FVector2D inputValue = Value.Get<FVector2D>();
 
 		if(inputValue.Size() > 1.0f)
@@ -199,7 +199,7 @@ void APlayerCharacterController::InputStealthToggle(const FInputActionValue& Val
 
 void APlayerCharacterController::InputAttackAction(const FInputActionValue& Value)
 {
-	PlayerCharacter->InputAttack();
+	if (!bIsUIOpened) PlayerCharacter->InputAttack();
 }
 
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)

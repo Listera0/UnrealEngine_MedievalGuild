@@ -44,13 +44,13 @@ public:
 public:
 	class APlayerCharacterController* PlayerController = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
 	FString PlayerName;
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
 	float PlayerHealth;
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
 	float PlayerStemina;
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState")
+	UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
 	float PlayerEnergy;
 
 	TArray<FInventoryData*> PlayerInventory;

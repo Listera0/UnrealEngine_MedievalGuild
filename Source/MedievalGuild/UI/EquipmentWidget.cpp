@@ -3,6 +3,7 @@
 
 #include "EquipmentWidget.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Character/PlayerCharacter.h"
 
 void UEquipmentWidget::InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass, 
 									TSubclassOf<UUserWidget> gearWidget, TSubclassOf<UUserWidget> itemSlotImgClass)
@@ -46,31 +47,37 @@ void UEquipmentWidget::InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubc
 
 void UEquipmentWidget::ShowContainer()
 {
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 
-	Widget_Helmet->ShowContainer(controller->PlayerData->PlayerEquipment[0]);
-	Widget_Cloth->ShowContainer(controller->PlayerData->PlayerEquipment[1]);
-	Widget_Shoes->ShowContainer(controller->PlayerData->PlayerEquipment[2]);
-	Widget_Bag->ShowContainer(controller->PlayerData->PlayerEquipment[3]);
-	Widget_Weapon->ShowContainer(controller->PlayerData->PlayerEquipment[4]);
+	Widget_Helmet->ShowContainer(PlayerController->PlayerData->PlayerEquipment[0]);
+	Widget_Cloth->ShowContainer(PlayerController->PlayerData->PlayerEquipment[1]);
+	Widget_Shoes->ShowContainer(PlayerController->PlayerData->PlayerEquipment[2]);
+	Widget_Bag->ShowContainer(PlayerController->PlayerData->PlayerEquipment[3]);
+	Widget_Weapon->ShowContainer(PlayerController->PlayerData->PlayerEquipment[4]);
+
+	if (PlayerController->PlayerData->PlayerEquipment[4]) { PlayerController->PlayerCharacter->SetPlayerWeapon(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Weapon)[4]->ItemData->index); }
+	else { PlayerController->PlayerCharacter->SetPlayerWeapon(-1); }
 
 	ShowContainerInfo();
 }
 
 void UEquipmentWidget::ShowContainerInfo()
 {
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-	float totalWeight = 0;
+	if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 
+	HealthValue->SetText(FText::FromString(FString::Printf(TEXT("%d"), (int)(PlayerController->PlayerData->PlayerHealth))));
+	SteminaValue->SetText(FText::FromString(FString::Printf(TEXT("%d"), (int)(PlayerController->PlayerData->PlayerStemina))));
+
+	float totalWeight = 0;
 	float equipmentWeight = 0.0f;
-	for (int i = 0; i < controller->PlayerData->PlayerEquipment.Num(); i++){
-		if (controller->PlayerData->PlayerEquipment[i]) {
-			equipmentWeight += controller->PlayerData->PlayerEquipment[i]->ItemData->weight;
+	for (int i = 0; i < PlayerController->PlayerData->PlayerEquipment.Num(); i++){
+		if (PlayerController->PlayerData->PlayerEquipment[i]) {
+			equipmentWeight += PlayerController->PlayerData->PlayerEquipment[i]->ItemData->weight;
 		}
 	}
 
 	float itemWeight = 0.0f;
-	for (FInventoryData* data : controller->PlayerData->PlayerInventory) {
+	for (FInventoryData* data : PlayerController->PlayerData->PlayerInventory) {
 		itemWeight += (float)(data->ItemData->weight * data->ItemCount);
 	}
 

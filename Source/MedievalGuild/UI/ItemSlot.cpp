@@ -170,6 +170,9 @@ bool UItemSlot::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& 
 
 				ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, ownerItem->ItemData);
 			}
+			else if (PlayerController->PlayerData->GetEquipmentIndex(before) != -1) { // is equipment
+				ContainerPanel->MoveItemToSlot(PlayerController->PlayerData->GetEquipmentIndex(before), SlotIndex, Operation->OriginalWidgets);
+			}
 			else {
 				ContainerPanel->MoveItemToSlot(Operation->PrevContainerCategory, Operation->PrevSlotIndex, SlotIndex, Operation->OriginalWidgets);
 			}

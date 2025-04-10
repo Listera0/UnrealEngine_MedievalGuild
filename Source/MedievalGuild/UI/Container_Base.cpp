@@ -203,14 +203,14 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 		}
 	}
 
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 안에 아이템이 있으면
 	if (itemToIndex.Num() > 0) {
 		if (ContainerItemSlots[toIndex]->HasItem()) {
 			if (ContainerItemSlots[toIndex]->GetItemData()->ItemData->index == items[0]->ItemData->ItemData->index) {
 				// 같은 아이템 && 같은 컨테이너일 경우
 				if (ContainerCategory == before) {
-					TArray<FInventoryData*>& targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+					TArray<FInventoryData*>& targetContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
 					FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
 					FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
 
@@ -237,9 +237,9 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 				}
 				// 같은 아이템 && 다른 컨테이너일 경우
 				else {
-					TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-					TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
-					UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+					TArray<FInventoryData*>& ToContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
+					TArray<FInventoryData*>& FromContainer = PlayerController->PlayerData->GetTargetContainer(before);
+					UContainer_Base* FromContainerBase = PlayerController->GetTargetContainer(before);
 
 					FInventoryData* toData = ContainerItemSlots[toIndex]->GetItemData();
 					FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
@@ -271,16 +271,16 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 	else { // 안에 아이템이 없으면
 		// 같은 컨테이너일 경우
 		if (ContainerCategory == before) {
-			TArray<FInventoryData*>& targetContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+			TArray<FInventoryData*>& targetContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
 			FInventoryData* fromData = ContainerItemSlots[fromIndex]->GetItemData();
 			fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow - offsetTo;
 
 			ShowContainer(targetContainer);
 		}
 		else { // 다른 컨테이너일 경우
-			TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-			TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
-			UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
+			TArray<FInventoryData*>& ToContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
+			TArray<FInventoryData*>& FromContainer = PlayerController->PlayerData->GetTargetContainer(before);
+			UContainer_Base* FromContainerBase = PlayerController->GetTargetContainer(before);
 
 			FInventoryData* fromData = FromContainerBase->ContainerItemSlots[fromIndex]->GetItemData();
 			FromContainer.Remove(fromData);
@@ -293,61 +293,40 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 	}
 }
 
-void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, int toIndex, TArray<UItemUI_Base*> items, bool equipment)
-{
-	TArray<FVector2D> itemToArea;
-	TArray<FVector2D> itemToIndex;
-
-	FVector2D offsetTo = items[0]->ItemIndex;
-
-	// 범위 만들기 (items 의 슬롯에 offset을 빼기)
-	for (int i = 0; i < items.Num(); i++) {
-		// 실제 인벤토리의 좌표
-		itemToArea.Add(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo));
-
-		// 인벤토리의 칸을 넘어감
-		if (!IsInContainer(itemToArea[i])) return;
-
-		// 해당 칸에 아이템 존재
-		UItemSlot* targetSlot = GetContainerSlot(itemToArea[i]);
-		if (targetSlot->HasItem()) {
-			if (targetSlot->GetSlotItem()->GetOwnerItem() != items[i]->GetOwnerItem()) {
-				itemToIndex.Add(itemToArea[i]);
-			}
-		}
-	}
-
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-	if (itemToIndex.Num() > 0) { return; }
-	else {
-		TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
-		TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
-		UContainer_Base* FromContainerBase = controller->GetTargetContainer(before);
-		int typeIndex = controller->PlayerData->GetEquipmentIndex(before);
-
-		FInventoryData* fromData = FromContainer[typeIndex];
-		FromContainer[typeIndex] = nullptr;
-		fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow;
-		ToContainer.Add(fromData);
-
-		FromContainerBase->ShowContainer(FromContainer[typeIndex]);
-		ShowContainer(ToContainer);
-	}
-}
-
 void UContainer_Base::MoveItemToSlot(EContainerCategory before, FInventoryData* itemData)
 {
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-	TArray<FInventoryData*>& FromContainer = controller->PlayerData->GetTargetContainer(before);
-	TArray<FInventoryData*>& ToContainer = controller->PlayerData->GetTargetContainer(ContainerCategory);
+	if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	TArray<FInventoryData*>& FromContainer = PlayerController->PlayerData->GetTargetContainer(before);
+	TArray<FInventoryData*>& ToContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
 	int typeIndex = GetEquipmentIndex(itemData->ItemData->eItemType);
 
 	FromContainer.Remove(itemData);
 	itemData->SlotIndex = FVector2D(0.0f, 0.0f);
 	ToContainer[typeIndex] = itemData;
 
-	controller->GetTargetContainer(before)->ShowContainer(FromContainer);
+	PlayerController->GetTargetContainer(before)->ShowContainer(FromContainer);
 	ShowContainer(ToContainer[typeIndex]);
+}
+
+void UContainer_Base::MoveItemToSlot(int equipIndex, int toIndex, TArray<UItemUI_Base*> items)
+{
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	FInventoryData* fromData = PlayerController->PlayerData->PlayerEquipment[equipIndex];
+
+	// 잡고있는 아이템 오프셋 을 기준으로 칸이 비어있는지 확인
+	FVector2D offsetTo = items[0]->ItemIndex;
+	for (int i = 0; i < items.Num(); i++) {
+		// 인벤토리의 칸을 넘어감
+		if (!IsInContainer(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo))) return;
+		// 해당 칸에 아이템 존재
+		if (GetContainerSlot(ContainerItemSlots[toIndex]->SlotColRow + (items[i]->ItemIndex - offsetTo))->HasItem()) return;
+	}
+
+	fromData->SlotIndex = ContainerItemSlots[toIndex]->SlotColRow - offsetTo;
+	TArray<FInventoryData*>& ToContainer = PlayerController->PlayerData->GetTargetContainer(ContainerCategory);
+	ToContainer.Add(fromData);
+	ShowContainer(ToContainer);
+	PlayerController->PlayerData->PlayerEquipment[equipIndex] = nullptr;
 }
 
 
@@ -377,7 +356,6 @@ UItemSlot* UContainer_Base::HasItem(UItemData* item, bool checkMax)
 
 FVector2D UContainer_Base::FindEmptySlot(FVector2D size)
 {
-	APlayerCharacterController* controller = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 빈 위치 찾기
 	bool bFindSlot = false;
 	for (int i = 0; i < ContainerItemSlots.Num(); i++) {

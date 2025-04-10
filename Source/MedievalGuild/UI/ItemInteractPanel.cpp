@@ -3,6 +3,7 @@
 
 #include "ItemInteractPanel.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../DataAssets/ItemEffectDataAsset.h"
 
 void UItemInteractPanel::NativeConstruct()
 {
@@ -59,12 +60,36 @@ void UItemInteractPanel::ShowInformationPanel()
 
 void UItemInteractPanel::EquipItem()
 {
+	switch (PlayerController->PlayerData->GetEquipmentIndex(InteractItem->ItemData->eItemType))
+	{
+		case 0: PlayerController->InventoryUI->Widget_Equipment->Widget_Helmet->MoveItemToSlot(InteractContainer, InteractItem); break;
+		case 1: PlayerController->InventoryUI->Widget_Equipment->Widget_Cloth->MoveItemToSlot(InteractContainer, InteractItem); break;
+		case 2: PlayerController->InventoryUI->Widget_Equipment->Widget_Shoes->MoveItemToSlot(InteractContainer, InteractItem); break;
+		case 3: PlayerController->InventoryUI->Widget_Equipment->Widget_Bag->MoveItemToSlot(InteractContainer, InteractItem); break;
+		case 4: PlayerController->InventoryUI->Widget_Equipment->Widget_Weapon->MoveItemToSlot(InteractContainer, InteractItem); break;
+		default: break;
+	}
 
+	PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
 	SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UItemInteractPanel::UseItem()
 {
+	FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ItemEffectData"), PlayerController->ItemInteractUI->InteractItem->ItemData->index));
+	UItemEffectDataAsset* effectData = Cast<UItemEffectDataAsset>(spawnRef.TryLoad());
+	if (effectData) {
+		for (int i = 0; i < effectData->ItemTarget.Num(); i++) {
+			if (effectData->ItemTarget[i] == EEffectTarget::Health) {
+				PlayerController->PlayerData->PlayerHealth += effectData->TargetValue[i];
+				PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+			}
+		}
+
+		if (InteractItem->ItemCount > 1) { InteractItem->ItemCount--; }
+		else { PlayerController->PlayerData->RemoveItemTo(PlayerController->PlayerData->GetTargetContainer(InteractContainer), InteractItem->SlotIndex, true); }
+		PlayerController->GetTargetContainer(InteractContainer)->ShowContainer(PlayerController->PlayerData->GetTargetContainer(InteractContainer));
+	}
 
 	SetVisibility(ESlateVisibility::Hidden);
 }

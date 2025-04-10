@@ -28,6 +28,8 @@ public:
 	void ShowContainerInfo();
 
 public:
+	class APlayerCharacterController* PlayerController = nullptr;
+
 	UPROPERTY()
 	TSubclassOf<UUserWidget> ItemSlotClass;
 	UPROPERTY()
@@ -56,6 +58,10 @@ public:
 	UGearWidget* Widget_Bag;
 	UGearWidget* Widget_Weapon;
 
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* HealthValue;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* SteminaValue;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WeightValue;
 };

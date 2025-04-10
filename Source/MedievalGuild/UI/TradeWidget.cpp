@@ -101,7 +101,7 @@ void UTradeWidget::SelectBuyItem(FInventoryData* item)
 	PlayerController->PlayerData->GetTargetContainer(Widget_Trade->ContainerCategory).Empty();
 
 	if (item) {
-		FInventoryData* tempItem = new FInventoryData(item->SlotIndex, item->ItemData, 1);
+		FInventoryData* tempItem = new FInventoryData(FVector2D(0.0f, 0.0f), item->ItemData, 1);
 		PlayerController->PlayerData->GetTargetContainer(Widget_Trade->ContainerCategory).Add(tempItem);
 		bIsBuy = true;
 	}

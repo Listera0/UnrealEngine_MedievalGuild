@@ -94,5 +94,65 @@
 		"ItemMaxStack": 2,
 		"ItemStackable": true,
 		"ItemType": 0
+	},
+	{
+		"ItemName": "Dagger",
+		"ItemDescription": "Dagger",
+		"ItemIndex": 8,
+		"ItemPrice": 20,
+		"ItemWidth": 3,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 7
+	},
+	{
+		"ItemName": "Halberd",
+		"ItemDescription": "Halberd",
+		"ItemIndex": 9,
+		"ItemPrice": 20,
+		"ItemWidth": 3,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 7
+	},
+	{
+		"ItemName": "LongSword",
+		"ItemDescription": "LongSword",
+		"ItemIndex": 10,
+		"ItemPrice": 20,
+		"ItemWidth": 3,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 7
+	},
+	{
+		"ItemName": "MoringStar",
+		"ItemDescription": "MoringStar",
+		"ItemIndex": 11,
+		"ItemPrice": 20,
+		"ItemWidth": 3,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 7
+	},
+	{
+		"ItemName": "PoleAxe",
+		"ItemDescription": "PoleAxe",
+		"ItemIndex": 12,
+		"ItemPrice": 20,
+		"ItemWidth": 3,
+		"ItemHeight": 1,
+		"ItemWeight": 1,
+		"ItemMaxStack": 1,
+		"ItemStackable": false,
+		"ItemType": 7
 	}
 ]
