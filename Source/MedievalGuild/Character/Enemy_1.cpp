@@ -11,6 +11,8 @@ AEnemy_1::AEnemy_1()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	
+
 	EnemyWeapon = CreateDefaultSubobject<UStaticMeshComponent>(FName("Weapon"));
 	EnemyWeapon->SetupAttachment(GetMesh());
 
@@ -93,17 +95,17 @@ void AEnemy_1::Die()
 	FTimerHandle timer;
 	AController* controller = GetController();
 	if (controller) { controller->Destroy(); }
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
 	GetWorld()->GetTimerManager().SetTimer(timer, [this]()
 	{
 		Tags.Add("Dead");
 		Tags.Add("Interactable");
-		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECollisionResponse::ECR_Block);
 		GetMesh()->bNoSkeletonUpdate = true;
 		GetMesh()->bPauseAnims = true;
-		//GetMesh()->SetSimulatePhysics(true);
-		//GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+		EnemyWeapon->SetStaticMesh(nullptr);
+		EnemyWeaponCollision->SetCollisionProfileName(TEXT("NoCollision"));
 	}, DeathMontage->GetPlayLength() - 0.25f, false);
 }

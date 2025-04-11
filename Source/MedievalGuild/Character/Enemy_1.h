@@ -30,6 +30,7 @@ public:
 	void RecieveHit(float Damage);
 	void Die();
 
+
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Weapon")
 	UStaticMeshComponent* EnemyWeapon = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Weapon")
