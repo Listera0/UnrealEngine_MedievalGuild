@@ -110,6 +110,7 @@ private:
 	bool bIsInteract;
 	bool bIsInteractAction;
 	bool bIsInteractItem;
+	bool bIsTalking;
 
 public:
 	class APlayerCharacter* PlayerCharacter = nullptr;

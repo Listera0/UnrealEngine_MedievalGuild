@@ -59,3 +59,10 @@ void UScreenUI::SetSystemMessage(bool visible, FString text)
 		CheckAnyTextVisible();
 	}, 2.0f, false);
 }
+
+void UScreenUI::SetDialogueText(bool visible, FString text)
+{
+	DialogueText->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	DialogueText->SetText(FText::FromString(text));
+	CheckAnyTextVisible();
+}

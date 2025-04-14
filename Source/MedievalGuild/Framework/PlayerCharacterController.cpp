@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameUserSettings.h"
 #include "../Object/IInteractInterface.h"
+#include "../Dialogue/DialogueComponent.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 
 
@@ -268,6 +269,15 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				InventoryUI->PanelVisibleSetting(3);
 				OpenUISetting();
 			}
+			else if (hitResult.GetActor()->ActorHasTag(FName("NPC"))) {
+				bIsTalking = true;
+				UDialogueComponent* dialogueComponent = Cast<UDialogueComponent>(hitResult.GetActor()->FindComponentByClass(UDialogueComponent::StaticClass()));
+
+				ScreenUI->SetDialogueText(true, "TEXT");
+
+				//if(finish)
+				ScreenUI->SetDialogueText(false, "");
+			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
 				bIsInteractAction = true;
 				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
@@ -339,6 +349,9 @@ void APlayerCharacterController::CheckScreenUI()
 			ScreenUI->SetInteractText(true, "Leave");
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
+			ScreenUI->SetInteractText(true, "Trade");
+		}
+		else if (hitResult.GetActor()->ActorHasTag(FName("NPC"))) {
 			ScreenUI->SetInteractText(true, "Talk");
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Anvil"))) {

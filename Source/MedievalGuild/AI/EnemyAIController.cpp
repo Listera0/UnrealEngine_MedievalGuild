@@ -5,6 +5,8 @@
 
 AEnemyAIController::AEnemyAIController()
 {
+	BehaviorTreeComponent = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviorTreeComponent"));
+	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
@@ -26,15 +28,34 @@ AEnemyAIController::AEnemyAIController()
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnPerceptionUpdated);
 }
 
+void AEnemyAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (BehaviorTree)
+	{
+		UseBlackboard(BehaviorTree->BlackboardAsset, BlackboardComponent);
+		RunBehaviorTree(BehaviorTree);
+	}
+}
+
 void AEnemyAIController::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	if (Stimulus.WasSuccessfullySensed())
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
+		if (BlackboardComponent)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
+			BlackboardComponent->SetValueAsObject("TargetActor", Actor);
+		}
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
+		if (BlackboardComponent)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
+			BlackboardComponent->ClearValue("TargetActor");
+		}
 	}
 }
 

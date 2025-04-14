@@ -26,6 +26,7 @@ public:
 	void SetInteractText(bool visible, FString text);
 	void SetExtractText(bool visible, float value);
 	void SetSystemMessage(bool visible, FString text);
+	void SetDialogueText(bool visible, FString text);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -36,4 +37,6 @@ public:
 	UTextBlock* ExtractValue;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* SystemMessage;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogueText;
 };
