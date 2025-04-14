@@ -112,6 +112,9 @@ void UQuestComponent::AddQuest(UQuest_Base* Quest)
 {
 	if (Quest && !MyQuestList.Contains(Quest))
 	{
+		if(IsPlayer)
+			Quest->PlayerGetQuest();
+
 		MyQuestList.Add(Quest);
 	}
 }
