@@ -45,9 +45,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	bool bIsDialogueOption;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
-	int NextDialogueIndex;
+	int NextDialogueIndex = -1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	TArray<FDialogueOption> DialogueOptions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
+	int UserSelectedOptionIndex = -1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	bool bIsEndOfDialogue;
 };

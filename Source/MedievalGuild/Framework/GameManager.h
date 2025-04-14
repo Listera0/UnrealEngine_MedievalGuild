@@ -8,6 +8,7 @@
 #include "BlueprintBindComponent.h"
 #include "MoveLocationComponent.h"
 #include "../Item/ItemDataManager.h"
+#include "../Dialogue/DialogueManager.h"
 #include "GameManager.generated.h"
 
 /**
@@ -36,4 +37,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UQuestManager* QuestDataManager = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UDialogueManager* DialogueDataManager = nullptr;
 };

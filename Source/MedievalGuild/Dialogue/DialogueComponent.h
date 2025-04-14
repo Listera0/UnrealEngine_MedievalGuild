@@ -19,8 +19,7 @@ public:
 
 	UDialogue* GetCurrentDialogue() const { return CurrentDialogue; }
 
-	void EndDialogue(int NextDialogueIndex = -1);
-
+	void EndDialogue(int OptionIndex = -1);
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -35,4 +34,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	UDialogue* CurrentDialogue = nullptr;
+
+private:
+	class UQuestComponent* PlayerQuestComponent = nullptr;
 };

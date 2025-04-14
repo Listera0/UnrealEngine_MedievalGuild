@@ -2,7 +2,7 @@
 	{
 		"DialogueIndex": 0,
 		"DialogueText": "시작",
-		"bIsEndOfDialogue": false,
+		"bIsEndOfDialogue": true,
 		"bIsDialogueOption": false,
 		"NextDialogueIndex": 1,
 		"CompleteQuestIndex": [],
@@ -17,7 +17,7 @@
 		"DialogueText": "여행",
 		"bIsEndOfDialogue": false,
 		"bIsDialogueOption": true,
-		"NextDialogueIndex": 0,
+		"NextDialogueIndex": -1,
 		"DialogueOptions": [
 			{
 				"OptionText": "수락",
@@ -32,11 +32,38 @@
 				"QuestIndex": 0
 			}
 		],
+		"UserSelectedOptionIndex": -1,
 		"CompleteQuestIndex": [],
 		"Responses": [
 			"ㅁㄴㅇㄹㅇㅁ",
 			"ㄷㅈㅁㄻㅈㄷㄻㄹ",
 			"ㅁㄴㅇㄻㄵㅇㄷㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹ"
+		]
+	},
+	{
+		"DialogueIndex": 2,
+		"DialogueText": "json테스트",
+		"bIsEndOfDialogue": false,
+		"bIsDialogueOption": true,
+		"NextDialogueIndex": -1,
+		"DialogueOptions": [
+			{
+				"OptionText": "수락",
+				"NextDialogueID": 3,
+				"bGiveQuest": true,
+				"QuestIndex": 2
+			},
+			{
+				"OptionText": "거절",
+				"NextDialogueID": 2,
+				"bGiveQuest": false,
+				"QuestIndex": 0
+			}
+		],
+		"UserSelectedOptionIndex": -1,
+		"CompleteQuestIndex": [],
+		"Responses": [
+			"json 테스트"
 		]
 	}
 ]

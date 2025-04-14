@@ -18,6 +18,7 @@ void AGameManager::StartPlay()
 	Super::StartPlay();
 	ItemDataManager = UItemDataManager::GetInstance();	
 	QuestDataManager = UQuestManager::GetInstance();
+	DialogueDataManager = UDialogueManager::GetInstance();
 
 	ADirectionalLight* DirectionalLight = Cast<ADirectionalLight>(UGameplayStatics::GetActorOfClass(GetWorld(), ADirectionalLight::StaticClass()));
 	DirectionalLight->GetLightComponent()->SetIntensity(0.0f);
@@ -29,7 +30,9 @@ void AGameManager::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		ItemDataManager->ClearUp();
 	if (QuestDataManager)
 		QuestDataManager->CleanUp();
-	
+	if (DialogueDataManager)
+		DialogueDataManager->ClearUp();
+
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -40,7 +43,12 @@ void AGameManager::GameEndSequence()
 		ItemDataManager->ClearUp();
 	if (QuestDataManager)
 	{
-		//QuestDataManager->SaveAllQuestDataToJson();
+		QuestDataManager->SaveAllQuestDataToJson();
 		QuestDataManager->CleanUp();
+	}
+	if (DialogueDataManager)
+	{
+		DialogueDataManager->SaveAllDialogueToJson();
+		DialogueDataManager->ClearUp();
 	}
 }

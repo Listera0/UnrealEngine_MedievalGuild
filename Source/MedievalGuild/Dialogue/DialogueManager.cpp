@@ -23,6 +23,14 @@ void UDialogueManager::ClearUp()
 {
 	if (Instance)
 	{
+		for (UDialogue* Dialogue : DialogueList)
+		{
+			if (Dialogue)
+			{
+				Dialogue->RemoveFromRoot();
+			}
+		}
+		DialogueList.Empty();
 		Instance->RemoveFromRoot();
 		Instance = nullptr;
 	}
@@ -75,6 +83,7 @@ void UDialogueManager::SaveAllDialogueToJson()
 				DialogueOptionsArray.Add(MakeShareable(new FJsonValueObject(OptionObject)));
 			}
 			JsonObject->SetArrayField(TEXT("DialogueOptions"), DialogueOptionsArray);
+			JsonObject->SetNumberField(TEXT("UserSelectedOptionIndex"), DialogueData->UserSelectedOptionIndex);
 		}
 
 		TArray<TSharedPtr<FJsonValue>> CompleteQuestIndexArray;
@@ -142,6 +151,8 @@ void UDialogueManager::LoadAllDialogueFromJson(const FString& FilePath)
 								LoadedDialogue->DialogueOptions.Add(Option);
 							}
 						}
+
+						LoadedDialogue->UserSelectedOptionIndex = JsonObject->GetNumberField(TEXT("UserSelectedOptionIndex"));
 					}
 
 					const TArray<TSharedPtr<FJsonValue>>& CompleteQuestIndexArray = JsonObject->GetArrayField(TEXT("CompleteQuestIndex"));
@@ -154,6 +165,8 @@ void UDialogueManager::LoadAllDialogueFromJson(const FString& FilePath)
 					{
 						LoadedDialogue->Responses.Add(Value->AsString());
 					}
+
+					LoadedDialogue->AddToRoot();
 					DialogueList.Add(LoadedDialogue);
 				}
 			}
@@ -163,6 +176,9 @@ void UDialogueManager::LoadAllDialogueFromJson(const FString& FilePath)
 
 UDialogue* const  UDialogueManager::FindDialogue(int DialogueIndex)
 {
+	if (DialogueIndex == -1)
+		return nullptr;
+
 	for (UDialogue* Dialogue : DialogueList)
 	{
 		if (Dialogue->DialogueIndex == DialogueIndex)
@@ -175,8 +191,8 @@ UDialogue* const  UDialogueManager::FindDialogue(int DialogueIndex)
 
 bool UDialogueManager::IsDialogueOn(UDialogue* dialogue)
 {
-	bool IsOn = false;
-	if (dialogue)
+	bool IsOn = dialogue->CompleteQuestIndex.IsEmpty();
+	if (dialogue && !dialogue->CompleteQuestIndex.IsEmpty())
 	{
 		for (int index : dialogue->CompleteQuestIndex)
 		{
