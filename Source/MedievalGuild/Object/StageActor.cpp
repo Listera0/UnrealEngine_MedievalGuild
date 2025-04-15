@@ -24,6 +24,9 @@ AStageActor::AStageActor()
 
 	ExtractAreaOwner = CreateDefaultSubobject<USceneComponent>(FName("ExtractAreaOwner"));
 	ExtractAreaOwner->SetupAttachment(RootComponent);
+
+	EnemyPatrolOwner = CreateDefaultSubobject<USceneComponent>(FName("EnemyPatrolOwner"));
+	EnemyPatrolOwner->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -120,5 +123,19 @@ void AStageActor::Tick(float DeltaTime)
 			PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
 		}
 	}
+}
+
+int AStageActor::GetRandomPatrolLocation(int ignore)
+{
+	int returnValue = FMath::RandRange(0, EnemyPatrolOwner->GetAttachChildren().Num() - 1);
+
+	if (returnValue == ignore) return GetRandomPatrolLocation(ignore);
+
+	return returnValue;
+}
+
+FVector AStageActor::GetPatrolLocationVector(int index)
+{
+	return GetActorLocation() + EnemyPatrolOwner->GetAttachChildren()[index]->GetRelativeLocation();
 }
 

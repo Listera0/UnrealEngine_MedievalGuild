@@ -16,6 +16,7 @@ void UScreenUI::InitScreenUISetting()
 	InteractText->SetVisibility(ESlateVisibility::Collapsed);
 	ExtractObject->SetVisibility(ESlateVisibility::Collapsed);
 	SystemMessage->SetVisibility(ESlateVisibility::Collapsed);
+	DialogueText->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 bool UScreenUI::CheckAnyTextVisible()

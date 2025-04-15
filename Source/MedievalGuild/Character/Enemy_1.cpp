@@ -6,12 +6,12 @@
 #include "../Item/ItemDataManager.h"
 #include "../DataAssets/WeaponTransformDataAsset.h"
 #include "../DataAssets/ItemContainerDataAsset.h"
+#include "Kismet/GameplayStatics.h"
+#include "../Object/StageActor.h"
 
 AEnemy_1::AEnemy_1()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	
 
 	EnemyWeapon = CreateDefaultSubobject<UStaticMeshComponent>(FName("Weapon"));
 	EnemyWeapon->SetupAttachment(GetMesh());
@@ -45,6 +45,18 @@ void AEnemy_1::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+FVector AEnemy_1::GetNextPatrolLocation()
+{
+	if (!EnemyLocationStage) {
+		TArray<AActor*> findActorList;
+		UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AStageActor::StaticClass(), EnemyLocation, findActorList);
+		EnemyLocationStage = Cast<AStageActor>(findActorList[0]);
+	}
+	
+	CurrentPatrolLocation = EnemyLocationStage->GetRandomPatrolLocation(CurrentPatrolLocation);
+	return EnemyLocationStage->GetPatrolLocationVector(CurrentPatrolLocation);
 }
 
 void AEnemy_1::InventoryInitSetting()

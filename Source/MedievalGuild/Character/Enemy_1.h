@@ -25,12 +25,13 @@ public:
 	virtual void SetInteractDistance(float distance) override { InteractDistance = distance; };
 	virtual float GetInteractDistance() override { return InteractDistance; };
 
+	FVector GetNextPatrolLocation();
 	void InventoryInitSetting();
 	void SetContainerUI();
 	void RecieveHit(float Damage);
 	void Die();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Location")
+	UPROPERTY(EditAnywhere, Category = "Enemy|Location")
 	FName EnemyLocation;
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|Weapon")
 	UStaticMeshComponent* EnemyWeapon = nullptr;
@@ -41,9 +42,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Inventory")
 	TMap<int, int> EnemyInventoryInit;
 	TArray<FInventoryData*> EnemyInventory;
+	class AStageActor* EnemyLocationStage;
 
 	UPROPERTY(EditAnywhere, Category = "Enemy|Weapon")
 	int WeaponIndex = 12;
+	int CurrentPatrolLocation;
 	bool bIsInit = false;
 	float MaxHealth = 100.0f;
 	float CurrentHealth = 0.0f;

@@ -26,21 +26,34 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	virtual void Tick(float DeltaTime) override;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Enemy|AI")
 	UBehaviorTree* BehaviorTree;
-
-	UPROPERTY(VisibleAnywhere, Category = "Enemy|AI")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|AI")
 	UBehaviorTreeComponent* BehaviorTreeComponent;
-
-	UPROPERTY(VisibleAnywhere, Category = "Enemy|AI")
+	UPROPERTY(EditDefaultsOnly, Category = "Enemy|AI")
 	UBlackboardComponent* BlackboardComponent;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|AI")
 	UAIPerceptionComponent* AIPerceptionComponent;
-
 	UPROPERTY()
 	UAISenseConfig_Sight* SightConfig;
 
 	UFUNCTION()
 	void OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
+	void EnemyMoveSequence(float DeltaTime);
+	bool SuccessMove();
+	
+	class AEnemy_1* OwnerEnemy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy_Anim")
+	UAnimMontage* AttackMontage = nullptr;
+
+	int EnemyState = 0;
+	float SearchTimer = 0.0f;
+	float SearchTotalTimer = 0.0f;
+	float PatrolTimer = 0.0f;
+	FVector MoveLocation;
+	AActor* TargetActor = nullptr;
 };

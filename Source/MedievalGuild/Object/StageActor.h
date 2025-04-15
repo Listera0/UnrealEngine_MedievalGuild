@@ -29,12 +29,16 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+	int GetRandomPatrolLocation(int ignore);
+	FVector GetPatrolLocationVector(int index);
+
 	class APlayerCharacterController* PlayerController;
 
 	USceneComponent* RootComponents = nullptr;
 	USceneComponent* SpawnPointOwner = nullptr;
 	USceneComponent* SpawnAreaOwner = nullptr;
 	USceneComponent* ExtractAreaOwner = nullptr;
+	USceneComponent* EnemyPatrolOwner = nullptr;
 
 	TArray<USceneComponent*> SpawnPoints;
 

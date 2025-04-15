@@ -17,15 +17,17 @@ EBTNodeResult::Type USearchAroundTask::ExecuteTask(UBehaviorTreeComponent& Owner
 
     if (BlackboardComp)
     {
-        FVector lastLocation = BlackboardComp->GetValueAsVector("LastLocation");
-        FNavLocation RandomLocation;
-        UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+        if (BlackboardComp->GetValueAsFloat("SearchTimer") >= 5.0f) {
+            FVector lastLocation = BlackboardComp->GetValueAsVector("LastLocation");
+            FNavLocation RandomLocation;
+            UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 
-        if (NavSys && NavSys->GetRandomReachablePointInRadius(lastLocation, 100.0f, RandomLocation))
-        {
-            BlackboardComp->SetValueAsVector("LastLocation", RandomLocation.Location);
-            return EBTNodeResult::Succeeded;
+            if (NavSys && NavSys->GetRandomReachablePointInRadius(lastLocation, 100.0f, RandomLocation)) {
+                BlackboardComp->SetValueAsVector("LastLocation", RandomLocation.Location);
+                BlackboardComp->SetValueAsFloat("SearchTimer", 0.0f);
+            }
         }
+        return EBTNodeResult::Succeeded;
     }
 
     return EBTNodeResult::Failed;
