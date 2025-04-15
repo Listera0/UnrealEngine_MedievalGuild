@@ -79,7 +79,7 @@ void AEnemyAIController::EnemyMoveSequence(float DeltaTime)
 		if (EnemyState == 1) EnemyState = 2;
 	}
 
-	if(!OwnerEnemy->GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage)) MoveToLocation(MoveLocation);
+	if(!OwnerEnemy->CheckAttackAnim()) MoveToLocation(MoveLocation);
 	if (!SuccessMove()) return;
 
 	if (EnemyState == 0) {
@@ -91,7 +91,7 @@ void AEnemyAIController::EnemyMoveSequence(float DeltaTime)
 		}
 	}
 	else if (EnemyState == 1) {
-		if (!OwnerEnemy->GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage)) OwnerEnemy->PlayAnimMontage(AttackMontage);
+		if (!OwnerEnemy->CheckAttackAnim()) OwnerEnemy->AttackAction();
 	}
 	else if (EnemyState == 2) {
 		SearchTimer += DeltaTime;
@@ -115,7 +115,7 @@ void AEnemyAIController::EnemyMoveSequence(float DeltaTime)
 bool AEnemyAIController::SuccessMove()
 {
 	bool returnValue = FVector::DistSquared(MoveLocation, OwnerEnemy->GetActorLocation()) <= 20000.0f ? true : false;
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("dist: %.1f"), FVector::DistSquared(MoveLocation, OwnerEnemy->GetActorLocation())));
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("dist: %.1f"), FVector::DistSquared(MoveLocation, OwnerEnemy->GetActorLocation())));
 	return returnValue;
 }
 

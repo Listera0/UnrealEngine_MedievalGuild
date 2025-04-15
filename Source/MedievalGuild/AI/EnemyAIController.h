@@ -47,9 +47,6 @@ public:
 	
 	class AEnemy_1* OwnerEnemy;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy_Anim")
-	UAnimMontage* AttackMontage = nullptr;
-
 	int EnemyState = 0;
 	float SearchTimer = 0.0f;
 	float SearchTotalTimer = 0.0f;

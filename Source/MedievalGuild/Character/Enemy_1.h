@@ -20,6 +20,10 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetInteractDistance(float distance) override { InteractDistance = distance; };
@@ -30,6 +34,8 @@ public:
 	void SetContainerUI();
 	void RecieveHit(float Damage);
 	void Die();
+	void AttackAction();
+	bool CheckAttackAnim();
 
 	UPROPERTY(EditAnywhere, Category = "Enemy|Location")
 	FName EnemyLocation;
@@ -39,9 +45,12 @@ public:
 	UCapsuleComponent* EnemyWeaponCollision = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Anim")
 	UAnimMontage* DeathMontage = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy|Anim")
+	UAnimMontage* AttackMontage = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy|Inventory")
 	TMap<int, int> EnemyInventoryInit;
 	TArray<FInventoryData*> EnemyInventory;
+	TArray<AActor*> AlreadyHitActor;
 	class AStageActor* EnemyLocationStage;
 
 	UPROPERTY(EditAnywhere, Category = "Enemy|Weapon")

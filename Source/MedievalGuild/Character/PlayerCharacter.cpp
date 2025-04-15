@@ -22,6 +22,7 @@ APlayerCharacter::APlayerCharacter()
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 250.0f);
 	SpringArm->ProbeSize = 25.0f;
 	SpringArm->bUsePawnControlRotation = true;
+	SpringArm->bDoCollisionTest = false;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
 	PlayerCamera->SetupAttachment(SpringArm);
@@ -159,6 +160,11 @@ void APlayerCharacter::SetPlayerWeapon(int index)
 bool APlayerCharacter::CheckAttackAnim()
 {
 	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage) || GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage2);
+}
+
+void APlayerCharacter::RecieveHit(float damage)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, "Hit");
 }
 
 void APlayerCharacter::OnSectionJumpReady(USectionControlNotify* SectionControl)

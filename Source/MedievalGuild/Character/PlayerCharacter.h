@@ -53,6 +53,7 @@ public:
 	void InputAttack(int index = 0);
 	void SetPlayerWeapon(int index);
 	bool CheckAttackAnim();
+	void RecieveHit(float damage);
 
 	UFUNCTION()
 	void OnSectionJumpReady(class USectionControlNotify* SectionControl);
