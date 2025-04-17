@@ -36,6 +36,7 @@ public:
 	void Die();
 	void AttackAction();
 	bool CheckAttackAnim();
+	float AttackAnimCurrentTime();
 
 	UPROPERTY(EditAnywhere, Category = "Enemy|Location")
 	FName EnemyLocation;

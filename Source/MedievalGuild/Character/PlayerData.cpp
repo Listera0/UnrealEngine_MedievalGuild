@@ -3,6 +3,7 @@
 
 #include "PlayerData.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Framework/PlayerSave.h"
 
 APlayerData::APlayerData(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -316,6 +317,29 @@ int APlayerData::GetItemCount(int index)
     return totalCount;
 }
 
+void APlayerData::SaveGame()
+{
+    UPlayerSave* SaveGameInstance = Cast<UPlayerSave>(UGameplayStatics::CreateSaveGameObject(UPlayerSave::StaticClass()));
+
+    if (SaveGameInstance)
+    {
+        // Save Data
+        SaveGameInstance->RecordSaveBaseData(0, PlayerName, PlayerHealth, PlayerStemina, PlayerEnergy);
+        SaveGameInstance->RecordSaveItemData(PlayerInventory, PlayerStorage, PlayerEquipment);
+
+        UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("PlayerSaveData"), 0);
+    }
+}
+
+void APlayerData::LoadGame()
+{
+    UPlayerSave* LoadGameInstance = Cast<UPlayerSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerSaveData"), 0));
+
+    // Load Data
+    LoadGameInstance->ExtractSaveBaseData(PlayerName, PlayerHealth, PlayerStemina, PlayerEnergy);
+    LoadGameInstance->ExtractSaveItemData(PlayerInventory, PlayerStorage, PlayerEquipment);
+}
+
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)
 {
     FInventoryData* targetData = FindItemWithLocation(target, from);
@@ -328,4 +352,11 @@ void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, F
 {
     data->SlotIndex = to;
     target.Add(data);
+}
+
+void APlayerData::EmptyInventory()
+{
+    PlayerInventory.Empty();
+    PlayerEquipment.Empty();
+    PlayerEquipment.Init(nullptr, 5);
 }

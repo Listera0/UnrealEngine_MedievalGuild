@@ -261,14 +261,17 @@ void UItemSlot::SlotButtonShiftClick()
 		if (PlayerController->InteractCharacter && PlayerController->InteractCharacter->ActorHasTag(FName("Enemy"))) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) { otherCategory = EContainerCategory::EnemyInventory; }
 			else if (ContainerPanel->ContainerCategory == EContainerCategory::EnemyInventory) { otherCategory = EContainerCategory::Inventory; }
+			else return;
 		}
 		else if (PlayerController->InteractObj && PlayerController->InteractObj->ActorHasTag(FName("Container"))) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) { otherCategory = EContainerCategory::Container; }
 			else if (ContainerPanel->ContainerCategory == EContainerCategory::Container) { otherCategory = EContainerCategory::Inventory; }
+			else return;
 		}
 		else if (PlayerController->InteractObj->ActorHasTag(FName("Storage"))) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Inventory) { otherCategory = EContainerCategory::Storage; }
 			else if (ContainerPanel->ContainerCategory == EContainerCategory::Storage) { otherCategory = EContainerCategory::Inventory; }
+			else return;
 		}
 		else if (PlayerController->InteractObj->ActorHasTag(FName("Merchant"))) {
 			if (ContainerPanel->ContainerCategory == EContainerCategory::Storage) { otherCategory = EContainerCategory::Trade; }
@@ -278,6 +281,7 @@ void UItemSlot::SlotButtonShiftClick()
 				else if (PlayerController->InventoryUI->Widget_Trade->bIsSell) { otherCategory = EContainerCategory::Storage; }
 				else return;
 			}
+			else return;
 		}
 		else return;
 

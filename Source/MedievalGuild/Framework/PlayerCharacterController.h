@@ -13,6 +13,7 @@
 #include "../UI/ScreenUI.h"
 #include "../UI/ItemInfoPanel.h"
 #include "../UI/ItemInteractPanel.h"
+#include "../UI/ScreenEffectWidget.h"
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
@@ -78,6 +79,8 @@ protected:
 	TSubclassOf<UItemInteractPanel> ItemInteractPanel = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> testwidget = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UScreenEffectWidget> ScreenEffectWidget = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
@@ -119,6 +122,7 @@ public:
 	UScreenUI* ScreenUI = nullptr;
 	UItemInfoPanel* ItemInfoUI = nullptr;
 	UItemInteractPanel* ItemInteractUI = nullptr;
+	UScreenEffectWidget* ScreenEffectUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
 	AEnemy_1* InteractCharacter = nullptr;

@@ -56,13 +56,17 @@ void AEnemyAIController::Tick(float DeltaTime)
 
 void AEnemyAIController::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed()) {
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
-		TargetActor = Actor;
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
-		TargetActor = nullptr;
+	if (Actor->ActorHasTag("Player") && !Actor->ActorHasTag("Dead")) {
+		if (Stimulus.WasSuccessfullySensed()) {
+			if (Actor->ActorHasTag("Player") && !ActorHasTag("Dead")) {
+				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
+				TargetActor = Actor;
+			}
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
+			TargetActor = nullptr;
+		}
 	}
 }
 

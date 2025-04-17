@@ -53,7 +53,8 @@ public:
 	void InputAttack(int index = 0);
 	void SetPlayerWeapon(int index);
 	bool CheckAttackAnim();
-	void RecieveHit(float damage);
+	bool CheckDeathAnim();
+	void RecieveHit(AActor* enemy, float damage);
 
 	UFUNCTION()
 	void OnSectionJumpReady(class USectionControlNotify* SectionControl);
@@ -87,12 +88,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	float RunningMoveSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Anim")
 	UAnimMontage* AttackMontage = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerMovement")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Anim")
 	UAnimMontage* AttackMontage2 = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player|Anim")
+	UAnimMontage* DeathMontage = nullptr;
 
 private:
+	class APlayerCharacterController* PlayerController = nullptr;
 	class USectionControlNotify* SectionNotify = nullptr;
 
 	TArray<AActor*> AlreadyHitActor;

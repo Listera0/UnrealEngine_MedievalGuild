@@ -46,6 +46,8 @@ public:
 	TMap<int, int> ContainerIndex;
 	UPROPERTY(EditAnywhere, Category = "Item")
 	FVector2D ContainerSize;
+	UPROPERTY(EditAnywhere)
+	FName ObjectName;
 
 	float InteractDistance;
 
@@ -63,4 +65,6 @@ public:
 
 	FInventoryData* HasItem(int itemIndex, bool checkMaxStack);
 	FInventoryData* FindItemWithLocation(FVector2D location);
+
+	
 };

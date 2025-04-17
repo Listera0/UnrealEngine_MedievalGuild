@@ -6,6 +6,7 @@
 #include "../Framework/SectionControlNotify.h"
 #include "../DataAssets/WeaponTransformDataAsset.h"
 #include "../Character/Enemy_1.h"
+#include "../AI/EnemyAIController.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -162,9 +163,31 @@ bool APlayerCharacter::CheckAttackAnim()
 	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage) || GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage2);
 }
 
-void APlayerCharacter::RecieveHit(float damage)
+bool APlayerCharacter::CheckDeathAnim()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, "Hit");
+	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(DeathMontage);
+}
+
+void APlayerCharacter::RecieveHit(AActor* enemy, float damage)
+{
+	PlayerController = Cast<APlayerCharacterController>(GetController());
+	Cast<AEnemyAIController>(Cast<AEnemy_1>(enemy)->GetController())->TargetActor = nullptr;
+
+	Tags.Add("Dead");
+	PlayAnimMontage(DeathMontage);
+	FTimerHandle fadeTimer; FTimerHandle actionTimer;
+
+	GetWorld()->GetTimerManager().SetTimer(fadeTimer, [this]() {
+		PlayerController->ScreenEffectUI->StartDeathAnimation();
+	}, DeathMontage->GetPlayLength() / 2, false);
+
+	GetWorld()->GetTimerManager().SetTimer(actionTimer, [this]() {
+		Tags.Remove("Dead");
+		
+		PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
+		PlayerController->PlayerData->EmptyInventory();
+	}, DeathMontage->GetPlayLength(), false);
+	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, "Hit");
 }
 
 void APlayerCharacter::OnSectionJumpReady(USectionControlNotify* SectionControl)

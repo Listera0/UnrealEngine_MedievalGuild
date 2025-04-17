@@ -6,6 +6,15 @@
 #include "../Framework/PlayerCharacterController.h"
 #include "QuestSlot.h"
 
+void UMerchantInventory::ShowContainer(TArray<FInventoryData*>& data)
+{
+	Super::ShowContainer(data);
+
+	if (!PlayerController) { PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController()); }
+
+	MerchantName->SetText(FText::FromName(PlayerController->InteractObj->ObjectName));
+}
+
 void UMerchantInventory::MerchantPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size)
 {
 	ContainerInitSetting(InitWidgetClass[0], InitWidgetClass[1], InitWidgetClass[2], InitWidgetClass[3], category, size);

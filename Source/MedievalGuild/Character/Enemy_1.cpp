@@ -48,11 +48,11 @@ void AEnemy_1::BeginPlay()
 
 void AEnemy_1::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (CheckAttackAnim()) {
+	if (CheckAttackAnim() && AttackAnimCurrentTime() >= 0.5f) {
 		if (OtherActor->ActorHasTag("Player") && !AlreadyHitActor.Contains(OtherActor)) {
 			AlreadyHitActor.Add(OtherActor);
 			APlayerCharacter* hitEnemy = Cast<APlayerCharacter>(OtherActor);
-			hitEnemy->RecieveHit(100.0f);
+			hitEnemy->RecieveHit(this, 100.0f);
 		}
 	}
 }
@@ -143,4 +143,9 @@ void AEnemy_1::AttackAction()
 bool AEnemy_1::CheckAttackAnim()
 {
 	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage);
+}
+
+float AEnemy_1::AttackAnimCurrentTime()
+{
+	return GetMesh()->GetAnimInstance()->Montage_GetPosition(AttackMontage);
 }
