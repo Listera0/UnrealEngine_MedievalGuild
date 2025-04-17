@@ -34,10 +34,6 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 private:
 	void GiveQuestToPlayer_Internal(AActor* PlayerActor);
 		
@@ -48,6 +44,7 @@ protected:
 	TArray<class UQuestData_Base*> SetQuestList;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Quest")
 	TArray<class UQuest_Base*> MyQuestList;
 
 	TArray<class UQuest_Base*> StartQuestList;

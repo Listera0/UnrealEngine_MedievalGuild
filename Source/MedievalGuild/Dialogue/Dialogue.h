@@ -26,6 +26,11 @@ struct FDialogueOption
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dialogue")
 	int QuestIndex;
+
+	FDialogueOption()
+		: NextDialogueID(-1),
+		bGiveQuest(false),
+		QuestIndex(-1) { }
 };
 
 UCLASS()

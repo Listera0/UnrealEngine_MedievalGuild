@@ -2,7 +2,7 @@
 	{
 		"DialogueIndex": 0,
 		"DialogueText": "시작",
-		"bIsEndOfDialogue": true,
+		"bIsEndOfDialogue": false,
 		"bIsDialogueOption": false,
 		"NextDialogueIndex": 1,
 		"CompleteQuestIndex": [],
@@ -14,7 +14,7 @@
 	},
 	{
 		"DialogueIndex": 1,
-		"DialogueText": "여행",
+		"DialogueText": "122",
 		"bIsEndOfDialogue": false,
 		"bIsDialogueOption": true,
 		"NextDialogueIndex": -1,
@@ -32,12 +32,10 @@
 				"QuestIndex": 0
 			}
 		],
-		"UserSelectedOptionIndex": -1,
+		"UserSelectedOptionIndex": 0,
 		"CompleteQuestIndex": [],
 		"Responses": [
-			"ㅁㄴㅇㄹㅇㅁ",
-			"ㄷㅈㅁㄻㅈㄷㄻㄹ",
-			"ㅁㄴㅇㄻㄵㅇㄷㄻㄴㅇㄻㄴㅇㄻㄴㅇㄹ"
+			"테스트"
 		]
 	},
 	{
@@ -60,7 +58,7 @@
 				"QuestIndex": 0
 			}
 		],
-		"UserSelectedOptionIndex": -1,
+		"UserSelectedOptionIndex": 0,
 		"CompleteQuestIndex": [],
 		"Responses": [
 			"json 테스트"

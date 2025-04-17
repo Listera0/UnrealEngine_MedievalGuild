@@ -5,6 +5,8 @@
 #include "DialogueManager.h"
 #include "../Quest/QuestComponent.h"
 #include "../Quest/QuestManager.h"
+#include "../Framework/PlayerCharacterController.h"
+#include "../Character/PlayerCharacter.h"
 
 // Sets default values for this component's properties
 UDialogueComponent::UDialogueComponent()
@@ -21,24 +23,24 @@ void UDialogueComponent::EndDialogue(int OptionIndex)
 	if (CurrentDialogue)
 	{
 		CurrentDialogue->bIsEndOfDialogue = true;
+
 		if (CurrentDialogue->bIsDialogueOption)
 		{
-			CurrentDialogue = UDialogueManager::GetInstance()->FindDialogue(CurrentDialogue->DialogueOptions[OptionIndex].NextDialogueID);
 
-			if (!CurrentDialogue)
-				return;
+			CurrentDialogue->UserSelectedOptionIndex = OptionIndex;
 
 			if (CurrentDialogue->DialogueOptions[OptionIndex].bGiveQuest)
 			{
+
 				if (!PlayerQuestComponent)
 				{
 					UWorld* World = GetWorld();
 					if (World)
 					{
-						AActor* PlayerActor = World->GetFirstPlayerController()->GetPawn();
-						if (PlayerActor)
+						APlayerCharacterController* PlayerController = Cast<APlayerCharacterController>(World->GetFirstPlayerController());
+						if (PlayerController)
 						{
-							PlayerQuestComponent = Cast<UQuestComponent>(PlayerActor->GetComponentByClass(UQuestComponent::StaticClass()));
+							PlayerQuestComponent = PlayerController->PlayerCharacter->QuestComponent;
 						}
 					}
 				}
@@ -46,14 +48,16 @@ void UDialogueComponent::EndDialogue(int OptionIndex)
 				if (PlayerQuestComponent)
 				{
 					PlayerQuestComponent->AddQuest(UQuestManager::GetInstance()->FindQuest(CurrentDialogue->DialogueOptions[OptionIndex].QuestIndex));
-					//퀘스트 1개 안들어가는 버그 찾아서 수정
 				}
 			}
+
+			CurrentDialogue = UDialogueManager::GetInstance()->FindDialogue(CurrentDialogue->DialogueOptions[OptionIndex].NextDialogueID);
 		}
 		else
 		{
 			CurrentDialogue = UDialogueManager::GetInstance()->FindDialogue(CurrentDialogue->NextDialogueIndex);
 		}
+
 
 		if (CurrentDialogue)
 		{
@@ -84,7 +88,7 @@ void UDialogueComponent::BeginPlay()
 		CurrentDialogue = DialogueList[0];
 	}
 
-	while (CurrentDialogue && CurrentDialogue->bIsEndOfDialogue)
+	while (CurrentDialogue && CurrentDialogue->bIsEndOfDialogue) // 진행중인 대화 찾기
 	{
 		if (CurrentDialogue->bIsDialogueOption)
 		{
@@ -101,29 +105,12 @@ void UDialogueComponent::BeginPlay()
 			CurrentDialogue = UDialogueManager::GetInstance()->FindDialogue(CurrentDialogue->NextDialogueIndex);
 		}
 
-		if(!CurrentDialogue)
+		if (!CurrentDialogue)
 			break;
 	}
 
-
-	if (CurrentDialogue && UDialogueManager::GetInstance()->IsDialogueOn(CurrentDialogue))
+	while (CurrentDialogue)
 	{
-		for (FString response : CurrentDialogue->Responses)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, response);
-		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("다음 퀘스트"));
 		EndDialogue(0);
-		if (CurrentDialogue)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, CurrentDialogue->DialogueText);
-			for (FString response : CurrentDialogue->Responses)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, response);
-			}
-		}
 	}
-
 }
-

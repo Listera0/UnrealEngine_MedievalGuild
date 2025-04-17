@@ -7,7 +7,10 @@
 			"QuestStatus": 0,
 			"QuestType": 3,
 			"RewardGold": 0,
-			"HasPlayer": false
+			"HasPlayer": false,
+			"RewardItems": [],
+			"RewardItemAmount": [],
+			"PreRequisiteQuests": []
 		},
 		{
 			"QuestName": "Locate chest in castle",
@@ -19,6 +22,7 @@
 			"HasPlayer": false,
 			"RewardItems": [ 0 ],
 			"RewardItemAmount": [ 25 ],
+			"PreRequisiteQuests": [],
 			"TargetLocation_X": -1000,
 			"TargetLocation_Y": -4000,
 			"TargetLocation_Z": 10,
@@ -34,6 +38,7 @@
 			"HasPlayer": false,
 			"RewardItems": [ 0 ],
 			"RewardItemAmount": [ 40 ],
+			"PreRequisiteQuests": [],
 			"QuestItemIndex": 3,
 			"QuestItemRequiredAmount": 1
 		}
