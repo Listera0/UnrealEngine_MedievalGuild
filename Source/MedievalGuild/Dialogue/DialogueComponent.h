@@ -17,9 +17,9 @@ public:
 	// Sets default values for this component's properties
 	UDialogueComponent();
 
-	UDialogue* GetCurrentDialogue() const { return CurrentDialogue; }
-
 	void EndDialogue(int OptionIndex = -1);
+
+	inline UDialogue* GetCurrentDialogue() const { return CurrentDialogue; }
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

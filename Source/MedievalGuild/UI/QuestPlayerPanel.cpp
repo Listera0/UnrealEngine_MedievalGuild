@@ -23,8 +23,12 @@ void UQuestPlayerPanel::ShowQuestList()
 {
 	QuestSlotGrid->ClearChildren();
 
+	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green, FString::Printf(TEXT("%d"), PlayerQuestList.Num()));
 	PlayerQuestList.Empty();
 	PlayerController->PlayerCharacter->QuestComponent->GetMyQuestDatas(PlayerQuestList);
+	//UE_LOG(LogTemp, Warning, TEXT("컴포넌트 주소 : %d"), PlayerController->PlayerCharacter->QuestComponent);
+	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, FString::Printf(TEXT("%d"), PlayerQuestList.Num()));
+
 
 	int TotalQuestCount = 0;
 	int CurrentQuestCount = 0;
