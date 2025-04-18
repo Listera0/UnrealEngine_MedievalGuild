@@ -63,6 +63,10 @@ void AEnemy_1::Tick(float DeltaTime)
 
 }
 
+void AEnemy_1::EnemyInitSetting()
+{
+}
+
 FVector AEnemy_1::GetNextPatrolLocation()
 {
 	if (!EnemyLocationStage) {
@@ -116,12 +120,16 @@ void AEnemy_1::RecieveHit(float Damage)
 
 void AEnemy_1::Die()
 {
-	FTimerHandle timer;
+	bDie = true;
+	EnemyWeaponCollision->SetCollisionProfileName(TEXT("NoCollision"));
+
 	AController* controller = GetController();
 	if (controller) { controller->Destroy(); }
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	GetMesh()->GetAnimInstance()->Montage_Play(DeathMontage);
+
+	FTimerHandle timer;
 	GetWorld()->GetTimerManager().SetTimer(timer, [this]()
 	{
 		Tags.Add("Dead");

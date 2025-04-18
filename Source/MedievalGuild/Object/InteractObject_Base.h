@@ -49,7 +49,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	FName ObjectName;
 
-	float InteractDistance;
+	float InteractDistance = 0.0f;
 
 public:
 	void SetContainerUI();

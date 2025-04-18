@@ -36,22 +36,27 @@ void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (BehaviorTree)
-	{
-		//UseBlackboard(BehaviorTree->BlackboardAsset, BlackboardComponent);
-		//RunBehaviorTree(BehaviorTree);
-		//BlackboardComponent->SetValueAsVector("OriginLocation", GetPawn()->GetActorLocation());
-	}
+}
+
+void AEnemyAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
 	OwnerEnemy = Cast<AEnemy_1>(GetPawn());
-	MoveLocation = GetPawn()->GetActorLocation();
-	OwnerEnemy->GetNextPatrolLocation();
+
+	FTimerHandle timer;
+	GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
+		MoveLocation = GetPawn()->GetActorLocation();
+		OwnerEnemy->GetNextPatrolLocation();
+		bInitFinish = true;
+	}, 2.0f, false);
 }
 
 void AEnemyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	EnemyMoveSequence(DeltaTime);
+	if (bInitFinish && !OwnerEnemy->bDie) EnemyMoveSequence(DeltaTime);
 }
 
 void AEnemyAIController::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -59,12 +64,12 @@ void AEnemyAIController::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus
 	if (Actor->ActorHasTag("Player") && !Actor->ActorHasTag("Dead")) {
 		if (Stimulus.WasSuccessfullySensed()) {
 			if (Actor->ActorHasTag("Player") && !ActorHasTag("Dead")) {
-				GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
+				//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Detected: %s"), *Actor->GetName()));
 				TargetActor = Actor;
 			}
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
+			//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("Lost sight of: %s"), *Actor->GetName()));
 			TargetActor = nullptr;
 		}
 	}

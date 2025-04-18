@@ -25,29 +25,7 @@ void AInteractObject_Base::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
-	
-
-	if (bFollowDataSet) {
-		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ContainerData"), DataSetIndex));
-		UItemContainerDataAsset* containerData = Cast<UItemContainerDataAsset>(spawnRef.TryLoad());
-
-		for (const TPair<int, int>& Pair : containerData->ItemInfo) {
-			if (FMath::RandRange(1, 100) <= Pair.Value) {
-				int count = FMath::RandRange(*containerData->ItemMinCount.Find(Pair.Key), *containerData->ItemMaxCount.Find(Pair.Key));
-				ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], count));
-			}
-		}
-	}
-	else {
-		for (const TPair<int, int>& Pair : ContainerIndex) {
-			ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
-		}
-	}
-
 	InteractableItemSetting();
-
-	bIsInit = false;
 }
 
 // Called every frame
@@ -81,6 +59,26 @@ void AInteractObject_Base::SetContainerUI()
 
 void AInteractObject_Base::InteractableItemSetting()
 {
+	bIsInit = false;
+
+	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
+	if (bFollowDataSet) {
+		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ContainerData"), DataSetIndex));
+		UItemContainerDataAsset* containerData = Cast<UItemContainerDataAsset>(spawnRef.TryLoad());
+
+		for (const TPair<int, int>& Pair : containerData->ItemInfo) {
+			if (FMath::RandRange(1, 100) <= Pair.Value) {
+				int count = FMath::RandRange(*containerData->ItemMinCount.Find(Pair.Key), *containerData->ItemMaxCount.Find(Pair.Key));
+				ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], count));
+			}
+		}
+	}
+	else {
+		for (const TPair<int, int>& Pair : ContainerIndex) {
+			ContainerInventory.Add(new FInventoryData(FVector2D(-1.0f), itemDatas[Pair.Key], Pair.Value));
+		}
+	}
+
 	if (ActorHasTag("Item")) {
 		if (UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData) != nullptr) {
 			StaticMesh->SetStaticMesh(UItemDataManager::GetInstance()->GetMeshForItem(ContainerInventory[0]->ItemData));
@@ -96,6 +94,14 @@ void AInteractObject_Base::InteractableItemSetting()
 
 		StaticMesh->SetSimulatePhysics(true);
 		StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
+	}
+	else if (ActorHasTag("Container")) {
+		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/Asset/Items/Chest_Combine")));
+		UStaticMesh* itemStaticMesh = Cast<UStaticMesh>(AssetRef.TryLoad());
+		if (itemStaticMesh) { 
+			StaticMesh->SetStaticMesh(itemStaticMesh); 
+			StaticMesh->SetRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+		}
 	}
 }
 

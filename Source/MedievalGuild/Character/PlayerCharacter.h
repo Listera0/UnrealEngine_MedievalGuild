@@ -53,6 +53,7 @@ public:
 	void InputAttack(int index = 0);
 	void SetPlayerWeapon(int index);
 	bool CheckAttackAnim();
+	float AttackAnimCurrentTime();
 	bool CheckDeathAnim();
 	void RecieveHit(AActor* enemy, float damage);
 

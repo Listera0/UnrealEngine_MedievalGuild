@@ -19,8 +19,13 @@ protected:
 	UWidgetAnimation* GetAnimationByName(FName AnimName);
 
 public:
+	void StartDeathAnimation();
+	void StartMoveStageAnimation();
+	void EndAnimation(float time);
+	bool CheckPlayingAnimation();
+
 	UPROPERTY()
 	UWidgetAnimation* DeathAnim;
-
-	void StartDeathAnimation();
+	UPROPERTY()
+	UWidgetAnimation* MoveAnim;
 };

@@ -164,7 +164,7 @@ void APlayerCharacterController::InitPlayerData()
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 {
-	if (PlayerCharacter && !PlayerCharacter->CheckAttackAnim() && !PlayerCharacter->CheckDeathAnim()) {
+	if (PlayerCharacter && !PlayerCharacter->CheckAttackAnim() && !PlayerCharacter->CheckDeathAnim() && !ScreenEffectUI->CheckPlayingAnimation()) {
 		FVector2D inputValue = Value.Get<FVector2D>();
 
 		if(inputValue.Size() > 1.0f)

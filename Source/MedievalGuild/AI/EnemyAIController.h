@@ -24,6 +24,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -47,6 +48,7 @@ public:
 	
 	class AEnemy_1* OwnerEnemy;
 
+	bool bInitFinish;
 	int EnemyState = 0;
 	float SearchTimer = 0.0f;
 	float SearchTotalTimer = 0.0f;

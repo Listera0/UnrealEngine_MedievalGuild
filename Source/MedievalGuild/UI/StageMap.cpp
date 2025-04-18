@@ -2,8 +2,10 @@
 
 
 #include "StageMap.h"
+#include "Kismet/GameplayStatics.h"
 #include "../Framework/PlayerCharacterController.h"
 #include "../Character/PlayerCharacter.h"
+#include "../Object/StageActor.h"
 
 void UStageMap::NativeConstruct()
 {
@@ -22,6 +24,9 @@ void UStageMap::StageMapInitSetting()
 
 void UStageMap::MoveToCastle()
 {
+	TArray<AActor*> findActorList;
+	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), AStageActor::StaticClass(), "Castle", findActorList);
+	Cast<AStageActor>(findActorList[0])->ResetStageActor();
 	MoveToArea("Castle");
 }
 
@@ -29,7 +34,10 @@ void UStageMap::MoveToArea(FName toArea)
 {
 	ALocationActor* location = MoveLocation->GetLocationWithTag(toArea);
 	if (location) {
+		PlayerController->SetControlRotation(FRotator(0.0f, 0.0f, 0.0f));
 		PlayerController->PlayerCharacter->SetActorLocation(location->GetActorLocation());
+		PlayerController->PlayerCharacter->SetActorRotation(location->GetActorRotation());
 		PlayerController->CurrentPlayerLocation = toArea;
+		PlayerController->ScreenEffectUI->StartMoveStageAnimation();
 	}
 }

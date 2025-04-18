@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "../Object/InteractObject_Base.h"
+#include "../Character/Enemy_1.h"
 #include "StageActor.generated.h"
 
 UCLASS()
@@ -32,16 +34,30 @@ public:
 	int GetRandomPatrolLocation(int ignore);
 	FVector GetPatrolLocationVector(int index);
 
+	void InitStageActor();
+	void ResetStageActor();
+
 	class APlayerCharacterController* PlayerController;
 
 	USceneComponent* RootComponents = nullptr;
 	USceneComponent* SpawnPointOwner = nullptr;
 	USceneComponent* SpawnAreaOwner = nullptr;
+	USceneComponent* InteractContainerOwner = nullptr;
 	USceneComponent* ExtractAreaOwner = nullptr;
+	USceneComponent* EnemySpawnOwner = nullptr;
 	USceneComponent* EnemyPatrolOwner = nullptr;
 
 	TArray<USceneComponent*> SpawnPoints;
+	TArray<AInteractObject_Base*> SpawnedItems;
+	TArray<AInteractObject_Base*> SpawnedContainers;
+	TArray<AEnemy_1*> SpawnedEnemys;
 
 	bool bIsInteractExtractionArea;
 	float extractTimer;
+
+	UPROPERTY(EditAnywhere)
+	FName LocationName;
+
+	UPROPERTY()
+	TSubclassOf<AEnemy_1> EnemyClass;
 };

@@ -68,7 +68,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (CheckAttackAnim()) {
+	if (CheckAttackAnim() && AttackAnimCurrentTime() >= 0.5f) {
 		if (OtherActor->ActorHasTag("Enemy") && !AlreadyHitActor.Contains(OtherActor)) {
 			AlreadyHitActor.Add(OtherActor);
 			AEnemy_1* hitEnemy = Cast<AEnemy_1>(OtherActor);
@@ -161,6 +161,14 @@ void APlayerCharacter::SetPlayerWeapon(int index)
 bool APlayerCharacter::CheckAttackAnim()
 {
 	return GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage) || GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage2);
+}
+
+float APlayerCharacter::AttackAnimCurrentTime()
+{
+	if(GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage))
+		return GetMesh()->GetAnimInstance()->Montage_GetPosition(AttackMontage);
+	
+	return GetMesh()->GetAnimInstance()->Montage_GetPosition(AttackMontage2);
 }
 
 bool APlayerCharacter::CheckDeathAnim()

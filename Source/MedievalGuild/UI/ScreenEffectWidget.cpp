@@ -7,6 +7,7 @@ void UScreenEffectWidget::NativeConstruct()
 	Super::NativeConstruct();
 
     DeathAnim = GetAnimationByName(TEXT("DeathAnimation"));
+    MoveAnim = GetAnimationByName(TEXT("MoveAnimation"));
 }
 
 UWidgetAnimation* UScreenEffectWidget::GetAnimationByName(FName AnimName)
@@ -28,11 +29,29 @@ UWidgetAnimation* UScreenEffectWidget::GetAnimationByName(FName AnimName)
 void UScreenEffectWidget::StartDeathAnimation()
 {
     if (DeathAnim) {
-        PlayAnimation(DeathAnim);
         SetVisibility(ESlateVisibility::Visible);
-        FTimerHandle timer;
-        GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
-            SetVisibility(ESlateVisibility::Collapsed);
-        }, DeathAnim->GetEndTime(), false);
+        PlayAnimation(DeathAnim);
+        EndAnimation(DeathAnim->GetEndTime());
     }
+}
+void UScreenEffectWidget::StartMoveStageAnimation()
+{
+    if (MoveAnim) {
+        SetVisibility(ESlateVisibility::Visible);
+        PlayAnimation(MoveAnim);
+        EndAnimation(MoveAnim->GetEndTime());
+    }
+}
+
+void UScreenEffectWidget::EndAnimation(float time)
+{
+    FTimerHandle timer;
+    GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
+        SetVisibility(ESlateVisibility::Collapsed);
+    }, time, false);
+}
+
+bool UScreenEffectWidget::CheckPlayingAnimation()
+{
+    return GetVisibility() == ESlateVisibility::Visible ? true : false;
 }

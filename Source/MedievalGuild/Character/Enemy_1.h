@@ -29,6 +29,7 @@ public:
 	virtual void SetInteractDistance(float distance) override { InteractDistance = distance; };
 	virtual float GetInteractDistance() override { return InteractDistance; };
 
+	void EnemyInitSetting();
 	FVector GetNextPatrolLocation();
 	void InventoryInitSetting();
 	void SetContainerUI();
@@ -58,7 +59,8 @@ public:
 	int WeaponIndex = 12;
 	int CurrentPatrolLocation;
 	bool bIsInit = false;
+	bool bDie = false;
 	float MaxHealth = 100.0f;
 	float CurrentHealth = 0.0f;
-	float InteractDistance;
+	float InteractDistance = 0.0f;
 };
