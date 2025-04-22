@@ -12,7 +12,6 @@
  */
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUpdatePlayerQuest);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerArrived, int, QuestIndex, bool, IsUpate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerKill, int, AcotrIndex, bool, IsUpate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerAddItem, int, ItemIndex, bool, IsUpate);
@@ -56,8 +55,6 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
 	FOnPlayerAddItem OnPlayerAddItem;
 
-	UPROPERTY(BlueprintAssignable, Category = "Quest Data Manager")
-	FUpdatePlayerQuest OnUpdatePlayerQuest;
 private:
 	UPROPERTY()
 	TArray<UQuest_Base*> QuestList;
