@@ -13,7 +13,11 @@ ATranslateManager::ATranslateManager()
 void ATranslateManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	SetLanguageOption();
+	SetSelectLanguage();
 }
 
 void ATranslateManager::Tick(float DeltaTime)
@@ -22,18 +26,17 @@ void ATranslateManager::Tick(float DeltaTime)
 
 }
 
-void ATranslateManager::TranslateTexts()
+void ATranslateManager::SetLanguageOption()
 {
-	if (PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-
-	//PlayerController->InventoryUI->Widget_CraftInventory->
+	IFileManager& FileManager = IFileManager::Get();
+	FString DirectoryPath = FPaths::ProjectContentDir() + TEXT("Data/Language/");
+	TArray<FString> FileNames;
+	FileManager.FindFiles(FileNames, *DirectoryPath, TEXT("json"));
+	for (const FString& FileName : FileNames) { TranslateLanguages.Add(FName(*FPaths::GetBaseFilename(FileName))); }
 }
 
-void ATranslateManager::TranslateTexts(FText text)
+void ATranslateManager::SetSelectLanguage()
 {
-	if (PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
-
-
 	FString FilePath = FPaths::ProjectContentDir() + FString::Printf(TEXT("Data/Language/%s.json"), *TranslateLanguages[SelectLanguageIndex].ToString());
 	FString JsonStr;
 
@@ -41,17 +44,29 @@ void ATranslateManager::TranslateTexts(FText text)
 		TSharedPtr<FJsonObject> JsonObject;
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonStr);
 
-		if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid())
-		{
-			FString Name = JsonObject->GetStringField("Name");
-			int32 Value = JsonObject->GetIntegerField("Value");
+		if (FJsonSerializer::Deserialize(Reader, JsonObject) && JsonObject.IsValid()) {
+			TranslateData.Empty();
 
-			UE_LOG(LogTemp, Warning, TEXT("Name: %s, Value: %d"), *Name, Value);
+			for (const auto& Pair : JsonObject->Values) {
+				FString Key = Pair.Key;
+				FString Value;
+
+				if (Pair.Value->TryGetString(Value)) {
+					TranslateData.Add(Key, Value);
+				}
+			}
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Json 파일 읽기 실패: %s"), *FilePath);
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("Cannot read json file"));
 	}
+}
+
+FText ATranslateManager::TranslateTexts(FText text)
+{
+	const FString* Found = TranslateData.Find(text.ToString());
+	if (Found) { return FText::FromString(*Found); }
+
+	return text;
 }
 

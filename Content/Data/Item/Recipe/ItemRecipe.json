@@ -1,14 +1,32 @@
 ﻿[
 	{
-		"MakeItemIndex": 3,
+		"MakeItemIndex": 8,
 		"MakeItemAmount": 1,
 		"IngredientsIndex": [ 0 ],
-		"IngredientsAmount": [ 10 ]
+		"IngredientsAmount": [ 35 ]
 	},
 	{
-		"MakeItemIndex": 0,
-		"MakeItemAmount": 5,
-		"IngredientsIndex": [ 3 ],
-		"IngredientsAmount": [ 1 ]
+		"MakeItemIndex": 9,
+		"MakeItemAmount": 1,
+		"IngredientsIndex": [ 0 ],
+		"IngredientsAmount": [ 50 ]
+	},
+	{
+		"MakeItemIndex": 10,
+		"MakeItemAmount": 1,
+		"IngredientsIndex": [ 0, 5 ],
+		"IngredientsAmount": [ 50, 1 ]
+	},
+	{
+		"MakeItemIndex": 11,
+		"MakeItemAmount": 1,
+		"IngredientsIndex": [ 0, 7 ],
+		"IngredientsAmount": [ 50, 1 ]
+	},
+	{
+		"MakeItemIndex": 12,
+		"MakeItemAmount": 1,
+		"IngredientsIndex": [ 0, 6 ],
+		"IngredientsAmount": [ 50, 1 ]
 	}
 ]

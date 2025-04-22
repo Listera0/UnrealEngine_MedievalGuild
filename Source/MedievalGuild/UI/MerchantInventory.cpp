@@ -3,8 +3,9 @@
 
 #include "MerchantInventory.h"
 #include "Components/VerticalBoxSlot.h"
-#include "../Framework/PlayerCharacterController.h"
 #include "QuestSlot.h"
+#include "../Framework/PlayerCharacterController.h"
+#include "../Framework/TranslateManager.h"
 
 void UMerchantInventory::ShowContainer(TArray<FInventoryData*>& data)
 {
@@ -12,7 +13,7 @@ void UMerchantInventory::ShowContainer(TArray<FInventoryData*>& data)
 
 	if (!PlayerController) { PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController()); }
 
-	MerchantName->SetText(FText::FromName(PlayerController->InteractObj->ObjectName));
+	MerchantName->SetText(PlayerController->TSManager->TranslateTexts(FText::FromName(PlayerController->InteractObj->ObjectName)));
 }
 
 void UMerchantInventory::MerchantPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size)

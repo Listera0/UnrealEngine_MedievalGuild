@@ -52,6 +52,7 @@ public:
 	TArray<AInteractObject_Base*> SpawnedContainers;
 	TArray<AEnemy_1*> SpawnedEnemys;
 
+	AActor* InteractActor = nullptr;
 	bool bIsInteractExtractionArea;
 	float extractTimer;
 

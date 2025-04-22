@@ -42,7 +42,7 @@ void UOptionMenu::OnClickSaveGame()
 
 void UOptionMenu::OnClickLoadGame()
 {
-	PlayerController->PlayerData->LoadGame();
+	PlayerController->PlayerData->LoadGame(0);
 }
 
 void UOptionMenu::OnClickExitGame()

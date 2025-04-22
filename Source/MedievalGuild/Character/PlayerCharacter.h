@@ -79,13 +79,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UCapsuleComponent* PlayerWeaponCollsion = nullptr;
 
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	float StealthMoveSpeed;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	float NormalMoveSpeed;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CharaterOption")
 	float RunningMoveSpeed;
 

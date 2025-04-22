@@ -191,11 +191,10 @@ void APlayerCharacter::RecieveHit(AActor* enemy, float damage)
 
 	GetWorld()->GetTimerManager().SetTimer(actionTimer, [this]() {
 		Tags.Remove("Dead");
-		
-		PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
 		PlayerController->PlayerData->EmptyInventory();
+		PlayerController->InventoryUI->Widget_Equipment->UpdateWeapon();
+		PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
 	}, DeathMontage->GetPlayLength(), false);
-	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, "Hit");
 }
 
 void APlayerCharacter::OnSectionJumpReady(USectionControlNotify* SectionControl)

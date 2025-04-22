@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+using System.IO;
 using UnrealBuildTool;
 
 public class MedievalGuild : ModuleRules
@@ -7,11 +8,13 @@ public class MedievalGuild : ModuleRules
 	public MedievalGuild(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Slate", "SlateCore" ,"Json", "AIModule", "NavigationSystem",               // Add Json module
-                "JsonUtilities"});
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Slate", "SlateCore" ,"Json", "AIModule", "NavigationSystem",               // Add Json module
+                "JsonUtilities", "ClothingSystemRuntimeInterface", "ChaosCloth"});
+
+		PublicIncludePaths.Add(Path.Combine(EngineDirectory, "Plugins/ChaosClothAsset/Source/ChaosClothAssetEngine/Public"));
+
+		PrivateDependencyModuleNames.AddRange(new string[] { "ChaosClothAsset" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

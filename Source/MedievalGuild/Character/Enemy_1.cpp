@@ -2,13 +2,13 @@
 
 
 #include "Enemy_1.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerCharacter.h"
 #include "../Framework/PlayerCharacterController.h"
 #include "../Item/ItemDataManager.h"
 #include "../DataAssets/WeaponTransformDataAsset.h"
 #include "../DataAssets/ItemContainerDataAsset.h"
-#include "Kismet/GameplayStatics.h"
 #include "../Object/StageActor.h"
-#include "PlayerCharacter.h"
 
 AEnemy_1::AEnemy_1()
 {

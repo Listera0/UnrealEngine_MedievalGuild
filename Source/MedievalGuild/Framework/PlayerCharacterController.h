@@ -14,6 +14,7 @@
 #include "../UI/ItemInfoPanel.h"
 #include "../UI/ItemInteractPanel.h"
 #include "../UI/ScreenEffectWidget.h"
+#include "../UI/MainScreen.h"
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
@@ -70,6 +71,8 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UMainScreen> MainMenuPanel = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UPlayerInventory> InventoryViewport = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenUI> ScreenViewport = nullptr;
@@ -78,9 +81,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UItemInteractPanel> ItemInteractPanel = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	TSubclassOf<UUserWidget> testwidget = nullptr;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenEffectWidget> ScreenEffectWidget = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UUserWidget> testwidget = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputMappingContext* InputMappingContext = nullptr;
@@ -117,7 +120,9 @@ private:
 
 public:
 	class APlayerCharacter* PlayerCharacter = nullptr;
+	class ATranslateManager* TSManager = nullptr;
 	
+	UMainScreen* MainMenuUI = nullptr;
 	UPlayerInventory* InventoryUI = nullptr;
 	UScreenUI* ScreenUI = nullptr;
 	UItemInfoPanel* ItemInfoUI = nullptr;

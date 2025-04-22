@@ -21,6 +21,8 @@ protected:
 public:
 	void StartDeathAnimation();
 	void StartMoveStageAnimation();
+	void StartFadeInAnimation();
+	void StartFadeOutAnimation();
 	void EndAnimation(float time);
 	bool CheckPlayingAnimation();
 
@@ -28,4 +30,8 @@ public:
 	UWidgetAnimation* DeathAnim;
 	UPROPERTY()
 	UWidgetAnimation* MoveAnim;
+	UPROPERTY()
+	UWidgetAnimation* FadeInAnim;
+	UPROPERTY()
+	UWidgetAnimation* FadeOutAnim;
 };

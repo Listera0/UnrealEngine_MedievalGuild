@@ -2,9 +2,10 @@
 
 
 #include "CraftInventory.h"
-#include "../Item/ItemDataManager.h"
-#include "../Framework/PlayerCharacterController.h"
 #include "Kismet/GameplayStatics.h"
+#include "../Framework/PlayerCharacterController.h"
+#include "../Framework/TranslateManager.h"
+#include "../Item/ItemDataManager.h"
 
 void UCraftInventory::ShowContainer(TArray<FInventoryData*>& data)
 {
@@ -12,7 +13,7 @@ void UCraftInventory::ShowContainer(TArray<FInventoryData*>& data)
 
 	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 
-	CraftTableName->SetText(FText::FromName(PlayerController->InteractObj->ObjectName));
+	CraftTableName->SetText(PlayerController->TSManager->TranslateTexts(FText::FromName(PlayerController->InteractObj->ObjectName)));
 }
 
 void UCraftInventory::CraftInventoryInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size)

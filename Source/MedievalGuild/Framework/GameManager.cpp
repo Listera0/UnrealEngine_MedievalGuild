@@ -6,6 +6,7 @@
 #include "Engine/DirectionalLight.h"
 #include "Components/DirectionalLightComponent.h"
 #include "../Quest/QuestManager.h"
+#include "../Framework/PlayerCharacterController.h"
 
 AGameManager::AGameManager()
 {
@@ -51,4 +52,5 @@ void AGameManager::GameEndSequence()
 		//DialogueDataManager->SaveAllDialogueToJson();
 		DialogueDataManager->ClearUp();
 	}
+	Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController())->PlayerData->SaveGame();
 }

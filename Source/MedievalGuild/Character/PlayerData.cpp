@@ -331,13 +331,21 @@ void APlayerData::SaveGame()
     }
 }
 
-void APlayerData::LoadGame()
+void APlayerData::LoadGame(int index)
 {
-    UPlayerSave* LoadGameInstance = Cast<UPlayerSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerSaveData"), 0));
+    UPlayerSave* LoadGameInstance = Cast<UPlayerSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerSaveData"), index));
+
+    if (!LoadGameInstance) return;
 
     // Load Data
     LoadGameInstance->ExtractSaveBaseData(PlayerName, PlayerHealth, PlayerStemina, PlayerEnergy);
     LoadGameInstance->ExtractSaveItemData(PlayerInventory, PlayerStorage, PlayerEquipment);
+
+    FTimerHandle timer;
+    GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
+        if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+        PlayerController->InventoryUI->Widget_Equipment->ShowContainer();
+    }, 0.5f, false);
 }
 
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)

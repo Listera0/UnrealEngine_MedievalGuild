@@ -52,6 +52,7 @@ void AStageActor::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 	if (OtherActor->ActorHasTag("Player")) {
 		extractTimer = 0.0f;
 		PlayerController->ScreenUI->SetExtractText(false, 0.0f);
+		InteractActor = OtherActor;
 		bIsInteractExtractionArea = true;
 	}
 }
@@ -61,6 +62,7 @@ void AStageActor::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AAct
 	if (OtherActor->ActorHasTag("Player")) {
 		extractTimer = 0.0f;
 		PlayerController->ScreenUI->SetExtractText(false, 0.0f);
+		InteractActor = nullptr;
 		bIsInteractExtractionArea = false;
 	}
 }
@@ -72,7 +74,7 @@ void AStageActor::Tick(float DeltaTime)
 
 	float extractNeed = 2.0f;
 
-	if (bIsInteractExtractionArea) {
+	if (bIsInteractExtractionArea && InteractActor && !InteractActor->ActorHasTag("Dead")) {
 		extractTimer += DeltaTime;
 
 		PlayerController->ScreenUI->SetExtractText(true, extractNeed - extractTimer);

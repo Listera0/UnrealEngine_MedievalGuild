@@ -55,9 +55,7 @@ void UEquipmentWidget::ShowContainer()
 	Widget_Bag->ShowContainer(PlayerController->PlayerData->PlayerEquipment[3]);
 	Widget_Weapon->ShowContainer(PlayerController->PlayerData->PlayerEquipment[4]);
 
-	if (PlayerController->PlayerData->PlayerEquipment[4]) { PlayerController->PlayerCharacter->SetPlayerWeapon(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Weapon)[4]->ItemData->index); }
-	else { PlayerController->PlayerCharacter->SetPlayerWeapon(-1); }
-
+	UpdateWeapon();
 	ShowContainerInfo();
 }
 
@@ -83,4 +81,10 @@ void UEquipmentWidget::ShowContainerInfo()
 
 	totalWeight = equipmentWeight + itemWeight;
 	WeightValue->SetText(FText::FromString(FString::Printf(TEXT("%0.1f"), totalWeight)));
+}
+
+void UEquipmentWidget::UpdateWeapon()
+{
+	if (PlayerController->PlayerData->PlayerEquipment[4]) { PlayerController->PlayerCharacter->SetPlayerWeapon(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Weapon)[4]->ItemData->index); }
+	else { PlayerController->PlayerCharacter->SetPlayerWeapon(-1); }
 }

@@ -17,13 +17,22 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+protected:
 	virtual void Tick(float DeltaTime) override;
-	void TranslateTexts();
-	void TranslateTexts(FText text);
 
 	class APlayerCharacterController* PlayerController;
 
+	void SetLanguageOption();
+	void SetSelectLanguage();
+
+public:
+	FText TranslateTexts(FText text);
+
+protected:
+	UPROPERTY(VisibleAnywhere)
 	TArray<FName> TranslateLanguages;
+	UPROPERTY(VisibleAnywhere)
 	int SelectLanguageIndex;
+
+	TMap<FString, FString> TranslateData;
 };

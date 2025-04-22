@@ -26,6 +26,7 @@ public:
 
 	void ShowContainer();
 	void ShowContainerInfo();
+	void UpdateWeapon();
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;

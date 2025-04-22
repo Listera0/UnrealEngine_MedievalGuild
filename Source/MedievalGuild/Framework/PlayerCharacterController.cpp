@@ -4,14 +4,15 @@
 #include "PlayerCharacterController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "../Character/PlayerCharacter.h"
-#include "../Item/Test/Test_Item.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameUserSettings.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "TranslateManager.h"
+#include "../Character/PlayerCharacter.h"
+#include "../Item/Test/Test_Item.h"
 #include "../Object/IInteractInterface.h"
 #include "../Dialogue/DialogueComponent.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
 
 
 APlayerCharacterController::APlayerCharacterController()
@@ -36,6 +37,7 @@ void APlayerCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) { MainMenuUI->ShowBackgroundScreen(DeltaTime); }
 	InitViewportScale();
 	lineTraceCheckTag(FName("Interactable"));
 	CheckScreenUI();
@@ -83,6 +85,7 @@ void APlayerCharacterController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	PlayerCharacter = Cast<APlayerCharacter>(InPawn);
+	TSManager = Cast<ATranslateManager>(UGameplayStatics::GetActorOfClass(GetWorld(), ATranslateManager::StaticClass()));
 }
 
 void APlayerCharacterController::OnUnPossess()
@@ -151,6 +154,23 @@ void APlayerCharacterController::InitViewport()
 		ScreenEffectUI = CreateWidget<UScreenEffectWidget>(this, ScreenEffectWidget);
 		ScreenEffectUI->AddToViewport();
 		ScreenEffectUI->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if (MainMenuPanel) {
+		MainMenuUI = CreateWidget<UMainScreen>(this, MainMenuPanel);
+		MainMenuUI->AddToViewport();
+		MainMenuUI->InitMainScreenSetting();
+
+		// Mouse mode 설정 - 마우스 표시 및 중앙으로 이동
+		bShowMouseCursor = true;
+		int32 screenX; int32 screenY;
+		GetViewportSize(screenX, screenY);
+		SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
+
+		// Mouse mode 설정 - 마우스로 UI클릭 가능하게 설정
+		FInputModeGameAndUI InputMode;
+		InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
+		SetInputMode(InputMode);
 	}
 }
 
@@ -343,28 +363,28 @@ void APlayerCharacterController::CheckScreenUI()
 {
 	if (bIsInteract) {
 		if (hitResult.GetActor()->ActorHasTag(FName("Item"))) { 
-			ScreenUI->SetInteractText(true, Cast<AInteractObject_Base>(hitResult.GetActor())->ContainerInventory[0]->ItemData->name);
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString(Cast<AInteractObject_Base>(hitResult.GetActor())->ContainerInventory[0]->ItemData->name)).ToString());
 		}
 		else if(hitResult.GetActor()->ActorHasTag(FName("Container"))) {
-			ScreenUI->SetInteractText(true, "Search");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Search")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Storage"))) {
-			ScreenUI->SetInteractText(true, "Storage");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Storage")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
-			ScreenUI->SetInteractText(true, "Leave");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Leave")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Merchant"))) {
-			ScreenUI->SetInteractText(true, "Trade");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Trade")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("NPC"))) {
-			ScreenUI->SetInteractText(true, "Talk");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Talk")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Anvil"))) {
-			ScreenUI->SetInteractText(true, "Work");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Work")).ToString());
 		}
 		else if (hitResult.GetActor()->ActorHasTag(FName("Enemy"))) {
-			ScreenUI->SetInteractText(true, "Search");
+			ScreenUI->SetInteractText(true, TSManager->TranslateTexts(FText::FromString("Search")).ToString());
 		}
 	}
 	else {

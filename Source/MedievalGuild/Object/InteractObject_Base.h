@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-
 #include "Components/SphereComponent.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InventoryData.h"
 #include "../Object/IInteractInterface.h"
-
 #include "InteractObject_Base.generated.h"
 
 UCLASS()

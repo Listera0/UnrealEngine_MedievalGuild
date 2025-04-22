@@ -3,6 +3,7 @@
 
 #include "ItemInteractPanel.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Framework/TranslateManager.h"
 #include "../DataAssets/ItemEffectDataAsset.h"
 
 void UItemInteractPanel::NativeConstruct()
@@ -21,9 +22,11 @@ void UItemInteractPanel::ShowPanelSetting(FVector2D Scale)
 	SetVisibility(ESlateVisibility::Visible);
 
 	Information->SetVisibility(ESlateVisibility::Visible);
+	InformationText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Info")));
 
 	if (PlayerController->PlayerData->GetEquipmentIndex(PlayerController->ItemInteractUI->InteractItem->ItemData->eItemType) != -1) {
 		Equip->SetVisibility(ESlateVisibility::Visible);
+		EquipText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Equip")));
 		ButtonCount++;
 	}
 	else {
@@ -32,6 +35,7 @@ void UItemInteractPanel::ShowPanelSetting(FVector2D Scale)
 
 	if (PlayerController->ItemInteractUI->InteractItem->ItemData->eItemType == EItemType::Consumeable) {
 		Use->SetVisibility(ESlateVisibility::Visible);
+		UseText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Use")));
 		ButtonCount++;
 	}
 	else {
@@ -43,6 +47,7 @@ void UItemInteractPanel::ShowPanelSetting(FVector2D Scale)
 	}
 	else {
 		Trash->SetVisibility(ESlateVisibility::Visible);
+		TrashText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Trash")));
 		ButtonCount++;
 	}
 

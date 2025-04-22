@@ -45,9 +45,17 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* Information;
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* InformationText;
+	UPROPERTY(meta = (BindWidget))
 	UButton* Equip;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* EquipText;
 	UPROPERTY(meta = (BindWidget))
 	UButton* Use;
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* UseText;
+	UPROPERTY(meta = (BindWidget))
 	UButton* Trash;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TrashText;
 };

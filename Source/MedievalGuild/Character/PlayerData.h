@@ -43,7 +43,7 @@ public:
 	int GetItemCount(int index);
 
 	void SaveGame();
-	void LoadGame();
+	void LoadGame(int index);
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;
