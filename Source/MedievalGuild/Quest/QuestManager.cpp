@@ -212,7 +212,7 @@ void UQuestManager::GetPlayerQuset(TArray<UQuest_Base*>& PlayerQuestList)
 				continue;
 			}
 
-			if (questData->HasPlayer)
+			if (questData->HasPlayer && !PlayerQuestList.Contains(quest))
 			{
 				PlayerQuestList.Add(quest);
 			}

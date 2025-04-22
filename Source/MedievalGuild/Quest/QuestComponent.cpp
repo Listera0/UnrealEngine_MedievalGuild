@@ -5,7 +5,6 @@
 #include "../Character/PlayerCharacter.h"
 #include "../Quest/QuestManager.h"
 
-
 UQuestComponent::UQuestComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
@@ -18,6 +17,14 @@ void UQuestComponent::BeginPlay()
 	if (IsPlayer)
 	{
 		UQuestManager::GetInstance()->GetPlayerQuset(MyQuestList);
+		for (UQuest_Base* Quest : MyQuestList)
+		{
+			if (Quest && Quest->GetQuestStatus() == EQuestStatus::InProgress)
+			{
+				Quest->StartQuest(GetWorld());
+				StartQuestList.Add(Quest);
+			}
+		}
 	}
 
 	InitQuest();
@@ -47,7 +54,6 @@ void UQuestComponent::GiveQuestToPlayer_Internal(AActor* PlayerActor)
 					GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Red, TEXT("Player Get Quest"));
 					Quest->PlayerGetQuest();
 					QuestComponent->AddQuest(Quest);
-					UQuestManager::GetInstance()->OnUpdatePlayerQuest.Broadcast();
 				}
 			}
 		}
@@ -98,10 +104,6 @@ void UQuestComponent::AddQuest(UQuest_Base* Quest)
 			Quest->PlayerGetQuest();
 
 		MyQuestList.Add(Quest);
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, GetOwner()->GetActorLabel());
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red,FString::Printf(TEXT("%d"),MyQuestList.Num()));
-		UQuestManager::GetInstance()->OnUpdatePlayerQuest.Broadcast();
-		UE_LOG(LogTemp, Warning, TEXT("%d"), MyQuestList.Num());
 	}
 }
 
@@ -128,8 +130,6 @@ void UQuestComponent::PrintMyQuests()
 
 void UQuestComponent::GetMyQuestDatas(TArray<UQuest_Base*>& datalist)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, GetOwner()->GetActorLabel());
-	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::White, FString::Printf(TEXT("%d"), MyQuestList.Num()));
 	if (!MyQuestList.IsEmpty())
 	{
 		for (UQuest_Base* quest : MyQuestList)

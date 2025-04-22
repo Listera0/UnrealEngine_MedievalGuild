@@ -108,9 +108,4 @@ void UDialogueComponent::BeginPlay()
 		if (!CurrentDialogue)
 			break;
 	}
-
-	while (CurrentDialogue)
-	{
-		EndDialogue(0);
-	}
 }
