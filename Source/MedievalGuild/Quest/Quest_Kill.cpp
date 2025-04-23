@@ -3,10 +3,13 @@
 
 #include "Quest_Kill.h"
 #include "../Item/ItemDataManager.h"
-
+#include "../Quest/QuestManager.h"
 void UQuest_Kill::StartQuest(UWorld* World)
 {
 	Super::StartQuest(World);
+
+	UQuestManager::GetInstance()->OnPlayerKill.AddDynamic(this, &UQuest_Kill::CheckQuest);
+
 }
 
 void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
@@ -25,7 +28,7 @@ void UQuest_Kill::SetQuestData(UQuestData_Base* InQuest)
     Quest_Kill->AddToRoot();
 }
 
-void UQuest_Kill::CheckQuest(int index, bool IsUpate)
+void UQuest_Kill::CheckQuest(int index)
 {
 	if (Quest_Kill->ObjectIndex == index)
 	{

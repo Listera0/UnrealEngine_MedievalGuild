@@ -14,7 +14,7 @@ class MEDIEVALGUILD_API UQuest_Base : public UDataAsset
 
 public:
 	UFUNCTION()
-	virtual void CheckQuest(int index, bool IsUpate);
+	virtual void CheckQuest(int index);
 
 	void CompleteQuest();
 

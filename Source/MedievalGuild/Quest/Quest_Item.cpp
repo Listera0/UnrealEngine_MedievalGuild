@@ -8,7 +8,15 @@ void UQuest_Item::StartQuest(UWorld* World)
 
 	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(World->GetFirstPlayerController());
 
-	PlayerController->OnGetItem.AddDynamic(this, &UQuest_Item::CheckQuest);
+
+    if (PlayerController->PlayerData->CheckHasItem(Quest_Item->QuestItemIndex, Quest_Item->RequiredAmount))
+    {
+        CompleteQuest();
+    }
+    else
+    {
+        PlayerController->OnGetItem.AddDynamic(this, &UQuest_Item::CheckQuest);
+    }
 }
 
 void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
@@ -27,7 +35,7 @@ void UQuest_Item::SetQuestData(UQuestData_Base* InQuest)
 	Quest_Item->AddToRoot();
 }
 
-void UQuest_Item::CheckQuest(int ItemID, bool IsUpdate)
+void UQuest_Item::CheckQuest(int ItemID)
 {
     if (Quest_Item->QuestItemIndex != ItemID)
         return;
@@ -46,7 +54,7 @@ void UQuest_Item::CheckQuest(int ItemID, bool IsUpdate)
 void UQuest_Item::CancleQuest()
 {
 	Super::CancleQuest();
-	PlayerController->OnGetItem.RemoveDynamic(this, &UQuest_Item::CheckQuest);
+ 	PlayerController->OnGetItem.RemoveDynamic(this, &UQuest_Item::CheckQuest);
 }
 
 void UQuest_Item::ClearQuest()

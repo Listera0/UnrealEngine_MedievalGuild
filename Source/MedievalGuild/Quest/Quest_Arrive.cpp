@@ -46,7 +46,7 @@ void UQuest_Arrive::SetQuestData(UQuestData_Base* InQuest)
     Quest_Arrive->AddToRoot();
 }
 
-void UQuest_Arrive::CheckQuest(int index, bool isUpdate)
+void UQuest_Arrive::CheckQuest(int index)
 {
     if (Quest_Arrive && Quest_Arrive->QuestIndex == index)
     {

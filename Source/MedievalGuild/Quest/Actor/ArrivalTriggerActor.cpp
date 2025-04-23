@@ -32,7 +32,7 @@ void AArrivalTriggerActor::OnOverlapBegin(UPrimitiveComponent* OverlappedCompone
 {
 	if (OtherActor)
 	{
-		UQuestManager::GetInstance()->OnPlayerArrived.Broadcast(QuestIndex,true);
+		UQuestManager::GetInstance()->OnPlayerArrived.Broadcast(QuestIndex);
 		Destroy();
 	}
 }

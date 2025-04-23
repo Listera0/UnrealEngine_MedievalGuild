@@ -76,7 +76,7 @@ void UQuest_Base::ClearQuest()
 }
 
 
-void UQuest_Base::CheckQuest(int index, bool IsUpdate)
+void UQuest_Base::CheckQuest(int index)
 {
     if (Quest->QuestIndex == index)
     {

@@ -271,7 +271,7 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				FInventoryData* targetItem = InteractObj->ContainerInventory[0];
 				targetItem->SlotIndex = FVector2D(-1.0f);
 				PlayerData->AddItemToAllWork(PlayerData->PlayerInventory, targetItem, InventoryUI->Widget_Inventory);
-				OnGetItem.Broadcast(targetItem->ItemData->index,true);
+				OnGetItem.Broadcast(targetItem->ItemData->index);
 				hitResult.GetActor()->Destroy();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Container"))) {

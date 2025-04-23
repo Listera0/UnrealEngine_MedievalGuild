@@ -12,9 +12,10 @@
  */
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerArrived, int, QuestIndex, bool, IsUpate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerKill, int, AcotrIndex, bool, IsUpate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnPlayerAddItem, int, ItemIndex, bool, IsUpate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerArrived, int, QuestIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerKill, int, AcotrIndex);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerAddItem, int, ItemIndex);
+
 UCLASS()
 class MEDIEVALGUILD_API UQuestManager : public UObject
 {
