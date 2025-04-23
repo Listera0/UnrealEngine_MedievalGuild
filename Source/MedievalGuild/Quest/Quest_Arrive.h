@@ -29,4 +29,7 @@ private:
 
 	APlayerController* PlayerController = nullptr;
 
+	UPROPERTY()
+	class AArrivalTriggerActor* ArrivalTrigger = nullptr;
+
 };

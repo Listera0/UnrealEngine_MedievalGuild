@@ -15,13 +15,13 @@ public:
 	AArrivalTriggerActor();
 
 	void StartQuest(const float Radius, const int index);
+
+
 protected:
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor,
 		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
 		const FHitResult& SweepResult);
-
-
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Quest")

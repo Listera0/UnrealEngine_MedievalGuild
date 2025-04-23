@@ -15,8 +15,8 @@ void UQuest_Arrive::StartQuest(UWorld* World)
     }
 
     FActorSpawnParameters SpawnParams;
-    AArrivalTriggerActor* ArrivalTrigger = World->SpawnActor<AArrivalTriggerActor>(AArrivalTriggerActor::StaticClass(), Quest_Arrive->TargetLocation, FRotator::ZeroRotator, SpawnParams);
 
+   ArrivalTrigger = World->SpawnActor<AArrivalTriggerActor>(AArrivalTriggerActor::StaticClass(), Quest_Arrive->TargetLocation, FRotator::ZeroRotator, SpawnParams);
 
     if (ArrivalTrigger)
     {
