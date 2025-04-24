@@ -5,14 +5,16 @@
 #include "Kismet/GameplayStatics.h"
 #include "Animation/WidgetAnimation.h"
 #include "../Framework/PlayerCharacterController.h"
+#include "../Framework/TranslateManager.h"
+#include "../Character/PlayerCharacter.h"
 
 void UMainScreen::InitMainScreenSetting()
 {
 	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	TArray<AActor*> getActors;
 	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), ACameraActor::StaticClass(), "BackgroundShow", getActors);
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("%d"), getActors.Num()));
 	for (AActor* actor : getActors) { CameraActors.Add(Cast<ACameraActor>(actor)); }
+	
 	PlayerController->SetViewTargetWithBlend(CameraActors[BackGroundIndex], 0.0f);
 	BackGroundIndex = 0; SwitchBackGroundMaxTime = 5.0f;
 	SetVisibility(ESlateVisibility::Visible);
@@ -38,6 +40,7 @@ void UMainScreen::ShowBackgroundScreen(float deltaTime)
 	}, PlayerController->ScreenEffectUI->FadeInAnim->GetEndTime() + 0.1f, false);
 }
 
+
 void UMainScreen::OnClickStartGame()
 {
 	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);
@@ -55,12 +58,13 @@ void UMainScreen::OnClickNewGame()
 	FInputModeGameOnly InputMode;
 	PlayerController->bShowMouseCursor = false;
 	PlayerController->SetInputMode(InputMode);
-	PlayerController->PlayerData->LoadGame(1);
+	PlayerController->PlayerData->SaveGame();
 }
 
 void UMainScreen::OnClickOptionMenu()
 {
-
+	if (PlayerController->OptionPanelUI->GetVisibility() == ESlateVisibility::Hidden) { PlayerController->OptionPanelUI->SetVisibility(ESlateVisibility::Visible); }
+	else { PlayerController->OptionPanelUI->SetVisibility(ESlateVisibility::Hidden); }
 }
 
 void UMainScreen::OnClickExitGame()

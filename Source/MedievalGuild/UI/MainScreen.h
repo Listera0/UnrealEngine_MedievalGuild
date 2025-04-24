@@ -7,6 +7,9 @@
 #include "Camera/CameraActor.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/ComboBoxString.h"
+#include "Components/CanvasPanel.h"
+#include "Components/Slider.h"
 #include "MainScreen.generated.h"
 
 /**

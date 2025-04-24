@@ -30,13 +30,15 @@ public:
 
 public:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* InteractText;
+	UTextBlock* InteractText = nullptr;
 	UPROPERTY(meta = (BindWidget))
-	UCanvasPanel* ExtractObject;
+	UCanvasPanel* ExtractObject = nullptr;
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ExtractValue;
+	UTextBlock* ExtractValue = nullptr;
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* SystemMessage;
+	UTextBlock* SystemMessage = nullptr;
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DialogueText;
+	UCanvasPanel* DialogueBox = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DialogueText = nullptr;
 };

@@ -69,11 +69,12 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UQuestComponent* QuestComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly)
+	UCameraComponent* PlayerCamera = nullptr;
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	USpringArmComponent* SpringArm = nullptr;
-	UPROPERTY(EditDefaultsOnly)
-	UCameraComponent* PlayerCamera = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UStaticMeshComponent* PlayerWeapon = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

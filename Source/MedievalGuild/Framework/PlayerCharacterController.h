@@ -14,6 +14,7 @@
 #include "../UI/ItemInfoPanel.h"
 #include "../UI/ItemInteractPanel.h"
 #include "../UI/ScreenEffectWidget.h"
+#include "../UI/OptionPanel.h"
 #include "../UI/MainScreen.h"
 #include "../Character/PlayerData.h"
 #include "../Item/ItemDataManager.h"
@@ -83,6 +84,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UScreenEffectWidget> ScreenEffectWidget = nullptr;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<UOptionPanel> OptionPanelWidget = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	TSubclassOf<UUserWidget> testwidget = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
@@ -104,6 +107,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputComponent")
 	class UInputAction* InteractAction = nullptr;
 
+public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "InputOption")
 	float CameraSensitive = 0.5f;
 
@@ -128,6 +132,7 @@ public:
 	UItemInfoPanel* ItemInfoUI = nullptr;
 	UItemInteractPanel* ItemInteractUI = nullptr;
 	UScreenEffectWidget* ScreenEffectUI = nullptr;
+	UOptionPanel* OptionPanelUI = nullptr;
 	APlayerData* PlayerData = nullptr;
 	AInteractObject_Base* InteractObj = nullptr;
 	AEnemy_1* InteractCharacter = nullptr;

@@ -22,17 +22,18 @@ protected:
 
 	class APlayerCharacterController* PlayerController;
 
+
+public:
 	void SetLanguageOption();
 	void SetSelectLanguage();
 
-public:
 	FText TranslateTexts(FText text);
 
-protected:
 	UPROPERTY(VisibleAnywhere)
 	TArray<FName> TranslateLanguages;
 	UPROPERTY(VisibleAnywhere)
 	int SelectLanguageIndex;
+protected:
 
 	TMap<FString, FString> TranslateData;
 };

@@ -16,14 +16,15 @@ void UScreenUI::InitScreenUISetting()
 	InteractText->SetVisibility(ESlateVisibility::Collapsed);
 	ExtractObject->SetVisibility(ESlateVisibility::Collapsed);
 	SystemMessage->SetVisibility(ESlateVisibility::Collapsed);
-	DialogueText->SetVisibility(ESlateVisibility::Collapsed);
+	DialogueBox->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 bool UScreenUI::CheckAnyTextVisible()
 {
 	if (InteractText->GetVisibility() == ESlateVisibility::Visible ||
 		ExtractObject->GetVisibility() == ESlateVisibility::Visible || 
-		SystemMessage->GetVisibility() == ESlateVisibility::Visible) {
+		SystemMessage->GetVisibility() == ESlateVisibility::Visible ||
+		DialogueBox->GetVisibility() == ESlateVisibility::Visible) {
 		SetVisibility(ESlateVisibility::Visible);
 		return true;
 	}
@@ -63,7 +64,7 @@ void UScreenUI::SetSystemMessage(bool visible, FString text)
 
 void UScreenUI::SetDialogueText(bool visible, FString text)
 {
-	DialogueText->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	DialogueBox->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	DialogueText->SetText(FText::FromString(text));
 	CheckAnyTextVisible();
 }

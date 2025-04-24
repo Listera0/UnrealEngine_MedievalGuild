@@ -52,31 +52,15 @@ void APlayerCharacterController::SetupInputComponent()
 	UEnhancedInputComponent* input = Cast<UEnhancedInputComponent>(InputComponent);
 
 	if (input) {
-		if (MoveCamera)
-			input->BindAction(MoveCamera, ETriggerEvent::Triggered, this, &APlayerCharacterController::InputCameraMove);
-
-		if (MoveAction)
-			input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::InputMove);
-
-		if (RunAction) {
-			input->BindAction(RunAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputPressRunKey);
-			input->BindAction(RunAction, ETriggerEvent::Completed, this, &APlayerCharacterController::InputRealeaseRunKey);
-		}
-
-		if(StealthAction)
-			input->BindAction(StealthAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputStealthToggle);
-
-		if (AttackAction)
-			input->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttackAction);
-		
-		if (AttackAction2)
-			input->BindAction(AttackAction2, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttack2Action);
-
-		if(InventoryToggle)
-			input->BindAction(InventoryToggle, ETriggerEvent::Started, this, &APlayerCharacterController::InputInventoryToggle);
-
-		if (InteractAction)
-			input->BindAction(InteractAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputInteractAction);
+		if (MoveCamera) input->BindAction(MoveCamera, ETriggerEvent::Triggered, this, &APlayerCharacterController::InputCameraMove);
+		if (MoveAction) input->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APlayerCharacterController::InputMove);
+		if (RunAction) input->BindAction(RunAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputPressRunKey);
+		if (RunAction) input->BindAction(RunAction, ETriggerEvent::Completed, this, &APlayerCharacterController::InputRealeaseRunKey);
+		if (StealthAction) input->BindAction(StealthAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputStealthToggle);
+		if (AttackAction) input->BindAction(AttackAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttackAction);
+		if (AttackAction2) input->BindAction(AttackAction2, ETriggerEvent::Started, this, &APlayerCharacterController::InputAttack2Action);
+		if (InventoryToggle) input->BindAction(InventoryToggle, ETriggerEvent::Started, this, &APlayerCharacterController::InputInventoryToggle);
+		if (InteractAction) input->BindAction(InteractAction, ETriggerEvent::Started, this, &APlayerCharacterController::InputInteractAction);
 	}
 }
 
@@ -172,6 +156,13 @@ void APlayerCharacterController::InitViewport()
 		InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
 		SetInputMode(InputMode);
 	}
+
+	if (OptionPanelWidget) {
+		OptionPanelUI = CreateWidget<UOptionPanel>(this, OptionPanelWidget);
+		OptionPanelUI->AddToViewport();
+		OptionPanelUI->InitMainScreenSetting();
+		OptionPanelUI->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 void APlayerCharacterController::InitPlayerData()
@@ -184,7 +175,10 @@ void APlayerCharacterController::InitPlayerData()
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 {
-	if (PlayerCharacter && !PlayerCharacter->CheckAttackAnim() && !PlayerCharacter->CheckDeathAnim() && !ScreenEffectUI->CheckPlayingAnimation()) {
+	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
+	if (ScreenEffectUI->CheckPlayingAnimation()) return;
+
+	if (PlayerCharacter && !PlayerCharacter->CheckAttackAnim() && !PlayerCharacter->CheckDeathAnim() ) {
 		FVector2D inputValue = Value.Get<FVector2D>();
 
 		if(inputValue.Size() > 1.0f)
@@ -203,6 +197,8 @@ void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 
 void APlayerCharacterController::InputCameraMove(const FInputActionValue& Value)
 {
+	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
+
 	if (!bIsUIOpened) {
 		FVector2D inputValue = Value.Get<FVector2D>() * CameraSensitive;
 
@@ -240,6 +236,8 @@ void APlayerCharacterController::InputAttack2Action(const FInputActionValue& Val
 
 void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& Value)
 {
+	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
+
 	if (InventoryUI->GetVisibility() == ESlateVisibility::Hidden) {
 		InventoryUI->PanelVisibleSetting(0);
 		OpenUISetting();
@@ -296,13 +294,16 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 				OpenUISetting();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("NPC"))) {
+				bIsInteractAction = true;
 				bIsTalking = true;
+				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
 				UDialogueComponent* dialogueComponent = Cast<UDialogueComponent>(hitResult.GetActor()->FindComponentByClass(UDialogueComponent::StaticClass()));
 
 				ScreenUI->SetDialogueText(true, "TEXT");
 
 				//if(finish)
-				ScreenUI->SetDialogueText(false, "");
+				//ScreenUI->SetDialogueText(false, "");
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
 				bIsInteractAction = true;
@@ -460,14 +461,19 @@ void APlayerCharacterController::AllUIHidden()
 		else if (InteractObj->ActorHasTag("Anvil")) {
 			InventoryUI->Widget_CraftRequire->ResetRequireList();
 		}
+		else if (InteractObj->ActorHasTag("NPC")) {
+			ScreenUI->SetDialogueText(false, "");
+		}
 	}
 
 	bIsUIOpened = false;
 	bIsInteractAction = false;
+	bIsTalking = false;
 	bShowMouseCursor = false;
 	InteractObj = nullptr;
 	InteractCharacter = nullptr;
 	InventoryUI->SetVisibility(ESlateVisibility::Hidden);
+	OptionPanelUI->SetVisibility(ESlateVisibility::Hidden);
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);

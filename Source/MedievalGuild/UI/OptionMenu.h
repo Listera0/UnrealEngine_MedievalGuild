@@ -27,10 +27,6 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ShowOption = nullptr;
 	UPROPERTY(meta = (BindWidget))
-	UButton* SaveGame = nullptr;
-	UPROPERTY(meta = (BindWidget))
-	UButton* LoadGame = nullptr;
-	UPROPERTY(meta = (BindWidget))
 	UButton* ExitGame = nullptr;
 
 protected:
@@ -40,10 +36,6 @@ protected:
 	void OnClickShowQuest();
 	UFUNCTION()
 	void OnClickShowOption();
-	UFUNCTION()
-	void OnClickSaveGame();
-	UFUNCTION()
-	void OnClickLoadGame();
 	UFUNCTION()
 	void OnClickExitGame();
 };
