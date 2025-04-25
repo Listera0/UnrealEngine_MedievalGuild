@@ -4,10 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "InputActionValue.h"
-
+#include "TranslateManager.h"
 #include "../UI/Container_Base.h"
 #include "../UI/PlayerInventory.h"
 #include "../UI/ScreenUI.h"
@@ -17,10 +16,9 @@
 #include "../UI/OptionPanel.h"
 #include "../UI/MainScreen.h"
 #include "../Character/PlayerData.h"
+#include "../Character/Enemy_1.h"
 #include "../Item/ItemDataManager.h"
 #include "../Object/InteractObject_Base.h"
-#include "../Character/Enemy_1.h"
-
 #include "PlayerCharacterController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGetItem, int, ItemIndex);
@@ -66,6 +64,7 @@ protected:
 
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
+	void StaticUITranslate();
 	void RecordMousePosition();
 	inline bool IsShiftPressed() { return bIsShiftPressed; }
 	inline bool IsInteractAction() { return bIsInteractAction; }

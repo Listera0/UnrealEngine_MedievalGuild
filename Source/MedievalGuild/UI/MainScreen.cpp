@@ -40,7 +40,6 @@ void UMainScreen::ShowBackgroundScreen(float deltaTime)
 	}, PlayerController->ScreenEffectUI->FadeInAnim->GetEndTime() + 0.1f, false);
 }
 
-
 void UMainScreen::OnClickStartGame()
 {
 	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);

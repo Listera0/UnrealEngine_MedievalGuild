@@ -30,16 +30,17 @@ void UQuestInfoPanel::ShowQuestDetail(UQuest_Base* data)
 
 	QuestDetailPanel->SetVisibility(ESlateVisibility::Visible);
 	SelectQuest = data;
-	QuestName->SetText(FText::FromString(data->GetQuestData()->QuestName));
-	QuestInfo->SetText(FText::FromString(data->GetQuestData()->Description));
+	QuestName->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString(data->GetQuestData()->QuestName)));
+	QuestInfo->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString(data->GetQuestData()->Description)));
 	CheckQuestProgress();
 
 	if (SelectQuest->GetQuestData()->RewardItemAmount.Num() == 0) {
 		RewardValue->SetText(FText::FromString(FString::Printf(TEXT("X"))));
 	}
 	else { 
-		RewardValue->SetText(FText::FromString(FString::Printf(TEXT("%s  X %d"), 
-			*UItemDataManager::GetInstance()->FindItemData(SelectQuest->GetQuestData()->RewardItems[0])->name, SelectQuest->GetQuestData()->RewardItemAmount[0])));
+		RewardValue->SetText(FText::FromString(FString::Printf(TEXT("%s  X %d"),
+			*PlayerController->TSManager->TranslateTexts(*UItemDataManager::GetInstance()->FindItemData(SelectQuest->GetQuestData()->RewardItems[0])->name),
+			SelectQuest->GetQuestData()->RewardItemAmount[0])));
 	}
 }
 
@@ -52,17 +53,17 @@ void UQuestInfoPanel::CheckQuestProgress()
 		case EQuestStatus::NotStarted:
 			TargetValue->SetColorAndOpacity(BasicColor);
 			SetInteractButtonColor(BasicColor);
-			ButtonText->SetText(FText::FromString("Accept"));
+			ButtonText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Accept")));
 			break;
 		case EQuestStatus::InProgress:
 			TargetValue->SetColorAndOpacity(NotEnoughColor);
 			SetInteractButtonColor(NotEnoughColor);
-			ButtonText->SetText(FText::FromString("Cancel"));
+			ButtonText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Cancel")));
 			break;
 		case EQuestStatus::RewardPending:
 			TargetValue->SetColorAndOpacity(SuccessColor);
 			SetInteractButtonColor(SuccessColor);
-			ButtonText->SetText(FText::FromString("Success"));
+			ButtonText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Success")));
 			break;
 		default:
 			break;
@@ -71,16 +72,21 @@ void UQuestInfoPanel::CheckQuestProgress()
 	if (SelectQuest->GetQuestData()->QuestType == EQuestType::Item) {
 		UQuestData_Item* targetQuest = Cast<UQuestData_Item>(SelectQuest->GetQuestData());
 		UItemData* itemData = UItemDataManager::GetInstance()->FindItemData(targetQuest->QuestItemIndex);
-		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / %d )"), *itemData->name, 
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / %d )"), 
+			*PlayerController->TSManager->TranslateTexts(*itemData->name),
 			PlayerController->PlayerData->GetItemCount(itemData->index), targetQuest->RequiredAmount)));
 	}
 	else if (SelectQuest->GetQuestData()->QuestType == EQuestType::Arrive) {
-		UQuestData_Arrive* targetQuest = Cast<UQuestData_Arrive>(SelectQuest->GetQuestData());
-		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("Locate location ( %d / 1 )"), SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
+		//UQuestData_Arrive* targetQuest = Cast<UQuestData_Arrive>(SelectQuest->GetQuestData());
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / 1 )"), 
+			*PlayerController->TSManager->TranslateTexts("Locate location"),
+			SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
 	}
 	else if (SelectQuest->GetQuestData()->QuestType == EQuestType::KillCount) {
-		UQuestData_Kill* targetQuest = Cast<UQuestData_Kill>(SelectQuest->GetQuestData());
-		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("Eliminate Target ( %d / 1 )"), SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
+		//UQuestData_Kill* targetQuest = Cast<UQuestData_Kill>(SelectQuest->GetQuestData());
+		TargetValue->SetText(FText::FromString(FString::Printf(TEXT("%s ( %d / 1 )"), 
+			*PlayerController->TSManager->TranslateTexts("Eliminate Target"),
+			SelectQuest->GetQuestStatus() == EQuestStatus::RewardPending ? 1 : 0)));
 	}
 }
 

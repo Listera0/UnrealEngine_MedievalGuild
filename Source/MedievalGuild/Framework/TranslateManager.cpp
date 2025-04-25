@@ -70,3 +70,11 @@ FText ATranslateManager::TranslateTexts(FText text)
 	return text;
 }
 
+FString ATranslateManager::TranslateTexts(FString text)
+{
+	const FString* Found = TranslateData.Find(text);
+	if (Found) { return *Found; }
+
+	return text;
+}
+

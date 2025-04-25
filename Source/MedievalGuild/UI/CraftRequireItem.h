@@ -24,5 +24,7 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Count;
 
+	class ATranslateManager* TSManager = nullptr;
+
 	void SetItemInfo(int index, int ownCount, int requireCount);
 };

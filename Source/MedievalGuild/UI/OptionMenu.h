@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
 #include "OptionMenu.generated.h"
 
 /**
@@ -28,6 +29,14 @@ public:
 	UButton* ShowOption = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitGame = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* InvText = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QuestText = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* OptionText = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ExitText = nullptr;
 
 protected:
 	UFUNCTION()

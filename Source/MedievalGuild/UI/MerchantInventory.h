@@ -36,6 +36,8 @@ public:
 	UTextBlock* MerchantName = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UButton* TradeAndQuest = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* TradeAndQuestText = nullptr;
 
 	UPROPERTY()
 	TArray<UUserWidget*> QuestList;

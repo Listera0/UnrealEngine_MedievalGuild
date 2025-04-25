@@ -8,7 +8,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
-#include "TranslateManager.h"
 #include "../Character/PlayerCharacter.h"
 #include "../Item/Test/Test_Item.h"
 #include "../Object/IInteractInterface.h"
@@ -477,6 +476,28 @@ void APlayerCharacterController::AllUIHidden()
 
 	FInputModeGameOnly InputMode;
 	SetInputMode(InputMode);
+}
+
+void APlayerCharacterController::StaticUITranslate()
+{
+	InventoryUI->Widget_CraftRequire->RequireText->SetText(TSManager->TranslateTexts(FText::FromString("Require Item List")));
+	InventoryUI->Widget_CraftRequire->CraftText->SetText(TSManager->TranslateTexts(FText::FromString("Craft")));
+
+	InventoryUI->Widget_QuestPlayerPanel->QuestText->SetText(TSManager->TranslateTexts(FText::FromString("Quest List")));
+
+	InventoryUI->Widget_OptionMenu->InvText->SetText(TSManager->TranslateTexts(FText::FromString("Inventory")));
+	InventoryUI->Widget_OptionMenu->QuestText->SetText(TSManager->TranslateTexts(FText::FromString("Quest")));
+	InventoryUI->Widget_OptionMenu->OptionText->SetText(TSManager->TranslateTexts(FText::FromString("Option")));
+	InventoryUI->Widget_OptionMenu->ExitText->SetText(TSManager->TranslateTexts(FText::FromString("Exit")));
+
+	InventoryUI->Widget_StageMap->LibraryText->SetText(TSManager->TranslateTexts(FText::FromString("Library")));
+	InventoryUI->Widget_StageMap->LockText1->SetText(TSManager->TranslateTexts(FText::FromString("Lock")));
+	InventoryUI->Widget_StageMap->LockText2->SetText(TSManager->TranslateTexts(FText::FromString("Lock")));
+
+	MainMenuUI->StartGameText->SetText(TSManager->TranslateTexts(FText::FromString("Load")));
+	MainMenuUI->NewGameText->SetText(TSManager->TranslateTexts(FText::FromString("New")));
+	MainMenuUI->OptionText->SetText(TSManager->TranslateTexts(FText::FromString("Option")));
+	MainMenuUI->ExitGameText->SetText(TSManager->TranslateTexts(FText::FromString("Exit")));
 }
 
 UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCategory category)

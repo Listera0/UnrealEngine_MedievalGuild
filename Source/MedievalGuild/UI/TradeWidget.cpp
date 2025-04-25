@@ -64,7 +64,7 @@ void UTradeWidget::ShowTotalPrice()
 	PriceText->SetText(FText::FromString(FString::Printf(TEXT("%d G"), TotalPrice)));
 
 	if (bIsBuy) { 
-		Cast<UTextBlock>(SellBuyButton->GetChildAt(0))->SetText(FText::FromString(FString("Buy"))); 
+		Cast<UTextBlock>(SellBuyButton->GetChildAt(0))->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString(FString("Buy")))); 
 		if (PlayerController->PlayerData->GetPlayerCurrency() < TotalPrice || 
 			PlayerController->PlayerData->FindEmptySlot(PlayerController->PlayerData->GetTargetContainer
 				(EContainerCategory::Storage), PlayerController->GetTargetContainer(EContainerCategory::Storage), items[0]) == FVector2D(-1.0f))
@@ -78,7 +78,7 @@ void UTradeWidget::ShowTotalPrice()
 		}
 	}
 	else if (bIsSell) { 
-		Cast<UTextBlock>(SellBuyButton->GetChildAt(0))->SetText(FText::FromString(FString("Sell"))); 
+		Cast<UTextBlock>(SellBuyButton->GetChildAt(0))->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString(FString("Sell")))); 
 		bIsEnoughCurrency = true; ButtonSetting(SuccessColor);
 	}
 	else {

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
 #include "../Object/InventoryData.h"
 #include "../Item/ItemDataManager.h"
 #include "CraftRequire.generated.h"
@@ -33,6 +34,10 @@ public:
 	UVerticalBox* ItemListWidget = nullptr;
 	UPROPERTY(meta=(BindWidget))
 	UButton* CraftButton = nullptr;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* RequireText = nullptr;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* CraftText = nullptr;
 
 	FInventoryData* SelectItemData;
 	UItemRecipe* selectRecipe;

@@ -28,6 +28,7 @@ public:
 	void SetSelectLanguage();
 
 	FText TranslateTexts(FText text);
+	FString TranslateTexts(FString text);
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<FName> TranslateLanguages;

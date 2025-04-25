@@ -49,7 +49,7 @@ void UQuestPlayerPanel::ShowQuestList()
 		buttonStyle.NormalPadding = 0.0f;
 		buttonStyle.PressedPadding = 0.0f;
 		newQuestSlot->QuestSlot->SetStyle(buttonStyle);
-		newQuestSlot->SetQuestInfo(FText::FromString(quest->GetQuestData()->QuestName));
+		newQuestSlot->SetQuestInfo(PlayerController->TSManager->TranslateTexts(FText::FromString(quest->GetQuestData()->QuestName)));
 
 		UVerticalBoxSlot* GridSlot = QuestSlotGrid->AddChildToVerticalBox(newQuestSlot);
 		GridSlot->SetPadding(FMargin(0.0f, 0.0f, 0.0f, 1.0f));

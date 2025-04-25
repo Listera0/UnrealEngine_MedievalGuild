@@ -5,9 +5,10 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanel.h"
+#include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
 #include "../Item/ItemData.h"
 #include "../Quest/Quest_Base.h"
-#include "Components/VerticalBox.h"
 #include "QuestPlayerPanel.generated.h"
 
 /**
@@ -23,6 +24,7 @@ public:
 
 	void QuestPlayerPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass);
 	void ShowQuestList();
+
 	FLinearColor GetQuestSlotColor(EQuestStatus status);
 
 	UPROPERTY()
@@ -32,6 +34,8 @@ public:
 	UCanvasPanel* QuestSlot = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* QuestSlotGrid = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QuestText = nullptr;
 
 	TArray<UQuest_Base*> PlayerQuestList;
 

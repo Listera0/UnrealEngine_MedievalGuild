@@ -82,8 +82,10 @@ void UOptionPanel::OnChangeLanguage(FString SelectedItem, ESelectInfo::Type Sele
 {
 	PlayerController->TSManager->SelectLanguageIndex = LanguageBox->GetSelectedIndex();
 	PlayerController->TSManager->SetSelectLanguage();
-	MainLanguageSetting();
+
 	OptionLanguageSetting();
+	PlayerController->StaticUITranslate();
+
 	SavePlayerSetting();
 }
 

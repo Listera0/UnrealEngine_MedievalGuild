@@ -11,13 +11,13 @@ void UMerchantInventory::ShowContainer(TArray<FInventoryData*>& data)
 {
 	Super::ShowContainer(data);
 
-	if (!PlayerController) { PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController()); }
-
 	MerchantName->SetText(PlayerController->TSManager->TranslateTexts(FText::FromName(PlayerController->InteractObj->ObjectName)));
+	TradeAndQuestText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Show Quest")));
 }
 
 void UMerchantInventory::MerchantPanelInitSetting(TArray<TSubclassOf<UUserWidget>> InitWidgetClass, EContainerCategory category, FVector2D size)
 {
+	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	ContainerInitSetting(InitWidgetClass[0], InitWidgetClass[1], InitWidgetClass[2], InitWidgetClass[3], category, size);
 	QuestSlotClass = InitWidgetClass[4];
 
@@ -56,21 +56,19 @@ void UMerchantInventory::MakeQuestListPanel()
 
 void UMerchantInventory::SwitchPanelScreen()
 {
-	if (!PlayerController) { PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController()); }
-
 	if (bIsSwitched) {
 		bIsSwitched = false;
 		ContainerSlot->SetVisibility(ESlateVisibility::Visible);
 		QuestSlot->SetVisibility(ESlateVisibility::Collapsed);
-		Cast<UTextBlock>(TradeAndQuest->GetChildAt(0))->SetText(FText::FromString("Show Quest"));
 		PlayerController->InventoryUI->PanelVisibleSetting(3);
+		TradeAndQuestText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Show Quest")));
 	}
 	else {
 		bIsSwitched = true;
 		MakeQuestListPanel();
 		ContainerSlot->SetVisibility(ESlateVisibility::Collapsed);
 		QuestSlot->SetVisibility(ESlateVisibility::Visible);
-		Cast<UTextBlock>(TradeAndQuest->GetChildAt(0))->SetText(FText::FromString("Show Trade"));
 		PlayerController->InventoryUI->PanelVisibleSetting(4);
+		TradeAndQuestText->SetText(PlayerController->TSManager->TranslateTexts(FText::FromString("Show Trade")));
 	}	
 }

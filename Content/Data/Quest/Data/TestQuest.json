@@ -13,8 +13,8 @@
 			"PreRequisiteQuests": []
 		},
 		{
-			"QuestName": "Locate chest in castle",
-			"Description": "Find chest in castle",
+			"QuestName": "Find chest in library",
+			"Description": "I heard some rumor that one of chest in the library",
 			"QuestIndex": 1,
 			"QuestStatus": 0,
 			"QuestType": 0,
@@ -29,8 +29,8 @@
 			"CapsuleRadius": 100
 		},
 		{
-			"QuestName": "I Need Book!",
-			"Description": "I want one book for study!",
+			"QuestName": "I need book!",
+			"Description": "I want one book for new magic",
 			"QuestIndex": 2,
 			"QuestStatus": 0,
 			"QuestType": 1,
