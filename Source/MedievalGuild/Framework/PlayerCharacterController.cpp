@@ -251,7 +251,7 @@ void APlayerCharacterController::InputInventoryToggle(const FInputActionValue& V
 void APlayerCharacterController::InputInteractAction(const FInputActionValue& Value)
 {
 	// UI가 열려있을 때
-	if (bIsInteractAction) {
+	if (bIsInteractAction && !bIsTalking) {
 		AllUIHidden();
 	}
 	else {
@@ -295,14 +295,13 @@ void APlayerCharacterController::InputInteractAction(const FInputActionValue& Va
 			else if (hitResult.GetActor()->ActorHasTag(FName("NPC"))) {
 				bIsInteractAction = true;
 				bIsTalking = true;
-				InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
-				InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
-				UDialogueComponent* dialogueComponent = Cast<UDialogueComponent>(hitResult.GetActor()->FindComponentByClass(UDialogueComponent::StaticClass()));
 
-				ScreenUI->SetDialogueText(true, "TEXT");
+				if (!bNotFirstTalking) {
+					InteractObj = Cast<AInteractObject_Base>(hitResult.GetActor());
+					InteractObj->InteractDistance = FVector::DistSquared(PlayerCharacter->GetActorLocation(), InteractObj->GetActorLocation());
+				}
 
-				//if(finish)
-				//ScreenUI->SetDialogueText(false, "");
+				DialogueProgress();
 			}
 			else if (hitResult.GetActor()->ActorHasTag(FName("Door"))) {
 				bIsInteractAction = true;
@@ -468,6 +467,7 @@ void APlayerCharacterController::AllUIHidden()
 	bIsUIOpened = false;
 	bIsInteractAction = false;
 	bIsTalking = false;
+	bNotFirstTalking = false;
 	bShowMouseCursor = false;
 	InteractObj = nullptr;
 	InteractCharacter = nullptr;
@@ -498,6 +498,37 @@ void APlayerCharacterController::StaticUITranslate()
 	MainMenuUI->NewGameText->SetText(TSManager->TranslateTexts(FText::FromString("New")));
 	MainMenuUI->OptionText->SetText(TSManager->TranslateTexts(FText::FromString("Option")));
 	MainMenuUI->ExitGameText->SetText(TSManager->TranslateTexts(FText::FromString("Exit")));
+}
+
+void APlayerCharacterController::DialogueProgress()
+{
+	UDialogueComponent* dialogueComponent = Cast<UDialogueComponent>(hitResult.GetActor()->FindComponentByClass(UDialogueComponent::StaticClass()));
+	UDialogue* currentDia = dialogueComponent->GetCurrentDialogue();
+
+	if (!currentDia) return;
+
+	if (!bNotFirstTalking) {
+		dialogueIndex = -1; totalIndex = currentDia->Responses.Num();
+		bNotFirstTalking = true;
+	}
+
+	dialogueIndex++;
+	int dialogueOptionValue = -1;
+
+	if (dialogueIndex == totalIndex) {
+		if (currentDia->bIsDialogueOption) {
+			dialogueOptionValue = 0;
+		}
+
+		dialogueComponent->EndDialogue(dialogueOptionValue);
+		bNotFirstTalking = false;
+		bIsTalking = false;
+		ScreenUI->SetDialogueText(false, "");
+		return;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TSManager->TranslateTexts(currentDia->Responses[dialogueIndex]));
+	ScreenUI->SetDialogueText(true, TSManager->TranslateTexts(currentDia->Responses[dialogueIndex]));
 }
 
 UContainer_Base* APlayerCharacterController::GetTargetContainer(EContainerCategory category)

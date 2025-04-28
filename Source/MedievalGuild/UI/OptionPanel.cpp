@@ -18,6 +18,7 @@ void UOptionPanel::InitMainScreenSetting()
 	SensitiveSlider->OnValueChanged.AddDynamic(this, &UOptionPanel::OnChangeSensitive);
 	FieldOfViewSlider->OnValueChanged.AddDynamic(this, &UOptionPanel::OnChangeFOV);
 	FullScreenCheckBox->OnCheckStateChanged.AddDynamic(this, &UOptionPanel::OnChangeFullScreen);
+	ResetSaveDataButton->OnClicked.AddDynamic(this, &UOptionPanel::ResetSaveData);
 	CancelButton->OnClicked.AddDynamic(this, &UOptionPanel::CancelOptionPanel);
 
 	LoadPlayerSetting();
@@ -108,6 +109,12 @@ void UOptionPanel::OnChangeFullScreen(bool bIsChecked)
 	bIsChecked ? GEngine->GetGameUserSettings()->SetFullscreenMode(EWindowMode::Fullscreen) : GEngine->GetGameUserSettings()->SetFullscreenMode(EWindowMode::Windowed);
 	GEngine->GetGameUserSettings()->ApplySettings(true);
 	SavePlayerSetting();
+}
+
+void UOptionPanel::ResetSaveData()
+{
+	PlayerController->PlayerData->RemoveSave();
+	PlayerController->MainMenuUI->MainButtonSetting();
 }
 
 void UOptionPanel::CancelOptionPanel()

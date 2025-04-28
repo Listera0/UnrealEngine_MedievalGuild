@@ -22,6 +22,7 @@ class MEDIEVALGUILD_API UMainScreen : public UUserWidget
 	
 public:
 	void InitMainScreenSetting();
+	void MainButtonSetting();
 	void ShowBackgroundScreen(float deltaTime);
 
 public:

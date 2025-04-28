@@ -17,6 +17,7 @@ void UScreenUI::InitScreenUISetting()
 	ExtractObject->SetVisibility(ESlateVisibility::Collapsed);
 	SystemMessage->SetVisibility(ESlateVisibility::Collapsed);
 	DialogueBox->SetVisibility(ESlateVisibility::Collapsed);
+	TutorialPanel->SetVisibility(ESlateVisibility::Collapsed);
 }
 
 bool UScreenUI::CheckAnyTextVisible()
@@ -24,7 +25,8 @@ bool UScreenUI::CheckAnyTextVisible()
 	if (InteractText->GetVisibility() == ESlateVisibility::Visible ||
 		ExtractObject->GetVisibility() == ESlateVisibility::Visible || 
 		SystemMessage->GetVisibility() == ESlateVisibility::Visible ||
-		DialogueBox->GetVisibility() == ESlateVisibility::Visible) {
+		DialogueBox->GetVisibility() == ESlateVisibility::Visible ||
+		TutorialPanel->GetVisibility() == ESlateVisibility::Visible) {
 		SetVisibility(ESlateVisibility::Visible);
 		return true;
 	}
@@ -66,5 +68,18 @@ void UScreenUI::SetDialogueText(bool visible, FString text)
 {
 	DialogueBox->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
 	DialogueText->SetText(FText::FromString(text));
+	CheckAnyTextVisible();
+}
+
+void UScreenUI::ShowTutorialPanel(int index)
+{
+	TutorialPanel->SetVisibility(index != -1 ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+	CheckAnyTextVisible();
+	if (index == -1) return;
+
+	for (int i = 1; i < TutorialPanel->GetAllChildren().Num(); i++) {
+		TutorialPanel->GetChildAt(i)->SetVisibility(ESlateVisibility::Collapsed);
+	}
+	Cast<UCanvasPanel>(TutorialPanel->GetChildAt(index))->SetVisibility(ESlateVisibility::Visible);
 	CheckAnyTextVisible();
 }

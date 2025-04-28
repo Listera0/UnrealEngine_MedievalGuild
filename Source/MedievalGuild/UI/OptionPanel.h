@@ -37,6 +37,8 @@ public:
 	UFUNCTION()
 	void OnChangeFullScreen(bool bIsChecked);
 	UFUNCTION()
+	void ResetSaveData();
+	UFUNCTION()
 	void CancelOptionPanel();
 
 	UPROPERTY(meta = (BindWidget))
@@ -75,6 +77,8 @@ public:
 	UTextBlock* FieldOfViewText = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* FullScreenText = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UButton* ResetSaveDataButton = nullptr;
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;

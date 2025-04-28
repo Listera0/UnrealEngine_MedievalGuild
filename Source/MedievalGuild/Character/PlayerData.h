@@ -44,6 +44,7 @@ public:
 
 	void SaveGame();
 	void LoadGame(int index);
+	void RemoveSave();
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;

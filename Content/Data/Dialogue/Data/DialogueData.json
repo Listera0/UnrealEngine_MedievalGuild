@@ -1,27 +1,14 @@
 ﻿[
 	{
 		"DialogueIndex": 0,
-		"DialogueText": "시작",
-		"bIsEndOfDialogue": false,
-		"bIsDialogueOption": false,
-		"NextDialogueIndex": 1,
-		"CompleteQuestIndex": [],
-		"Responses": [
-			"1",
-			"2",
-			"3"
-		]
-	},
-	{
-		"DialogueIndex": 1,
-		"DialogueText": "122",
+		"DialogueText": "First Meet",
 		"bIsEndOfDialogue": false,
 		"bIsDialogueOption": true,
 		"NextDialogueIndex": -1,
 		"DialogueOptions": [
 			{
 				"OptionText": "수락",
-				"NextDialogueID": 2,
+				"NextDialogueID": 1,
 				"bGiveQuest": true,
 				"QuestIndex": 1
 			},
@@ -35,25 +22,27 @@
 		"UserSelectedOptionIndex": 0,
 		"CompleteQuestIndex": [],
 		"Responses": [
-			"테스트"
+			"Hello mercenary",
+			"I heard something that one of chest in the library",
+			"I want to know that rumor is true"
 		]
 	},
 	{
-		"DialogueIndex": 2,
-		"DialogueText": "json테스트",
+		"DialogueIndex": 1,
+		"DialogueText": "Magic Book",
 		"bIsEndOfDialogue": false,
 		"bIsDialogueOption": true,
 		"NextDialogueIndex": -1,
 		"DialogueOptions": [
 			{
 				"OptionText": "수락",
-				"NextDialogueID": 3,
+				"NextDialogueID": -1,
 				"bGiveQuest": true,
 				"QuestIndex": 2
 			},
 			{
 				"OptionText": "거절",
-				"NextDialogueID": 2,
+				"NextDialogueID": -1,
 				"bGiveQuest": false,
 				"QuestIndex": 0
 			}
@@ -61,7 +50,8 @@
 		"UserSelectedOptionIndex": 0,
 		"CompleteQuestIndex": [],
 		"Responses": [
-			"json 테스트"
+			"Oh wait! one more thing",
+			"I want one book for new magic"
 		]
 	}
 ]

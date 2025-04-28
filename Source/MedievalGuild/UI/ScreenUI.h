@@ -27,6 +27,7 @@ public:
 	void SetExtractText(bool visible, float value);
 	void SetSystemMessage(bool visible, FString text);
 	void SetDialogueText(bool visible, FString text);
+	void ShowTutorialPanel(int index);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -41,4 +42,6 @@ public:
 	UCanvasPanel* DialogueBox = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* DialogueText = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UCanvasPanel* TutorialPanel = nullptr;
 };

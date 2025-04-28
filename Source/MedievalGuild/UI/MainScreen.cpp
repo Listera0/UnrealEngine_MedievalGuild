@@ -17,12 +17,23 @@ void UMainScreen::InitMainScreenSetting()
 	
 	PlayerController->SetViewTargetWithBlend(CameraActors[BackGroundIndex], 0.0f);
 	BackGroundIndex = 0; SwitchBackGroundMaxTime = 5.0f;
+	MainButtonSetting();
 	SetVisibility(ESlateVisibility::Visible);
 
 	StartGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickStartGame);
 	NewGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickNewGame);
 	Option->OnClicked.AddDynamic(this, &UMainScreen::OnClickOptionMenu);
 	ExitGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickExitGame);
+}
+
+void UMainScreen::MainButtonSetting()
+{
+	if (UGameplayStatics::DoesSaveGameExist("PlayerSaveData", 0)) {
+		StartGame->SetIsEnabled(true);
+	}
+	else {
+		StartGame->SetIsEnabled(false);
+	}
 }
 
 void UMainScreen::ShowBackgroundScreen(float deltaTime)
@@ -57,6 +68,7 @@ void UMainScreen::OnClickNewGame()
 	FInputModeGameOnly InputMode;
 	PlayerController->bShowMouseCursor = false;
 	PlayerController->SetInputMode(InputMode);
+	PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Tutorial");
 	PlayerController->PlayerData->SaveGame();
 }
 

@@ -57,6 +57,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Enemy|Weapon")
 	int WeaponIndex = 12;
+	UPROPERTY(EditAnywhere, Category = "Enemy|Tutorial")
+	bool bIsTutorial;
 	int CurrentPatrolLocation;
 	bool bIsInit = false;
 	bool bDie = false;

@@ -23,7 +23,7 @@ APlayerCharacter::APlayerCharacter()
 	SpringArm->SocketOffset = FVector(0.0f, 0.0f, 250.0f);
 	SpringArm->ProbeSize = 25.0f;
 	SpringArm->bUsePawnControlRotation = true;
-	SpringArm->bDoCollisionTest = false;
+	SpringArm->bDoCollisionTest = true;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(FName("Camera"));
 	PlayerCamera->SetupAttachment(SpringArm);

@@ -46,8 +46,10 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 
 	FTimerHandle timer;
 	GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
-		MoveLocation = GetPawn()->GetActorLocation();
-		OwnerEnemy->GetNextPatrolLocation();
+		if (!OwnerEnemy->bIsTutorial) {
+			MoveLocation = GetPawn()->GetActorLocation();
+			OwnerEnemy->GetNextPatrolLocation();
+		}
 		bInitFinish = true;
 	}, 2.0f, false);
 }
@@ -56,7 +58,7 @@ void AEnemyAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bInitFinish && !OwnerEnemy->bDie) EnemyMoveSequence(DeltaTime);
+	if (bInitFinish && !OwnerEnemy->bDie && !OwnerEnemy->bIsTutorial) EnemyMoveSequence(DeltaTime);
 }
 
 void AEnemyAIController::OnPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -123,6 +125,8 @@ void AEnemyAIController::EnemyMoveSequence(float DeltaTime)
 
 bool AEnemyAIController::SuccessMove()
 {
+	if (OwnerEnemy->bIsTutorial) return true;
+
 	bool returnValue = FVector::DistSquared(MoveLocation, OwnerEnemy->GetActorLocation()) <= 20000.0f ? true : false;
 	//GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, FString::Printf(TEXT("dist: %.1f"), FVector::DistSquared(MoveLocation, OwnerEnemy->GetActorLocation())));
 	return returnValue;

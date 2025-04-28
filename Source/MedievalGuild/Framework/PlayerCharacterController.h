@@ -65,6 +65,7 @@ protected:
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
 	void StaticUITranslate();
+	void DialogueProgress();
 	void RecordMousePosition();
 	inline bool IsShiftPressed() { return bIsShiftPressed; }
 	inline bool IsInteractAction() { return bIsInteractAction; }
@@ -120,6 +121,10 @@ private:
 	bool bIsInteractAction;
 	bool bIsInteractItem;
 	bool bIsTalking;
+	bool bNotFirstTalking;
+
+	int dialogueIndex = 0;
+	int totalIndex = 0;
 
 public:
 	class APlayerCharacter* PlayerCharacter = nullptr;

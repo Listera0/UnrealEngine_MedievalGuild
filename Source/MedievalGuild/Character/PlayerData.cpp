@@ -348,6 +348,11 @@ void APlayerData::LoadGame(int index)
     }, 0.5f, false);
 }
 
+void APlayerData::RemoveSave()
+{
+    UGameplayStatics::DeleteGameInSlot("PlayerSaveData", 0);
+}
+
 void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to)
 {
     FInventoryData* targetData = FindItemWithLocation(target, from);

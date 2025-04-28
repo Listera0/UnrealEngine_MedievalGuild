@@ -26,6 +26,7 @@ void AInteractObject_Base::BeginPlay()
 	Super::BeginPlay();
 
 	InteractableItemSetting();
+	StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 }
 
 // Called every frame
