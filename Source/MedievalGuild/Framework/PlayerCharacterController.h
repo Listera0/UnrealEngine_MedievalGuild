@@ -60,13 +60,13 @@ protected:
 	void CheckInteractDistance();
 	void CheckInteractUIDistance();
 	void OpenUISetting();
-	void AllUIHidden();
 
 public:
 	UContainer_Base* GetTargetContainer(EContainerCategory category);
 	void StaticUITranslate();
 	void DialogueProgress();
 	void RecordMousePosition();
+	void AllUIHidden();
 	inline bool IsShiftPressed() { return bIsShiftPressed; }
 	inline bool IsInteractAction() { return bIsInteractAction; }
 

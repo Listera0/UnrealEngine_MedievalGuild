@@ -23,6 +23,7 @@ public:
 	void InitScreenUISetting();
 
 	bool CheckAnyTextVisible();
+	void AllTextClose();
 	void SetInteractText(bool visible, FString text);
 	void SetExtractText(bool visible, float value);
 	void SetSystemMessage(bool visible, FString text);

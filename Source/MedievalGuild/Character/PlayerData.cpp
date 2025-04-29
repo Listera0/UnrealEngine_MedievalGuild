@@ -369,6 +369,8 @@ void APlayerData::MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, F
 
 void APlayerData::EmptyInventory()
 {
+    if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
     PlayerInventory.Empty();
     PlayerEquipment.Empty();
     PlayerEquipment.Init(nullptr, 5);

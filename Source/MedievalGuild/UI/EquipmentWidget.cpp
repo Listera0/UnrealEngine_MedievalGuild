@@ -85,6 +85,12 @@ void UEquipmentWidget::ShowContainerInfo()
 
 void UEquipmentWidget::UpdateWeapon()
 {
-	if (PlayerController->PlayerData->PlayerEquipment[4]) { PlayerController->PlayerCharacter->SetPlayerWeapon(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Weapon)[4]->ItemData->index); }
-	else { PlayerController->PlayerCharacter->SetPlayerWeapon(-1); }
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
+	if (PlayerController->PlayerData->PlayerEquipment[4]) { 
+		PlayerController->PlayerCharacter->SetPlayerWeapon(PlayerController->PlayerData->GetTargetContainer(EContainerCategory::Weapon)[4]->ItemData->index); 
+	}
+	else { 
+		PlayerController->PlayerCharacter->SetPlayerWeapon(-1); 
+	}
 }

@@ -35,6 +35,11 @@ void UOptionMenu::OnClickShowOption()
 
 void UOptionMenu::OnClickExitGame()
 {
-	Cast<AGameManager>(GetWorld()->GetAuthGameMode())->GameEndSequence();
-	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
+	if(PlayerController->CurrentPlayerLocation != "Tutorial") Cast<AGameManager>(GetWorld()->GetAuthGameMode())->GameEndSequence();
+	PlayerController->AllUIHidden();
+	PlayerController->ScreenUI->AllTextClose();
+	PlayerController->MainMenuUI->MainButtonSetting();
+	PlayerController->MainMenuUI->InitMainScreenSetting();
+
+	//UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }

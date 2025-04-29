@@ -61,4 +61,5 @@ public:
 	int BackGroundIndex;
 	float SwitchBackGroundTimer;
 	float SwitchBackGroundMaxTime;
+	FTimerHandle BackTimer;
 };

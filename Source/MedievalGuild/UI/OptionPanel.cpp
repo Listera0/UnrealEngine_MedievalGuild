@@ -90,7 +90,10 @@ void UOptionPanel::OnChangeFullScreen(bool bIsChecked)
 void UOptionPanel::ResetSaveData()
 {
 	PlayerController->PlayerData->RemoveSave();
+	PlayerController->AllUIHidden();
+	PlayerController->ScreenUI->AllTextClose();
 	PlayerController->MainMenuUI->MainButtonSetting();
+	PlayerController->MainMenuUI->InitMainScreenSetting();
 }
 
 void UOptionPanel::CancelOptionPanel()

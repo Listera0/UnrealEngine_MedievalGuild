@@ -10,7 +10,7 @@
 
 void UMainScreen::InitMainScreenSetting()
 {
-	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+	if(!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	TArray<AActor*> getActors;
 	UGameplayStatics::GetAllActorsOfClassWithTag(GetWorld(), ACameraActor::StaticClass(), "BackgroundShow", getActors);
 	for (AActor* actor : getActors) { CameraActors.Add(Cast<ACameraActor>(actor)); }
@@ -20,9 +20,17 @@ void UMainScreen::InitMainScreenSetting()
 	MainButtonSetting();
 	SetVisibility(ESlateVisibility::Visible);
 
+	FInputModeGameAndUI InputMode;
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->SetInputMode(InputMode);
+
+	StartGame->OnClicked.Clear();
 	StartGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickStartGame);
+	NewGame->OnClicked.Clear();
 	NewGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickNewGame);
+	Option->OnClicked.Clear();
 	Option->OnClicked.AddDynamic(this, &UMainScreen::OnClickOptionMenu);
+	ExitGame->OnClicked.Clear();
 	ExitGame->OnClicked.AddDynamic(this, &UMainScreen::OnClickExitGame);
 }
 
@@ -43,8 +51,7 @@ void UMainScreen::ShowBackgroundScreen(float deltaTime)
 	SwitchBackGroundTimer = 0.0f;
 
 	PlayerController->ScreenEffectUI->StartFadeInAnimation();
-	FTimerHandle timer;
-	GetWorld()->GetTimerManager().SetTimer(timer, [this]() {
+	GetWorld()->GetTimerManager().SetTimer(BackTimer, [this]() {
 		PlayerController->ScreenEffectUI->StartFadeOutAnimation();
 		BackGroundIndex = (BackGroundIndex + 1) % CameraActors.Num();
 		PlayerController->SetViewTargetWithBlend(CameraActors[BackGroundIndex], 0.0f);
@@ -53,24 +60,25 @@ void UMainScreen::ShowBackgroundScreen(float deltaTime)
 
 void UMainScreen::OnClickStartGame()
 {
-	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);
+	GetWorld()->GetTimerManager().ClearTimer(BackTimer);
 	SetVisibility(ESlateVisibility::Collapsed);
 	FInputModeGameOnly InputMode;
 	PlayerController->bShowMouseCursor = false;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->PlayerData->LoadGame(0);
 	PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
+	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);
 }
 
 void UMainScreen::OnClickNewGame()
 {
-	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);
+	GetWorld()->GetTimerManager().ClearTimer(BackTimer);
 	SetVisibility(ESlateVisibility::Collapsed);
 	FInputModeGameOnly InputMode;
 	PlayerController->bShowMouseCursor = false;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Tutorial");
-	PlayerController->PlayerData->SaveGame();
+	PlayerController->SetViewTargetWithBlend(PlayerController->GetCharacter(), 0.0f);
 }
 
 void UMainScreen::OnClickOptionMenu()
@@ -81,6 +89,6 @@ void UMainScreen::OnClickOptionMenu()
 
 void UMainScreen::OnClickExitGame()
 {
-	Cast<AGameManager>(GetWorld()->GetAuthGameMode())->GameEndSequence();
+	//Cast<AGameManager>(GetWorld()->GetAuthGameMode())->GameEndSequence();
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }

@@ -35,6 +35,17 @@ bool UScreenUI::CheckAnyTextVisible()
 	return false;
 }
 
+void UScreenUI::AllTextClose()
+{
+	InteractText->SetVisibility(ESlateVisibility::Collapsed);
+	ExtractObject->SetVisibility(ESlateVisibility::Collapsed);
+	SystemMessage->SetVisibility(ESlateVisibility::Collapsed);
+	DialogueBox->SetVisibility(ESlateVisibility::Collapsed);
+	TutorialPanel->SetVisibility(ESlateVisibility::Collapsed);
+
+	CheckAnyTextVisible();
+}
+
 void UScreenUI::SetInteractText(bool visible, FString text)
 {
 	InteractText->SetVisibility(visible ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
