@@ -38,7 +38,7 @@
 			"HasPlayer": false,
 			"RewardItems": [ 0 ],
 			"RewardItemAmount": [ 40 ],
-			"PreRequisiteQuests": [ 1 ],
+			"PreRequisiteQuests": [],
 			"QuestItemIndex": 3,
 			"QuestItemRequiredAmount": 1
 		}

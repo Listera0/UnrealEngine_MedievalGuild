@@ -49,7 +49,7 @@ void AStageActor::BeginPlay()
 
 void AStageActor::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->ActorHasTag("Player")) {
+	if (OtherComp->ComponentHasTag("Player")) {
 		extractTimer = 0.0f;
 		PlayerController->ScreenUI->SetExtractText(false, 0.0f);
 		InteractActor = OtherActor;
@@ -59,7 +59,7 @@ void AStageActor::OnBoxOverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 
 void AStageActor::OnBoxOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherActor->ActorHasTag("Player")) {
+	if (OtherComp->ComponentHasTag("Player")) {
 		extractTimer = 0.0f;
 		PlayerController->ScreenUI->SetExtractText(false, 0.0f);
 		InteractActor = nullptr;
@@ -83,6 +83,10 @@ void AStageActor::Tick(float DeltaTime)
 			bIsInteractExtractionArea = false;
 			PlayerController->ScreenUI->SetExtractText(false, 0.0f);
 			PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
+			if (Tags.Contains("Tutorial")) {
+				PlayerController->PlayerData->EmptyInventory();
+				PlayerController->PlayerData->EmptyStorage();
+			}
 		}
 	}
 }

@@ -100,9 +100,10 @@ void UQuestComponent::AddQuest(UQuest_Base* Quest)
 {
 	if (Quest && !MyQuestList.Contains(Quest))
 	{
-		if(IsPlayer)
+		if (IsPlayer) {
 			Quest->PlayerGetQuest();
-
+			Quest->StartQuest(GetWorld());
+		}
 		MyQuestList.Add(Quest);
 	}
 }

@@ -53,5 +53,18 @@
 			"Oh wait! one more thing",
 			"I want one book for new magic"
 		]
+	},
+	{
+		"DialogueIndex": 2,
+		"DialogueText": "Tutorial",
+		"bIsEndOfDialogue": false,
+		"bIsDialogueOption": false,
+		"NextDialogueIndex": -1,
+		"UserSelectedOptionIndex": 0,
+		"CompleteQuestIndex": [],
+		"Responses": [
+			"Hello i am tutorial NPC",
+			"Welcome!"
+		]
 	}
 ]

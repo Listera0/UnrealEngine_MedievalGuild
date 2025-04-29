@@ -83,3 +83,52 @@ void UScreenUI::ShowTutorialPanel(int index)
 	Cast<UCanvasPanel>(TutorialPanel->GetChildAt(index))->SetVisibility(ESlateVisibility::Visible);
 	CheckAnyTextVisible();
 }
+
+UTextBlock* UScreenUI::GetTutorialMessage(int index, int value)
+{
+	switch (index)
+	{
+		case 0: 
+			switch (value)
+			{
+				case 0: return Tutorial_1Text; break;
+				case 1: return Tutorial_1Text_1; break;
+				case 2: return Tutorial_1Text_2; break;
+			}
+			break;
+		case 1: 
+			switch (value)
+			{
+				case 0: return Tutorial_2Text; break;
+				case 1: return Tutorial_2Text_1; break;
+				case 2: return Tutorial_2Text_2; break;
+			}
+			break;
+		case 2:
+			switch (value)
+			{
+				case 0: return Tutorial_3Text; break;
+				case 1: return Tutorial_3Text_1; break;
+				case 2: return Tutorial_3Text_2; break;
+			}
+			break;
+		case 3: 
+			switch (value)
+			{
+				case 0: return Tutorial_4Text; break;
+				case 1: return Tutorial_4Text_1; break;
+				case 2: return Tutorial_4Text_2; break;
+			}
+			break;
+		case 4: 
+			switch (value)
+			{
+				case 0: return Tutorial_5Text; break;
+				case 1: return Tutorial_5Text_1; break;
+				case 2: return Tutorial_5Text_2; break;
+			}
+			break;
+	}
+
+	return Tutorial_1Text;
+}

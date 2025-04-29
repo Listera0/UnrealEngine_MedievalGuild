@@ -30,6 +30,7 @@ public:
 	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D from, FVector2D to); // 내부용
 	void MoveItemIndex(TArray<FInventoryData*>& target, FVector2D to, FInventoryData* data); // 외부용
 	void EmptyInventory();
+	void EmptyStorage();
 
 	FInventoryData* HasItem(TArray<FInventoryData*>& target, int itemIndex, bool checkMaxStack);
 	FInventoryData* FindItemWithLocation(TArray<FInventoryData*>& target, FVector2D location);

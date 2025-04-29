@@ -12,7 +12,6 @@ void UOptionPanel::InitMainScreenSetting()
 {
 	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	for (FName lan : PlayerController->TSManager->TranslateLanguages) { LanguageBox->AddOption(lan.ToString()); }
-	LanguageBox->SetSelectedOption("en");
 	
 	LanguageBox->OnSelectionChanged.AddDynamic(this, &UOptionPanel::OnChangeLanguage);
 	SensitiveSlider->OnValueChanged.AddDynamic(this, &UOptionPanel::OnChangeSensitive);
@@ -22,31 +21,6 @@ void UOptionPanel::InitMainScreenSetting()
 	CancelButton->OnClicked.AddDynamic(this, &UOptionPanel::CancelOptionPanel);
 
 	LoadPlayerSetting();
-}
-
-void UOptionPanel::MainLanguageSetting()
-{
-	ATranslateManager* TSManager = PlayerController->TSManager;
-	PlayerController->MainMenuUI->StartGameText->SetText(TSManager->TranslateTexts(FText::FromString("Load")));
-	PlayerController->MainMenuUI->NewGameText->SetText(TSManager->TranslateTexts(FText::FromString("New")));
-	PlayerController->MainMenuUI->OptionText->SetText(TSManager->TranslateTexts(FText::FromString("Option")));
-	PlayerController->MainMenuUI->ExitGameText->SetText(TSManager->TranslateTexts(FText::FromString("Exit")));
-}
-
-void UOptionPanel::OptionLanguageSetting()
-{
-	ATranslateManager* TSManager = PlayerController->TSManager;
-	W_Value->SetText(TSManager->TranslateTexts(FText::FromString("Front Move")));
-	A_Value->SetText(TSManager->TranslateTexts(FText::FromString("Left Move")));
-	S_Value->SetText(TSManager->TranslateTexts(FText::FromString("Back Move")));
-	D_Value->SetText(TSManager->TranslateTexts(FText::FromString("Right Move")));
-	Tab_Value->SetText(TSManager->TranslateTexts(FText::FromString("Menu")));
-	Left_Value->SetText(TSManager->TranslateTexts(FText::FromString("Fast Attack")));
-	Right_Value->SetText(TSManager->TranslateTexts(FText::FromString("Slow Attack")));
-	LanguageText->SetText(TSManager->TranslateTexts(FText::FromString("Language")));
-	SensitiveText->SetText(TSManager->TranslateTexts(FText::FromString("Sensitive")));
-	FieldOfViewText->SetText(TSManager->TranslateTexts(FText::FromString("FOV")));
-	FullScreenText->SetText(TSManager->TranslateTexts(FText::FromString("FullScreen")));
 }
 
 void UOptionPanel::SavePlayerSetting()
@@ -67,7 +41,11 @@ void UOptionPanel::LoadPlayerSetting()
 {
 	UPlayerSettingSave* LoadGameInstance = Cast<UPlayerSettingSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerSettingData"), 0));
 
-	if (!LoadGameInstance) return;
+	if (!LoadGameInstance) {
+		LanguageBox->SetSelectedOption("en");
+		SavePlayerSetting();
+		return;
+	}
 
 	// Load Data
 	int lan; int sen; int fov; bool fulls;
@@ -83,9 +61,7 @@ void UOptionPanel::OnChangeLanguage(FString SelectedItem, ESelectInfo::Type Sele
 {
 	PlayerController->TSManager->SelectLanguageIndex = LanguageBox->GetSelectedIndex();
 	PlayerController->TSManager->SetSelectLanguage();
-
-	OptionLanguageSetting();
-	PlayerController->StaticUITranslate();
+	PlayerController->TSManager->SetStaticUITranslate();
 
 	SavePlayerSetting();
 }

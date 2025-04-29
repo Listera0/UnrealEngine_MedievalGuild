@@ -22,8 +22,6 @@ class MEDIEVALGUILD_API UOptionPanel : public UUserWidget
 	
 public:
 	void InitMainScreenSetting();
-	void MainLanguageSetting();
-	void OptionLanguageSetting();
 
 	void SavePlayerSetting();
 	void LoadPlayerSetting();

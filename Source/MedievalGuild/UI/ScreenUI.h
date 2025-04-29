@@ -28,6 +28,7 @@ public:
 	void SetSystemMessage(bool visible, FString text);
 	void SetDialogueText(bool visible, FString text);
 	void ShowTutorialPanel(int index);
+	UTextBlock* GetTutorialMessage(int index, int value);
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -44,4 +45,35 @@ public:
 	UTextBlock* DialogueText = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UCanvasPanel* TutorialPanel = nullptr;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_1Text = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_2Text = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_3Text = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_4Text = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_5Text = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_1Text_1 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_1Text_2 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_2Text_1 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_2Text_2 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_3Text_1 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_3Text_2 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_4Text_1 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_4Text_2 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_5Text_1 = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Tutorial_5Text_2 = nullptr;
 };

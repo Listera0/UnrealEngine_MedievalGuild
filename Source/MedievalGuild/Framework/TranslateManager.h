@@ -22,8 +22,9 @@ protected:
 
 	class APlayerCharacterController* PlayerController;
 
-
 public:
+	void TranslateManagerInitSetting();
+	void SetStaticUITranslate();
 	void SetLanguageOption();
 	void SetSelectLanguage();
 

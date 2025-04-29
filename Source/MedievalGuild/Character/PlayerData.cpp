@@ -372,4 +372,10 @@ void APlayerData::EmptyInventory()
     PlayerInventory.Empty();
     PlayerEquipment.Empty();
     PlayerEquipment.Init(nullptr, 5);
+    PlayerController->InventoryUI->Widget_Equipment->UpdateWeapon();
+}
+
+void APlayerData::EmptyStorage()
+{
+    PlayerStorage.Empty();
 }

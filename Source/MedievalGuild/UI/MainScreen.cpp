@@ -59,6 +59,7 @@ void UMainScreen::OnClickStartGame()
 	PlayerController->bShowMouseCursor = false;
 	PlayerController->SetInputMode(InputMode);
 	PlayerController->PlayerData->LoadGame(0);
+	PlayerController->InventoryUI->Widget_StageMap->MoveToArea("Hideout");
 }
 
 void UMainScreen::OnClickNewGame()
