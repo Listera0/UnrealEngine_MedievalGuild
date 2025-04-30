@@ -24,24 +24,25 @@ APlayerCharacterController::APlayerCharacterController()
 void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	InitPlayerCameraLock();
 	InitSceenResolution();
 	InitMoveInput();
-	InitViewport();
-	InitPlayerData();
 }
 
 void APlayerCharacterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) { MainMenuUI->ShowBackgroundScreen(DeltaTime); }
 	InitViewportScale();
-	lineTraceCheckTag(FName("Interactable"));
-	CheckScreenUI();
-	CheckInteractDistance();
-	CheckInteractUIDistance();
+
+	if (bIsViewScaleInit) {
+		if (MainMenuUI && MainMenuUI->GetVisibility() == ESlateVisibility::Visible) { MainMenuUI->ShowBackgroundScreen(DeltaTime); }
+		lineTraceCheckTag(FName("Interactable"));
+		CheckScreenUI();
+		CheckInteractDistance();
+		CheckInteractUIDistance();
+	}
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -143,17 +144,6 @@ void APlayerCharacterController::InitViewport()
 		MainMenuUI = CreateWidget<UMainScreen>(this, MainMenuPanel);
 		MainMenuUI->AddToViewport();
 		MainMenuUI->InitMainScreenSetting();
-
-		// Mouse mode 설정 - 마우스 표시 및 중앙으로 이동
-		bShowMouseCursor = true;
-		int32 screenX; int32 screenY;
-		GetViewportSize(screenX, screenY);
-		SetMouseLocation(screenX * 0.5f, screenY * 0.5f);
-
-		// Mouse mode 설정 - 마우스로 UI클릭 가능하게 설정
-		FInputModeGameAndUI InputMode;
-		InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
-		SetInputMode(InputMode);
 	}
 
 	if (OptionPanelWidget) {
@@ -174,6 +164,7 @@ void APlayerCharacterController::InitPlayerData()
 
 void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 {
+	if (!MainMenuUI) return;
 	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
 	if (ScreenEffectUI->CheckPlayingAnimation()) return;
 
@@ -196,7 +187,8 @@ void APlayerCharacterController::InputMove(const FInputActionValue& Value)
 
 void APlayerCharacterController::InputCameraMove(const FInputActionValue& Value)
 {
-	if (MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
+	if (!MainMenuUI) return;
+	if (MainMenuUI && MainMenuUI->GetVisibility() == ESlateVisibility::Visible) return;
 
 	if (!bIsUIOpened) {
 		FVector2D inputValue = Value.Get<FVector2D>() * CameraSensitive;
@@ -349,11 +341,25 @@ FHitResult APlayerCharacterController::lineTraceCheckTag(FName tag)
 void APlayerCharacterController::InitViewportScale()
 {
 	if (!bIsViewScaleInit && UWidgetLayoutLibrary::GetViewportSize(this).X != 0.0f) {
-		FVector2D ViewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
-		//FVector2D ViewportSize = FVector2D(GEngine->GameViewport->Viewport->GetSizeXY());
+		GetViewportSize(SizeX, SizeY);
 		FVector2D ScreenResolution = UGameUserSettings::GetGameUserSettings()->GetScreenResolution();
-		FVector2D Scale = ViewportSize / ScreenResolution;
-		//GEngine->AddOnScreenDebugMessage(-1, 3, FColor::White, FString::Printf(TEXT("ViewPortScale : (%f, %f)"), Scale.X, Scale.Y));
+		ViewportScale = FVector2D((float)(SizeX), (float)(SizeY)) / ScreenResolution;
+
+		ItemSlotSize = (((float)(SizeX) / 3.0f - (75.0f * ViewportScale.X)) / 6.0f) / ViewportScale.X;
+
+		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::White, FString::Printf(TEXT("ViewPortScale : (%.2f, %.2f)"), ViewportScale.X, ViewportScale.Y));
+		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::White, FString::Printf(TEXT("ScreenResolution : (%.2f, %.2f)"), ScreenResolution.X, ScreenResolution.Y));
+		//GEngine->AddOnScreenDebugMessage(-1, 10, FColor::White, FString::Printf(TEXT("ViewPortSize : (%d, %d)"), SizeX, SizeY));
+
+		InitViewport();
+		InitPlayerData();
+
+		FInputModeGameAndUI InputMode;
+		bShowMouseCursor = true;
+		SetMouseLocation(SizeX * 0.5f, SizeY * 0.5f);
+		//InputMode.SetWidgetToFocus(InventoryUI->TakeWidget());
+		SetInputMode(InputMode);
+
 		bIsViewScaleInit = true;
 	}
 }

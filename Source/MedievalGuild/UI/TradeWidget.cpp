@@ -8,6 +8,8 @@
 void UTradeWidget::InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
 								TSubclassOf<UUserWidget> itemSlotImgClass, TSubclassOf<UUserWidget> gearWidget)
 {
+	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
+
 	ItemSlotClass = itemSlotClass;
 	ItemSlotImgClass = itemSlotImgClass;
 	ItemBaseClass = itemBaseClass;
@@ -20,10 +22,15 @@ void UTradeWidget::InitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclass
 
 	Widget_Trade = CreateWidget<UGearWidget>(GetWorld(), GearWidget);
 	Widget_Trade->ContainerInitSetting(ItemSlotClass, ItemBaseClass, ItemMoveSlotClass, ItemSlotImgClass, EContainerCategory::Trade, FVector2D(6, 4));
+
+	float slotSize = PlayerController->ItemSlotSize;
+	Cast<UCanvasPanelSlot>(TradeSlot->Slot)->SetSize(FVector2D(slotSize * 6, slotSize * 4));
+
 	UCanvasPanelSlot* Slot_Trade = TradeSlot->AddChildToCanvas(Widget_Trade);
 	Slot_Trade->SetAnchors(FAnchors(0.0f, 0.0f, 1.0f, 1.0f));
+	Slot_Trade->SetOffsets(FMargin(0.0f, 0.0f, 0.0f, 0.0f));
+	Slot_Trade->SetPosition(FVector2D(0, Slot_Trade->GetPosition().Y));
 
-	PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	SellBuyButton->OnClicked.AddDynamic(this, &UTradeWidget::BindSellBuyButton);
 }
 

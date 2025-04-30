@@ -42,7 +42,7 @@ void UOptionPanel::LoadPlayerSetting()
 	UPlayerSettingSave* LoadGameInstance = Cast<UPlayerSettingSave>(UGameplayStatics::LoadGameFromSlot(TEXT("PlayerSettingData"), 0));
 
 	if (!LoadGameInstance) {
-		LanguageBox->SetSelectedOption("en");
+		LanguageBox->SetSelectedOption("English");
 		SavePlayerSetting();
 		return;
 	}

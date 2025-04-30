@@ -22,6 +22,7 @@ void UContainer_Base::NativeConstruct()
 void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClass, TSubclassOf<UUserWidget> itemBaseClass, TSubclassOf<UUserWidget> itemMoveSlotClass,
 											TSubclassOf<UUserWidget> itemSlotImgClass, EContainerCategory category, FVector2D size)
 {
+	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	ItemSlotClass = itemSlotClass;
 	ItemBaseClass = itemBaseClass;
 	ItemMoveSlotClass = itemMoveSlotClass;
@@ -32,8 +33,7 @@ void UContainer_Base::ContainerInitSetting(TSubclassOf<UUserWidget> itemSlotClas
 
 void UContainer_Base::MakeContainer(FVector2D size)
 {
-	FVector2D TempValue = FVector2D(0.996875f, 0.927778f);
-	ContainerSlotSize = 100.0f * TempValue.X;
+	ContainerSlotSize = (((float)(PlayerController->SizeX) / 3.0f - (75.0f * PlayerController->ViewportScale.X)) / 6.0f) / PlayerController->ViewportScale.X;
 	ContainerSize = size;
 
 	UCanvasPanelSlot* TargetSlot = Cast<UCanvasPanelSlot>(ContainerSlot->Slot);
@@ -203,7 +203,6 @@ void UContainer_Base::MoveItemToSlot(EContainerCategory before, int fromIndex, i
 		}
 	}
 
-	if (!PlayerController) PlayerController = Cast<APlayerCharacterController>(GetWorld()->GetFirstPlayerController());
 	// 안에 아이템이 있으면
 	if (itemToIndex.Num() > 0) {
 		if (ContainerItemSlots[toIndex]->HasItem()) {

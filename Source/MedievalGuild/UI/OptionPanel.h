@@ -77,6 +77,8 @@ public:
 	UTextBlock* FullScreenText = nullptr;
 	UPROPERTY(meta = (BindWidget))
 	UButton* ResetSaveDataButton = nullptr;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* ResetSaveDataText = nullptr;
 
 public:
 	class APlayerCharacterController* PlayerController = nullptr;

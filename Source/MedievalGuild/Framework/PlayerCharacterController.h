@@ -146,4 +146,8 @@ public:
 	FVector2D ViewPortSize;
 	bool bIsMovingItem;
 	FName CurrentPlayerLocation;
+
+	FVector2D ViewportScale;
+	int32 SizeX = 0; int32 SizeY = 0;
+	float ItemSlotSize = 0.0f;
 };

@@ -147,7 +147,7 @@ void AStageActor::ResetStageActor()
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 	for (USceneComponent* spawnPoint : SpawnPoints) {
-		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_DropData"), 0));
+		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/Data/DataAsset/%d_DropData"), 0));
 		UItemDropDataAsset* dropData = Cast<UItemDropDataAsset>(spawnRef.TryLoad());
 
 		int targetItemIndex = 0;

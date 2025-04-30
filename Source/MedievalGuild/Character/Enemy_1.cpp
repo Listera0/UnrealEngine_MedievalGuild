@@ -25,7 +25,7 @@ void AEnemy_1::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FStringAssetReference weaponRef(FString::Printf(TEXT("/Game/CPP/DataAsset/WeaponData_%d"), WeaponIndex));
+	FStringAssetReference weaponRef(FString::Printf(TEXT("/Game/Data/DataAsset/WeaponData_%d"), WeaponIndex));
 	UWeaponTransformDataAsset* weaponData = Cast<UWeaponTransformDataAsset>(weaponRef.TryLoad());
 
 	InventoryInitSetting();
@@ -83,7 +83,7 @@ void AEnemy_1::InventoryInitSetting()
 {
 	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
 
-	FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ContainerData"), WeaponIndex));
+	FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/Data/DataAsset/%d_ContainerData"), WeaponIndex));
 	UItemContainerDataAsset* containerData = Cast<UItemContainerDataAsset>(spawnRef.TryLoad());
 
 	for (const TPair<int, int>& Pair : containerData->ItemInfo) {

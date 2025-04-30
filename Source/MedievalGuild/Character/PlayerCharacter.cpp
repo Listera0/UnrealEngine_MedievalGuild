@@ -147,7 +147,7 @@ void APlayerCharacter::SetPlayerWeapon(int index)
 		return;
 	}
 
-	FStringAssetReference weaponRef(FString::Printf(TEXT("/Game/CPP/DataAsset/WeaponData_%d"), index));
+	FStringAssetReference weaponRef(FString::Printf(TEXT("/Game/Data/DataAsset/WeaponData_%d"), index));
 	UWeaponTransformDataAsset* weaponData = Cast<UWeaponTransformDataAsset>(weaponRef.TryLoad());
 
 	PlayerWeapon->SetStaticMesh(weaponData->mesh);

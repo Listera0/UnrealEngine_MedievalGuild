@@ -64,7 +64,7 @@ void AInteractObject_Base::InteractableItemSetting()
 
 	TArray<UItemData*> itemDatas = UItemDataManager::GetInstance()->GetItemDataList();
 	if (bFollowDataSet) {
-		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ContainerData"), DataSetIndex));
+		FStringAssetReference spawnRef(FString::Printf(TEXT("/Game/Data/DataAsset/%d_ContainerData"), DataSetIndex));
 		UItemContainerDataAsset* containerData = Cast<UItemContainerDataAsset>(spawnRef.TryLoad());
 
 		for (const TPair<int, int>& Pair : containerData->ItemInfo) {
@@ -86,7 +86,7 @@ void AInteractObject_Base::InteractableItemSetting()
 			StaticMesh->SetMaterial(0, UItemDataManager::GetInstance()->GetMaterialForItem(ContainerInventory[0]->ItemData));
 		}
 
-		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/CPP/DataAsset/%d_ScaleData"), ContainerInventory[0]->ItemData->index));
+		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/Data/DataAsset/%d_ScaleData"), ContainerInventory[0]->ItemData->index));
 		UItemScaleDataAsset* ItemDataAsset = Cast<UItemScaleDataAsset>(AssetRef.TryLoad());
 		if (ItemDataAsset) {
 			StaticMesh->SetRelativeScale3D(FVector(ItemDataAsset->Scale, ItemDataAsset->Scale, ItemDataAsset->Scale));

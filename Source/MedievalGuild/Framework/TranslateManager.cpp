@@ -48,6 +48,7 @@ void ATranslateManager::SetStaticUITranslate()
 	PlayerController->OptionPanelUI->SensitiveText->SetText(TranslateTexts(FText::FromString("Sensitive")));
 	PlayerController->OptionPanelUI->FieldOfViewText->SetText(TranslateTexts(FText::FromString("FOV")));
 	PlayerController->OptionPanelUI->FullScreenText->SetText(TranslateTexts(FText::FromString("FullScreen")));
+	PlayerController->OptionPanelUI->ResetSaveDataText->SetText(TranslateTexts(FText::FromString("Reset SaveData")));
 
 	PlayerController->InventoryUI->Widget_CraftRequire->RequireText->SetText(TranslateTexts(FText::FromString("Require Item List")));
 	PlayerController->InventoryUI->Widget_CraftRequire->CraftText->SetText(TranslateTexts(FText::FromString("Craft")));
