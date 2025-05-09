@@ -107,7 +107,7 @@ FVector AStageActor::GetPatrolLocationVector(int index)
 
 void AStageActor::InitStageActor()
 {
-	FStringAssetReference AssetRef("/Game/Asset/Object/UnVissibleMaterial");
+	FStringAssetReference AssetRef("/Game/Data/Item/Material/UnVissibleMaterial");
 	UMaterialInterface* UnVisibleMat = Cast<UMaterialInterface>(AssetRef.TryLoad());
 
 	SpawnPoints = SpawnPointOwner->GetAttachChildren();

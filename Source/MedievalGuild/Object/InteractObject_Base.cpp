@@ -97,7 +97,7 @@ void AInteractObject_Base::InteractableItemSetting()
 		StaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Ignore);
 	}
 	else if (ActorHasTag("Container")) {
-		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/Asset/Items/Chest_Combine")));
+		FStringAssetReference AssetRef(FString::Printf(TEXT("/Game/Data/Item/Mesh/Chest_Combine")));
 		UStaticMesh* itemStaticMesh = Cast<UStaticMesh>(AssetRef.TryLoad());
 		if (itemStaticMesh) { 
 			StaticMesh->SetStaticMesh(itemStaticMesh); 
